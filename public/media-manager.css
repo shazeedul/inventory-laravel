@@ -1,0 +1,22 @@
+ #media-manager {}
+
+ #media-manager-container {
+     max-height: 500px;
+     overflow-x: auto;
+ }
+
+
+
+ .media-manager-image-box img:hover {
+     border: 2px solid #2a6ac9;
+ }
+
+ .media-manager-image-box img {
+     padding: 0.25rem;
+     background-color: #fff;
+     border: 2px solid #dee2e6;
+     border-radius: 0.25rem;
+     max-width: 100%;
+     height: auto;
+     transition: all 0.3s ease-out;
+ }

@@ -1,0 +1,52 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} -d [OR]
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ ^$1 [N]
+
+    # redirect to public folder
+    RewriteCond %{REQUEST_URI} (\.\w+$) [NC]
+    RewriteRule ^(.*)$ public/$1
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php
+</IfModule>
+
+
+## LITESPEED  CACHE PLUGIN
+<IfModule LiteSpeed>
+    RewriteEngine on
+    CacheLookup on
+    RewriteRule .* - [E=Cache-Control:no-autoflush]
+    RewriteRule \.litespeed_conf\.dat - [F,L]
+
+    ### marker CACHE RESOURCE start ###
+    RewriteRule ^.*(responsive|css|js|dynamic|loader|fonts)\.php - [E=cache-control:max-age=3600]
+    ### marker CACHE RESOURCE end ###
+
+
+    ### marker FAVICON start ###
+    RewriteRule favicon\.ico$ - [E=cache-control:max-age=86400]
+    ### marker FAVICON end ###
+
+    ### marker DROPQS start ###
+    CacheKeyModify -qs:fbclid
+    CacheKeyModify -qs:gclid
+    CacheKeyModify -qs:utm*
+    CacheKeyModify -qs:_ga
+    ### marker DROPQS end ###
+
+</IfModule>
+## LITESPEED CACHE PLUGIN

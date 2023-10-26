@@ -1,0 +1,10 @@
+{
+    "Auth": true,
+    "Backup": true,
+    "Language": true,
+    "Permission": true,
+    "Pwa": true,
+    "Role": true,
+    "Setting": true,
+    "User": true
+}

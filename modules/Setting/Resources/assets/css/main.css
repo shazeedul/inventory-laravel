@@ -1,0 +1,143 @@
+/* setting primary color variable declare */
+:root {
+    --setting-primary: #6571ff;
+}
+
+.setting-body .nav-label {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    color: #70737c;
+    padding-bottom: 5px;
+    padding: 12px 25px
+}
+
+.setting-body .nav-label .nav-label_ellipsis {
+    font-size: 18px;
+    color: #717579;
+    display: none
+}
+
+.setting-bunker .setting-body .nav-label {
+    color: #fff
+}
+
+.setting-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.setting-nav ul li {
+    padding: 5px 15px;
+    position: relative;
+    white-space: nowrap
+}
+
+.setting-nav ul li a {
+    font-weight: 300;
+    font-size: 14px;
+    color: #41464a;
+    padding: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-transition: .3s;
+    transition: .3s;
+    border-radius: .25rem;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+.setting-nav ul li a:hover {
+    color: var(--setting-primary);
+    background-color: rgb(235 235 235)
+}
+
+.setting-nav>ul>li.mm-active>a, .setting-nav>ul>li>ul>li.mm-active>a {
+    color: #fff;
+    background: var(--setting-primary);
+}
+
+.setting-nav ul li.mm-active a i {
+    color: #fff
+}
+
+.setting-nav ul li .nav-second-level li {
+    padding: 0
+}
+
+.setting-nav ul li .nav-second-level li:before {
+    position: absolute;
+    content: "";
+    top: 15px;
+    left: 20px;
+    width: 6px;
+    border-radius: 100%;
+    height: 6px;
+    opacity: 1;
+    background: var(--setting-primary)
+}
+
+.setting-nav ul li .nav-second-level li a {
+    padding-left: 39px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    color: #41464a;
+    background-color: transparent;
+    box-shadow: none;
+    font-weight: 500
+}
+
+.setting-nav ul li .nav-second-level li a:hover {
+    color: rgb(37 88 182);
+    background-color: #f0f2f5
+}
+
+.setting-nav>ul>li.mm-active>ul>li.mm-active>a {
+    color: #fff;
+    font-weight: 600
+}
+
+.setting-nav ul li .nav-second-level li .nav-third-level li a {
+    padding-left: 61px
+}
+
+.setting-nav ul li.mm-active .nav-second-level li.mm-active .nav-third-level li a {
+    color: #a5a9ad;
+    font-weight: 500
+}
+
+.setting-nav ul li.mm-active .nav-second-level li.mm-active .nav-third-level li.mm-active a {
+    color: #303f9f;
+    font-weight: 700
+}
+
+.setting-nav ul li.mm-active .nav-second-level li.mm-active .nav-third-level li.mm-active .nav-fourth-level li a {
+    color: #a5a9ad;
+    font-weight: 500;
+    padding-left: 81px
+}
+
+.setting-nav ul li a i, .setting-nav ul li a svg {
+    font-size: 21px;
+    line-height: 1;
+    margin-right: .5rem;
+    color: #4a4a4a
+}
+
+.setting-nav ul li a:hover i, .setting-nav ul li a:hover svg {
+    color: var(--setting-primary);
+}
+
+.setting-nav ul li.mm-active a i, .setting-nav ul li.mm-active a svg {
+    color: #fff
+}
+
+.setting-nav ul li a .badge {
+    margin-left: auto
+}

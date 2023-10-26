@@ -1,0 +1,21 @@
+{
+    "name": "iqbalhasandev/role",
+    "description": "",
+    "authors": [
+        {
+            "name": "IQBAL HASAN",
+            "email": "info@iqbalhasan.dev"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Role\\": ""
+        }
+    }
+}
