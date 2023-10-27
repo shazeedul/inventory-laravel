@@ -64,6 +64,7 @@ npm run build
 
 ```bash
 php artisan storage:link
+php artisan module:asset-link
 ```
 
 ## Step 5: Config your database and assine to .env file

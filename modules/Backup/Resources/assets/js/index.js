@@ -17,3 +17,17 @@ function createBackup(mode = null) {
             location.reload();
         });
 }
+
+function deleteBackup() {
+    var url = $("#page-axios-data").data("delete-all-backup-url");
+    var $modal = $("#delete-backup-modal");
+    $modal.modal("show");
+    axios
+        .delete(url)
+        .then((res) => {
+            location.reload();
+        })
+        .catch((err) => {
+            location.reload();
+        });
+}
