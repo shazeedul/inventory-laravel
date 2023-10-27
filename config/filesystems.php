@@ -73,7 +73,6 @@ return [
         public_path('storage') => storage_path('app/public'),
         public_path('admin-assets') => resource_path('assets/admin-assets'),
         public_path('nanopkg-assets') => resource_path('assets/nanopkg-assets'),
-
     ],
 
 ];

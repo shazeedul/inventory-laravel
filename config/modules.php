@@ -214,10 +214,10 @@ return [
     */
 
     'composer' => [
-        'vendor' => 'iqbalhasandev',
+        'vendor' => 'shazeeduldev',
         'author' => [
-            'name' => 'IQBAL HASAN',
-            'email' => 'info@iqbalhasan.dev',
+            'name' => 'SYED SHAZEEDUL ISLAM',
+            'email' => 'info@shazeedul.dev',
         ],
         'composer-output' => false,
     ],

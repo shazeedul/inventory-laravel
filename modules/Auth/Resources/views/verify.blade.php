@@ -2,7 +2,7 @@
     <div class="form-wrapper m-auto">
         <div class="form-container my-4" style="min-width:400px">
             <div class="register-logo text-center mb-4">
-                <img src="{{ admin_asset('img/iqbalhasandev-logo.webp') }}" alt="">
+                <img src="{{ admin_asset('img/shazeeduldev-logo.webp') }}" alt="">
             </div>
             <div class="panel">
                 <div class="panel-header text-center mb-3">
@@ -10,9 +10,9 @@
                     <p class="text-muted text-center mb-0"></p>
                 </div>
                 @if (session('status'))
-                    <div class="alert alert-success" role="alert">
-                        @localize('A fresh verification link has been sent to your email address.')
-                    </div>
+                <div class="alert alert-success" role="alert">
+                    @localize('A fresh verification link has been sent to your email address.')
+                </div>
                 @endif
                 <p class="text-muted text-center mb-0">
                     @localize('Before proceeding, please check your email for a verification link.')

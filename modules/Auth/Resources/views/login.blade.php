@@ -12,17 +12,17 @@
             <form class="forms-sample register-form" method="POST" action="{{ route('login') }}">
                 @csrf
                 @if (config('captcha.siteKey') && config('captcha.secretKey'))
-                    {!! app('captcha')->render() !!}
+                {!! app('captcha')->render() !!}
                 @endif
                 <div class="mb-3">
                     <label for="userEmail" class="form-label"> @localize('Email address')</label>
-                    <input type="email" class="form-control input-py @error('email') is-invalid @enderror"
-                        id="email" name="email" placeholder="@localize('Enter email')" required autocomplete="email">
+                    <input type="email" class="form-control input-py @error('email') is-invalid @enderror" id="email"
+                        name="email" placeholder="@localize('Enter email')" required autocomplete="email" value="{{ old('email') }}">
                     <span class="invalid-feedback text-start"></span>
                     @error('email')
-                        <span class="invalid-feedback text-start" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                    <span class="invalid-feedback text-start" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
                     @enderror
                 </div>
 
@@ -39,8 +39,8 @@
                                     d="M9 3.375C5.25 3.375 2.0475 5.7075 0.75 9C2.0475 12.2925 5.25 14.625 9 14.625C12.75 14.625 15.9525 12.2925 17.25 9C15.9525 5.7075 12.75 3.375 9 3.375ZM9 12.75C6.93 12.75 5.25 11.07 5.25 9C5.25 6.93 6.93 5.25 9 5.25C11.07 5.25 12.75 6.93 12.75 9C12.75 11.07 11.07 12.75 9 12.75ZM9 6.75C7.755 6.75 6.75 7.755 6.75 9C6.75 10.245 7.755 11.25 9 11.25C10.245 11.25 11.25 10.245 11.25 9C11.25 7.755 10.245 6.75 9 6.75Z"
                                     fill="black" />
                             </svg>
-                            <svg class="icon hide-password" width="18" height="18" viewBox="0 0 18 18"
-                                fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="icon hide-password" width="18" height="18" viewBox="0 0 18 18" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M12.1387 14.526L10.323 12.7091C9.62082 12.9602 8.86179 13.0067 8.13422 12.8432C7.40665 12.6797 6.74047 12.313 6.21317 11.7857C5.68588 11.2584 5.31916 10.5922 5.15568 9.86465C4.99221 9.13708 5.0387 8.37805 5.28975 7.67587L2.97225 5.35838C1.05525 7.06275 0 9 0 9C0 9 3.375 15.1875 9 15.1875C10.0805 15.1837 11.1487 14.9586 12.1387 14.526V14.526ZM5.86125 3.474C6.85131 3.04135 7.91954 2.81622 9 2.8125C14.625 2.8125 18 9 18 9C18 9 16.9436 10.9361 15.0289 12.6427L12.7091 10.323C12.9602 9.62082 13.0067 8.86179 12.8432 8.13422C12.6797 7.40665 12.313 6.74047 11.7857 6.21317C11.2584 5.68588 10.5922 5.31916 9.86465 5.15568C9.13708 4.99221 8.37805 5.0387 7.67587 5.28975L5.86125 3.47512V3.474Z"
                                     fill="black" />
@@ -51,24 +51,24 @@
                         </div>
                     </div>
                     @error('password')
-                        <span class="invalid-feedback text-start" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
+                    <span class="invalid-feedback text-start" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
                     @enderror
                 </div>
 
                 <div class="row mb-3 align-items-center">
                     <div class="col-6">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" name="remember"
-                                id="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <input class="form-check-input" type="checkbox" role="switch" name="remember" id="remember"
+                                {{ old('remember') ? 'checked' : '' }}>
                             <label class="form-check-label" for="remember"> @localize('Remember me')</label>
                         </div>
                     </div>
                     @if (Route::has('password.request'))
-                        <div class="col-6 text-end">
-                            <a class="text-danger" href="{{ route('password.request') }}">@localize('Recover Password')</a>
-                        </div>
+                    <div class="col-6 text-end">
+                        <a class="text-danger" href="{{ route('password.request') }}">@localize('Recover Password')</a>
+                    </div>
                     @endif
                 </div>
                 <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">@localize('Sign In')</button>
@@ -76,43 +76,43 @@
         </div>
         <div class="bottom-text text-center my-3">
             @if (Route::has('register'))
-                @localize('Don\'t have an account?')
-                <a href="{{ route('register') }}" class="fw-bold text-primary"> @localize('Sign Up')</a>
+            @localize('Don\'t have an account?')
+            <a href="{{ route('register') }}" class="fw-bold text-primary"> @localize('Sign Up')</a>
             @endif
         </div>
         @if (config('app.debug'))
-            <div class="panel-footer mt-5 bg-light">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>@localize('Email')</th>
-                            <th>@localize('Password')</th>
-                            <th>@localize('Role')</th>
-                        </tr>
-                    </thead>
-                    <tbody style="font-size: 12px;">
-                        <tr>
-                            <td>iqbalhasan.dev@gmail.com</td>
-                            <td>iqbalhasan.dev1971#</td>
-                            <td>Administrator</td>
-                        </tr>
-                        <tr>
-                            <td>user@gmail.com</td>
-                            <td>user</td>
-                            <td>User</td>
-                        </tr>
-                    </tbody>
+        <div class="panel-footer mt-5 bg-light">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>@localize('Email')</th>
+                        <th>@localize('Password')</th>
+                        <th>@localize('Role')</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 12px;">
+                    <tr>
+                        <td>shazeedul.dev@gmail.com</td>
+                        <td>shazeedul.dev1971#</td>
+                        <td>Administrator</td>
+                    </tr>
+                    <tr>
+                        <td>user@gmail.com</td>
+                        <td>user</td>
+                        <td>User</td>
+                    </tr>
+                </tbody>
 
-                </table>
-            </div>
+            </table>
+        </div>
         @endif
 
     </x-auth::card>
     @push('css')
-        <link rel="stylesheet" href="{{ module_asset('Auth/css//login.min.css') }}">
+    <link rel="stylesheet" href="{{ module_asset('Auth/css//login.min.css') }}">
     @endpush
     @push('js')
-        <script src="{{ nanopkg_asset('js/password.min.js') }}"></script>
-        <script src="{{ module_asset('Auth/js/login.min.js') }}"></script>
+    <script src="{{ nanopkg_asset('js/password.min.js') }}"></script>
+    <script src="{{ module_asset('Auth/js/login.min.js') }}"></script>
     @endpush
 </x-guest-layout>

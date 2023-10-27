@@ -33,9 +33,7 @@ class RolePermissionTableSeeder extends Seeder
         // foreign key check enable
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $permissions = [
-            'General' => [
-
-            ],
+            'General' => [],
             'User' => [
                 'user_management',
                 'role_management',
@@ -58,8 +56,7 @@ class RolePermissionTableSeeder extends Seeder
             ],
         ];
         $roles = [
-            'User' => [
-            ],
+            'User' => [],
         ];
 
         $administrator = Role::create(['name' => 'Administrator']);
@@ -77,9 +74,9 @@ class RolePermissionTableSeeder extends Seeder
         }
         $users = [
             [
-                'name' => 'IQBAL HASAN',
-                'email' => 'iqbalhasan.dev@gmail.com',
-                'password' => Hash::make('iqbalhasan.dev1971#'),
+                'name' => 'SYED SHAZEEDUL ISLAM',
+                'email' => 'shazeedul.dev@gmail.com',
+                'password' => Hash::make('shazeedul.dev1971#'),
                 'email_verified_at' => now(),
                 'status' => 'Active',
                 'role' => 'Administrator',
@@ -106,7 +103,6 @@ class RolePermissionTableSeeder extends Seeder
                 ]
             );
             $user->assignRole($userRaw['role']);
-
         }
     }
 }

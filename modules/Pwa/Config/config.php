@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'name' => env('APP_NAME', 'IQBAL HASAN'),
+    'name' => env('APP_NAME', 'SYED SHAZEEDUL ISLAM'),
     'manifest' => [
-        'name' => env('APP_NAME', 'IQBAL HASAN'),
-        'short_name' => env('APP_NAME', 'IQBAL HASAN'),
+        'name' => env('APP_NAME', 'SYED SHAZEEDUL ISLAM'),
+        'short_name' => env('APP_NAME', 'SYED SHAZEEDUL ISLAM'),
         'start_url' => '/',
         'background_color' => '#ffffff',
         'theme_color' => '#000000',

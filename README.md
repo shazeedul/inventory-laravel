@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://iqbalhasan.dev target="_blank"><img src="./resources/assets/admin-assets/img/logo.png" width="400" alt="Laravel Logo"></a>
+<a href="https://shazeedul.dev target="_blank"><img src="./resources/assets/admin-assets/img/logo.png" width="400" alt="Laravel Logo"></a>
 </p>
 
 ## About Laravel
@@ -105,4 +105,4 @@ INVISIBLE_RECAPTCHA_SECRETKEY='6LeOdadaGLUkAAAAAK3pEgkOJrpuSuGIhrNYTKm8XGKR'
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within This Project, please send an e-mail to <a href="https://iqbalhasan.dev" target="_blank">IQBAL HASAN</a> via [support@iqbalhasan.dev](mailto:support@iqbalhasan.dev). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within This Project, please send an e-mail to <a href="https://shazeedul.dev" target="_blank">SYED SHAZEEDUL ISLAM</a> via [support@shazeedul.dev](mailto:support@shazeedul.dev). All security vulnerabilities will be promptly addressed.

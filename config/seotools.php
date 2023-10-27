@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @see https://github.com/artesaos/seotools
  */
@@ -9,27 +10,27 @@ return [
          * The default configurations to be used by the meta generator.
          */
         'defaults' => [
-            'title' => 'IQBAL HASAN DEV', // set false to total remove
+            'title' => 'SYED SHAZEEDUL ISLAM DEV', // set false to total remove
             'titleBefore' => false, // Put defaults.title before page title, like 'It's Over 9000! - Dashboard'
-            'description' => 'iqbalhasan.dev is a portfolio and multipurpose website. This website will be used primarily as a portfolio of IQBAL HASAN and will be used for public blogging, open source packages, free tutorials and client management through several subdomains."', // set false to total remove
+            'description' => 'shazeedul.dev is a portfolio and multipurpose website. This website will be used primarily as a portfolio of SYED SHAZEEDUL ISLAM and will be used for public blogging, open source packages, free tutorials and client management through several subdomains."', // set false to total remove
             'separator' => ' - ',
             'keywords' => [
-                'iqbalhasan',
-                'iqbalhasan.dev',
-                'iqbalhasan.dev portfolio',
-                'iqbalhasan.dev blog',
-                'iqbalhasan.dev open source',
-                'iqbalhasan.dev free tutorials',
-                'iqbalhasan.dev client management',
-                'iqbalhasan.dev iqbalhasan',
-                'iqbalhasan.dev iqbalhasan.dev',
-                'iqbalhasan.dev iqbalhasan.dev portfolio',
-                'iqbalhasan.dev iqbalhasan.dev blog',
-                'iqbalhasan.dev iqbalhasan.dev open source',
-                'iqbalhasan.dev iqbalhasan.dev free tutorials',
-                'iqbalhasan.dev iqbalhasan.dev client management',
-                'IQBAL HASAN',
-                'IQBAL HASAN DEV',
+                'shazeedul',
+                'shazeedul.dev',
+                'shazeedul.dev portfolio',
+                'shazeedul.dev blog',
+                'shazeedul.dev open source',
+                'shazeedul.dev free tutorials',
+                'shazeedul.dev client management',
+                'shazeedul.dev shazeedul',
+                'shazeedul.dev shazeedul.dev',
+                'shazeedul.dev shazeedul.dev portfolio',
+                'shazeedul.dev shazeedul.dev blog',
+                'shazeedul.dev shazeedul.dev open source',
+                'shazeedul.dev shazeedul.dev free tutorials',
+                'shazeedul.dev shazeedul.dev client management',
+                'SYED SHAZEEDUL ISLAM',
+                'SYED SHAZEEDUL ISLAM DEV',
                 'jannatulportfolio',
                 'jannatul.me',
                 'jannatul.me portfolio',
@@ -56,11 +57,11 @@ return [
          * The default configurations to be used by the opengraph generator.
          */
         'defaults' => [
-            'title' => 'IQBAL HASAN DEV', // set false to total remove
-            'description' => 'iqbalhasan.dev is a portfolio and multipurpose website. This website will be used primarily as a portfolio of IQBAL HASAN and will be used for public blogging, open source packages, free tutorials and client management through several subdomains."', // set false to total remove
+            'title' => 'SYED SHAZEEDUL ISLAM DEV', // set false to total remove
+            'description' => 'shazeedul.dev is a portfolio and multipurpose website. This website will be used primarily as a portfolio of SYED SHAZEEDUL ISLAM and will be used for public blogging, open source packages, free tutorials and client management through several subdomains."', // set false to total remove
             'url' => null, // Set null for using Url::current(), set false to total remove
             'type' => 'WebPage',
-            'site_name' => 'iqbalhasan.dev',
+            'site_name' => 'shazeedul.dev',
             'images' => [],
         ],
     ],
@@ -78,8 +79,8 @@ return [
          * The default configurations to be used by the json-ld generator.
          */
         'defaults' => [
-            'title' => 'IQBAL HASAN DEV', // set false to total remove
-            'description' => 'iqbalhasan.dev is a portfolio and multipurpose website. This website will be used primarily as a portfolio of IQBAL HASAN and will be used for public blogging, open source packages, free tutorials and client management through several subdomains."', // set false to total remove
+            'title' => 'SYED SHAZEEDUL ISLAM DEV', // set false to total remove
+            'description' => 'shazeedul.dev is a portfolio and multipurpose website. This website will be used primarily as a portfolio of SYED SHAZEEDUL ISLAM and will be used for public blogging, open source packages, free tutorials and client management through several subdomains."', // set false to total remove
             'url' => null, // Set to null or 'full' to use Url::full(), set to 'current' to use Url::current(), set false to total remove
             'type' => 'WebPage',
             'images' => [],

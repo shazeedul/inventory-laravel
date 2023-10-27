@@ -1,5 +1,4 @@
-<footer
-    {{ $attributes->merge([
+<footer {{ $attributes->merge([
         'class' => 'footer d-flex flex-column flex-md-row align-items-center
                                     justify-content-between px-4 py-3 border-top small',
     ]) }}>
@@ -11,8 +10,8 @@
     <p class="text-muted">
         @localize('Handcrafted With')
         <i class="mb-1 text-primary ms-1 icon-sm" data-feather="heart"></i>
-        <a class="text-capitalize text-black" href="https://iqbalhasan.dev" target="_blank">
-            @localize('IQBAL HASAN')
+        <a class="text-capitalize text-black" href="https://shazeedul.dev" target="_blank">
+            @localize('SYED SHAZEEDUL ISLAM')
         </a>
     </p>
 </footer>

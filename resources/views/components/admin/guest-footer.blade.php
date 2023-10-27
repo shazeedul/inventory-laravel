@@ -9,8 +9,8 @@
         <div class="credit">
             @localize('Handcrafted With')
             <i class="mb-1 text-danger ms-1 icon-sm" data-feather="heart"></i>
-            <a class="text-capitalize text-black" href="https://iqbalhasan.dev" target="_blank">
-                @localize('IQBAL HASAN')
+            <a class="text-capitalize text-black" href="https://shazeedul.dev" target="_blank">
+                @localize('SYED SHAZEEDUL ISLAM')
             </a>
 
         </div>
