@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://shazeedul.dev target="_blank"><img src="./resources/assets/admin-assets/img/logo.png" width="400" alt="Laravel Logo"></a>
+<a href="https://shazeedul.dev target="_blank"><img src="./resources/assets/admin-assets/images/logo.png" width="400" alt="Laravel Logo"></a>
 </p>
 
 ## About Laravel
