@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', [DashboardController::class, 'redirectToDashboard'])->name('home');
+
+Route::get('/', [DashboardController::class, 'redirectToDashboard']);
 Route::get('/home', [DashboardController::class, 'redirectToDashboard'])->name('home');
 Route::get('/admin', [DashboardController::class, 'redirectToDashboard']);
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
