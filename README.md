@@ -23,7 +23,7 @@ Before installing the this project, we need to make sure that our system has all
 To clone the app, following command:
 
 ```bash
-git clone
+git clone https://github.com/shazeedul/inventory-laravel.git
 ```
 
 ## Step 3: Go To project directory and composer install
@@ -31,7 +31,7 @@ git clone
 -   first go to the project directory
 
 ```bash
-cd project_path
+cd inventory-laravel
 ```
 
 -   Then copy the .env.example file to .env
