@@ -19,6 +19,21 @@
                     @localize('Dashboard')
                 </span>
             </x-admin.nav-link>
+            {{-- Supplier --}}
+            @if (module_active('supplier') || can('supplier_management'))
+                <x-admin.nav-title title="Supplier" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Supplier')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.supplier.index') }}">
+                        @localize('All Supplier')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             @if (can('permission_management') ||
                     can('role_read') ||
                     can('user_management') ||

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Supplier\Http\Controllers\SupplierController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,7 @@
 |
 */
 
-Route::prefix('supplier')->group(function() {
-    Route::get('/', 'SupplierController@index');
+Route::prefix('admin/supplier')->as('admin.supplier.')->group(function () {
+    Route::resource('/', SupplierController::class)->parameter('', 'supplier');
+    Route::post('{supplier}/status-update', [SupplierController::class, 'statusUpdate'])->name('status-update');
 });
