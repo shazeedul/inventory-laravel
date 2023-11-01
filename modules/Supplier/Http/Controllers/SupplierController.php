@@ -104,7 +104,7 @@ class SupplierController extends Controller
      */
     public function show(Supplier $supplier)
     {
-        return view('supplier::show', compact('supplier'));
+        //
     }
 
     /**

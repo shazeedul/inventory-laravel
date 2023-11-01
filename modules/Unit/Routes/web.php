@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Unit\Http\Controllers\UnitController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,7 @@
 |
 */
 
-Route::prefix('unit')->group(function() {
-    Route::get('/', 'UnitController@index');
+Route::prefix('admin/unit')->as('admin.unit.')->group(function () {
+    Route::resource('/', UnitController::class)->parameter('', 'unit');
+    Route::post('{unit}/status-update', [UnitController::class, 'statusUpdate'])->name('status-update');
 });

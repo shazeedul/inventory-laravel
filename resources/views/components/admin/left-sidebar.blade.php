@@ -34,6 +34,21 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Unit --}}
+            @if (module_active('unit') || can('unit_management'))
+                <x-admin.nav-title title="Unit" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Unit')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.unit.index') }}">
+                        @localize('All Unit')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             @if (can('permission_management') ||
                     can('role_read') ||
                     can('user_management') ||
