@@ -49,6 +49,21 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Category --}}
+            @if (module_active('category') || can('category_management'))
+                <x-admin.nav-title title="Category" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Category')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.category.index') }}">
+                        @localize('All Category')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             @if (can('permission_management') ||
                     can('role_read') ||
                     can('user_management') ||

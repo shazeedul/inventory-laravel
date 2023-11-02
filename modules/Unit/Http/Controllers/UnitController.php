@@ -144,7 +144,7 @@ class UnitController extends Controller
     {
         $unit->delete();
 
-        return response()->success('','(Unit) deleted successfully.', 200);
+        return response()->success('', 'Unit deleted successfully.', 200);
     }
 
     /**

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Category\Http\Controllers\CategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,7 @@
 |
 */
 
-Route::prefix('category')->group(function() {
-    Route::get('/', 'CategoryController@index');
+Route::prefix('admin/category')->as('admin.category.')->group(function () {
+    Route::resource('/', CategoryController::class)->parameter('', 'category');
+    Route::post('{category}/status-update', [CategoryController::class, 'statusUpdate'])->name('status-update');
 });
