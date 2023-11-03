@@ -2,19 +2,48 @@
 
 namespace Modules\Customer\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Customer\Entities\Customer;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\Customer\DataTables\CustomerDataTable;
 
 class CustomerController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // set the request middleware for the controller
+        $this->middleware('request:ajax', ['only' => ['destroy', 'statusUpdate']]);
+        // set the strip scripts tag middleware for the controller
+        $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        $this->middleware(['auth', 'verified', 'permission:customer_management']);
+        \cs_set('theme', [
+            'title' => 'Customer Lists',
+            'back' => \back_url(),
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Customer Lists',
+                    'link' => false,
+                ],
+            ],
+            'rprefix' => 'admin.customer',
+        ]);
+    }
+
+    /**
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(CustomerDataTable $dataTable)
     {
-        return view('customer::index');
+        return $dataTable->render('customer::index');
     }
 
     /**
@@ -23,7 +52,26 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('customer::create');
+        cs_set('theme', [
+            'title' => 'Create New Customer',
+            'description' => 'Creating New Customer.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Customer Lists',
+                    'link' => route('admin.customer.index'),
+                ],
+                [
+                    'name' => 'Create New Customer',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        return view('customer::create_edit');
     }
 
     /**
@@ -33,47 +81,68 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd(1);
+        return response()->success('', 'Customer created successfully.');
     }
 
     /**
      * Show the specified resource.
-     * @param int $id
+     * @param Customer $customer
      * @return Renderable
      */
-    public function show($id)
+    public function show(Customer $customer)
     {
-        return view('customer::show');
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
-     * @param int $id
+     * @param Customer $customer
      * @return Renderable
      */
-    public function edit($id)
+    public function edit(Customer $customer)
     {
-        return view('customer::edit');
+        \cs_set('theme', [
+            'update' => route(config('theme.rprefix') . '.update', $customer->id),
+        ]);
+
+        return view('customer::create_edit', ['item' => $customer]);
+
     }
 
     /**
      * Update the specified resource in storage.
      * @param Request $request
-     * @param int $id
+     * @param Customer $customer
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Customer $customer)
     {
-        //
+        dd(1);
+        return response()->success('', 'Customer updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
-     * @param int $id
+     * @param Customer $customer
      * @return Renderable
      */
-    public function destroy($id)
+    public function destroy(Customer $customer)
     {
-        //
+        $customer->delete();
+
+        return response()->success('', 'Customer deleted successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function statusUpdate(Customer $customer, Request $request)
+    {
+        $customer->update(['status' => $request->status]);
+
+        return \response()->success($customer, 'Customer Status Updated Successfully.', 200);
     }
 }

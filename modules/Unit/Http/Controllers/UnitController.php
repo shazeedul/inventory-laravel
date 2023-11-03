@@ -5,6 +5,7 @@ namespace Modules\Unit\Http\Controllers;
 use Illuminate\Http\Request;
 use Modules\Unit\Entities\Unit;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Session;
 use Modules\Unit\DataTables\UnitDataTable;
 use Illuminate\Contracts\Support\Renderable;
 
@@ -91,7 +92,7 @@ class UnitController extends Controller
 
         Unit::create($data);
 
-        return redirect()->route('admin.unit.index')->with('success', 'Unit created successfully.');
+        return response()->success('', 'Unit created successfully.');
     }
 
     /**
@@ -127,12 +128,12 @@ class UnitController extends Controller
     public function update(Request $request, Unit $unit)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:units,name,' . $unit],
+            'name' => ['required', 'string', 'max:255', 'unique:units,name,' . $unit->id],
         ]);
 
         $unit->update($data);
 
-        return redirect()->route('admin.unit.index')->with('success', 'Unit updated successfully.');
+        return response()->success('', 'Unit updated successfully.');
     }
 
     /**

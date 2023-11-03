@@ -51,7 +51,7 @@ class UnitDataTable extends DataTable
             ->minifiedAjax()
             ->responsive(true)
             ->dom("<'row mb-3'<'col-md-4'l><'col-md-4 text-center'B><'col-md-4'f>>rt<'bottom'<'row'<'col-md-6'i><'col-md-6'p>>><'clear'>")
-            ->orderBy(4)
+            ->orderBy(2)
             ->buttons([
                 Button::make('reset')->className('btn btn-primary box-shadow--4dp btn-sm-menu'),
                 Button::make('reload')->className('btn btn-primary box-shadow--4dp btn-sm-menu'),

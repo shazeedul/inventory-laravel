@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Customer\Http\Controllers\CustomerController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,7 @@
 |
 */
 
-Route::prefix('customer')->group(function() {
-    Route::get('/', 'CustomerController@index');
+Route::prefix('admin/customer')->as('admin.customer.')->group(function () {
+    Route::resource('/', CustomerController::class)->parameter('', 'customer');
+    Route::post('{customer}/status-update', [CustomerController::class, 'statusUpdate'])->name('status-update');
 });

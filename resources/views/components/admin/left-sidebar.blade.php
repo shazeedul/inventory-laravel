@@ -34,6 +34,21 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Customer --}}
+            @if (module_active('customer') || can('customer_management'))
+                <x-admin.nav-title title="Customer" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Customer')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.customer.index') }}">
+                        @localize('All Customer')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             {{-- Unit --}}
             @if (module_active('unit') || can('unit_management'))
                 <x-admin.nav-title title="Unit" />

@@ -36,6 +36,7 @@ class CategoryController extends Controller
             'rprefix' => 'admin.category',
         ]);
     }
+    
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -73,6 +74,7 @@ class CategoryController extends Controller
                 ],
             ],
         ]);
+        
         return view('category::create_edit');
     }
 
@@ -89,7 +91,7 @@ class CategoryController extends Controller
 
         Category::create($data);
 
-        return redirect()->route('admin.category.index')->with('success', 'Category created successfully.');
+        return response()->success('', 'Category created successfully.');
     }
 
     /**
@@ -99,7 +101,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return view('category::show');
+        //
     }
 
     /**
@@ -125,12 +127,12 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:categories,name,' . $category],
+            'name' => ['required', 'string', 'max:255', 'unique:categories,name,' . $category->id],
         ]);
 
         $category->update($data);
 
-        return redirect()->route('admin.category.index')->with('success', 'Category updated successfully.');
+        return response()->success('', 'Category updated successfully.');
     }
 
     /**
