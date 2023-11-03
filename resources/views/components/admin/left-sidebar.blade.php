@@ -79,6 +79,21 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Product --}}
+            @if (module_active('product') || can('product_management'))
+                <x-admin.nav-title title="Product" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Product')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.product.index') }}">
+                        @localize('All Product')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             @if (can('permission_management') ||
                     can('role_read') ||
                     can('user_management') ||

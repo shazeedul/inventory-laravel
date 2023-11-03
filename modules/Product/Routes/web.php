@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Product\Http\Controllers\ProductController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,7 @@
 |
 */
 
-Route::prefix('product')->group(function() {
-    Route::get('/', 'ProductController@index');
+Route::prefix('admin/product')->as('admin.product.')->group(function () {
+    Route::resource('/', ProductController::class)->parameter('', 'product');
+    Route::post('{product}/status-update', [ProductController::class, 'statusUpdate'])->name('status-update');
 });

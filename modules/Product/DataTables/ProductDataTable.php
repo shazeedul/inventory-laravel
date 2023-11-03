@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\Customer\DataTables;
+namespace Modules\Product\DataTables;
 
+use Modules\Product\Entities\Product;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Modules\Customer\Entities\Customer;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 
-class CustomerDataTable extends DataTable
+class ProductDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -21,9 +21,14 @@ class CustomerDataTable extends DataTable
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->editColumn('image', function ($query) {
-                return '<img src="' . $query->profile_photo_url . '" alt=" " class="rounded-circle img-fluid border-success"
-                     border: 3px solid;">';
+            ->editColumn('supplier_id', function ($query) {
+                return $query->supplier->name;
+            })
+            ->editColumn('unit_id', function ($query) {
+                return $query->unit->name;
+            })
+            ->editColumn('category_id', function ($query) {
+                return $query->category->name;
             })
             ->editColumn('status', function ($query) {
                 return $this->statusBtn($query);
@@ -31,7 +36,7 @@ class CustomerDataTable extends DataTable
             ->addColumn('action', function ($query) {
                 return $query->actionBtn(['show' => false, 'edit' => true, 'delete' => true]);
             })
-            ->rawColumns(['image', 'status', 'action'])
+            ->rawColumns(['status', 'action'])
             ->setRowId('id')
             ->addIndexColumn();
     }
@@ -39,7 +44,7 @@ class CustomerDataTable extends DataTable
     /**
      * Get query source of dataTable.
      */
-    public function query(Customer $model): QueryBuilder
+    public function query(Product $model): QueryBuilder
     {
         return $model->newQuery();
     }
@@ -50,7 +55,7 @@ class CustomerDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('customer-table')
+            ->setTableId('product-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->responsive(true)
@@ -80,20 +85,20 @@ class CustomerDataTable extends DataTable
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
-            Column::make('image')
-                ->title(@localize('Image'))
-                ->addClass('text-center')
-                ->width(100)
-                ->searchable(false)
-                ->orderable(false),
-            Column::make('email')
-                ->title(@localize('Email'))
+            Column::make('supplier_id')
+                ->title(@localize('Supplier'))
                 ->addClass('text-center')
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
-            Column::make('address')
-                ->title(@localize('Address'))
+            Column::make('unit_id')
+                ->title(@localize('Unit'))
+                ->addClass('text-center')
+                ->width(100)
+                ->searchable(true)
+                ->orderable(false),
+            Column::make('category_id')
+                ->title(@localize('Category'))
                 ->addClass('text-center')
                 ->width(100)
                 ->searchable(true)
@@ -120,20 +125,20 @@ class CustomerDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Customer' . date('YmdHis');
+        return 'Product_' . date('YmdHis');
     }
 
     /**
      * Status Button
      *
-     * @param  Customer  $customer
+     * @param  Product  $product
      */
-    private function statusBtn($customer): string
+    private function statusBtn($product): string
     {
-        $status = '<select class="form-control" name="status" id="status_id_' . $customer->id . '" ';
-        $status .= 'onchange="userStatusUpdate(\'' . route(config('theme.rprefix') . '.status-update', $customer->id) . '\',' . $customer->id . ',\'' . $customer->status . '\')">';
-        foreach (Customer::statusList() as $key => $value) {
-            $status .= "<option value='$key' " . selected($key, $customer->status) . ">$value</option>";
+        $status = '<select class="form-control" name="status" id="status_id_' . $product->id . '" ';
+        $status .= 'onchange="userStatusUpdate(\'' . route(config('theme.rprefix') . '.status-update', $product->id) . '\',' . $product->id . ',\'' . $product->status . '\')">';
+        foreach (Product::statusList() as $key => $value) {
+            $status .= "<option value='$key' " . selected($key, $product->status) . ">$value</option>";
         }
         $status .= '</select>';
 

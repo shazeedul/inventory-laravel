@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Customer\Entities\Customer;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Facades\Storage;
 use Modules\Customer\DataTables\CustomerDataTable;
 
 class CustomerController extends Controller
@@ -81,7 +82,20 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        dd(1);
+        $data = $request->validate([
+            'name' => 'required|string|max:191',
+            'email' => 'nullable|email|unique:customers,email',
+            'phone' => 'nullable|numeric|unique:customers,phone',
+            'address' => 'nullable|string|max:191',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $data['profile_photo_path'] = $request->avatar->store('customer');
+        }
+
+        Customer::create($data);
+
         return response()->success('', 'Customer created successfully.');
     }
 
@@ -107,7 +121,6 @@ class CustomerController extends Controller
         ]);
 
         return view('customer::create_edit', ['item' => $customer]);
-
     }
 
     /**
@@ -118,7 +131,21 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        dd(1);
+        $data = $request->validate([
+            'name' => 'required|string|max:191',
+            'email' => 'nullable|email|unique:customers,email,' . $customer->id,
+            'phone' => 'nullable|numeric|unique:customers,phone,' . $customer->id,
+            'address' => 'nullable|string|max:191',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $data['profile_photo_path'] = $request->avatar->store('customer');
+            $customer->profile_photo_path ? Storage::delete($customer->profile_photo_path) : null;
+        }
+
+        $customer->update($data);
+
         return response()->success('', 'Customer updated successfully.');
     }
 
@@ -129,6 +156,8 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
+        $customer->profile_photo_path ? Storage::delete($customer->profile_photo_path) : null;
+
         $customer->delete();
 
         return response()->success('', 'Customer deleted successfully.');

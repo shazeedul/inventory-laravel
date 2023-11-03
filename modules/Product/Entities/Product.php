@@ -1,37 +1,31 @@
 <?php
 
-namespace Modules\Customer\Entities;
+namespace Modules\Product\Entities;
 
+use App\Models\User;
+use Modules\Unit\Entities\Unit;
 use App\Traits\DataTableActionBtn;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Auth\Traits\HasProfilePhoto;
+use Modules\Category\Entities\Category;
+use Modules\Supplier\Entities\Supplier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Customer extends Model
+class Product extends Model
 {
-    use HasFactory, DataTableActionBtn, HasProfilePhoto;
+    use HasFactory, DataTableActionBtn;
 
     protected $fillable = [
+        'supplier_id',
+        'unit_id',
+        'category_id',
         'name',
-        'email',
-        'mobile_no',
-        'address',
-        'profile_photo_path',
+        'quantity',
         'status',
     ];
 
     protected $casts = [
         'status' => 'boolean',
-    ];
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = [
-        'profile_photo_url',
     ];
 
     protected static function boot()
@@ -56,6 +50,21 @@ class Customer extends Model
     public function editor()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

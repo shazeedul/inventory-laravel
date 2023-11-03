@@ -66,6 +66,9 @@ class RolePermissionTableSeeder extends Seeder
             'Category' => [
                 'category_management',
             ],
+            'Product' => [
+                'product_management',
+            ],
         ];
         $roles = [
             'User' => [],

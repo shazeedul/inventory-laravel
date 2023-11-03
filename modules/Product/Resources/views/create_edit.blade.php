@@ -1,6 +1,6 @@
 <form action="{{ config('theme.update') ?? route(config('theme.rprefix') . '.store') }}" method="POST"
     class="needs-validation modal-content" novalidate="novalidate" enctype="multipart/form-data"
-    onsubmit="submitFormAxios(event)">
+    onsuumit="suumitFormAxios(event)">
     @csrf
     @if (config('theme.update'))
         @method('PUT')
@@ -10,7 +10,7 @@
     </div>
     <div class="modal-body">
         <fieldset class="mb-5 py-3 px-4 ">
-            <legend>@localize('Customer Info'):</legend>
+            <legend>@localize('Product Info'):</legend>
             <div class=" row">
                 <div class="col-md-6">
                     <div class="form-group pt-1 pb-1">
@@ -28,45 +28,51 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group pt-1 pb-1">
-                        <label for="email" class="font-black">
-                            @localize('Email')
+                        <label for="supplier_id" class="font-black">
+                            @localize('Supplier')
+                            <span class="text-danger">*</span>
                         </label>
-                        <input type="email" class="form-control" name="email" id="email"
-                            placeholder="@localize('Enter Email')" value="{{ isset($item) ? $item->email : old('email') }}"
-                            required>
-                        @error('email')
+                        <select name="supplier_id" id="supplier_id" class="form-control" style="width: 100%">
+                            @foreach ($suppliers as $key => $s)
+                                <option @selected(($item->supplier_id ?? old('supplier_id')) == $s->id) value="{{ $s->id }}">{{ $s->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('supplier_id')
                             <p class="text-danger pt-2">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group pt-1 pb-1">
-                        <label for="mobile_no" class="font-black">@localize('Mobile No')</label>
-                        <input type="text" class="form-control arrow-hidden" name="mobile_no" id="mobile_no"
-                            placeholder="@localize('Enter Mobile No')"
-                            value="{{ isset($item) ? $item->mobile_no : old('mobile_no') }}">
-                        @error('mobile_no')
+                        <label for="category_id" class="font-black">
+                            @localize('Category')
+                            <span class="text-danger">*</span>
+                        </label>
+                        <select name="category_id" id="category_id" class="form-control" style="width: 100%">
+                            @foreach ($categories as $key => $c)
+                                <option @selected(($item->category_id ?? old('category_id')) == $c->id) value="{{ $c->id }}">{{ $c->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
                             <p class="text-danger pt-2">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
-                <div class="col-md-6 py-1">
+                <div class="col-md-6">
                     <div class="form-group pt-1 pb-1">
-                        <label for="address" class="font-black">@localize('Address')</label>
-                        <textarea name="address" id="address" class="form-control" placeholder="@localize('Enter your address')" style="min-height: 50px;">{{ isset($item) ? $item->address : old('address') }}</textarea>
-                        @error('address')
-                            <p class="text-danger pt-2">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-md-6 pt-1 pb-1">
-                    <div class="form-group">
-                        <label for="avatar" class="font-black">@localize('Avatar')</label>
-                        <input type="file" class="form-control" name="avatar" id="avatar"
-                            onchange="get_img_url(this, '#avatar_image');" placeholder="@localize('Select avatar image')">
-                        <img id="avatar_image" src="{{ isset($item) ? $item->profile_photo_url : '' }}" width="120px"
-                            class="mt-1">
-                        @error('avatar')
+                        <label for="unit_id" class="font-black">
+                            @localize('Unit')
+                            <span class="text-danger">*</span>
+                        </label>
+                        <select name="unit_id" id="unit_id" class="form-control" style="width: 100%">
+                            @foreach ($units as $key => $u)
+                                <option @selected(($item->unit_id ?? old('unit_id')) == $u->id) value="{{ $u->id }}">{{ $u->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('unit_id')
                             <p class="text-danger pt-2">{{ $message }}</p>
                         @enderror
                     </div>
