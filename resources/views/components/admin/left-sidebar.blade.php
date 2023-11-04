@@ -94,6 +94,21 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Purchase --}}
+            @if (module_active('purchase') || can('purchase_management'))
+                <x-admin.nav-title title="Purchase" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Purchase')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.purchase.index') }}">
+                        @localize('All Purchase')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             @if (can('permission_management') ||
                     can('role_read') ||
                     can('user_management') ||

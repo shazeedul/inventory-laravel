@@ -1,9 +1,14 @@
-@extends('purchase::layouts.master')
+<x-app-layout>
+    <x-card>
+        <x-slot name="actions">
+            <a href="javascript:void(0);" class="btn btn-primary btn-sm"
+                onclick="axiosModal('{{ route(config('theme.rprefix') . '.create') }}')"><i
+                    class="fa fa-plus-circle"></i>&nbsp;@localize('Add New Purchase')</a>
+        </x-slot>
 
-@section('content')
-    <h1>Hello World</h1>
-
-    <p>
-        This view is loaded from module: {!! config('purchase.name') !!}
-    </p>
-@endsection
+        <div>
+            <x-data-table :dataTable="$dataTable" />
+        </div>
+    </x-card>
+    <div id="page-axios-data" data-table-id="#product-table"></div>
+</x-app-layout>

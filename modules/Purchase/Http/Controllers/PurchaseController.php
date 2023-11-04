@@ -5,16 +5,44 @@ namespace Modules\Purchase\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Purchase\DataTables\PurchaseDataTable;
 
 class PurchaseController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // set the request middleware for the controller
+        $this->middleware('request:ajax', ['only' => ['destroy', 'statusUpdate']]);
+        // set the strip scripts tag middleware for the controller
+        $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        $this->middleware(['auth', 'verified', 'permission:purchase_management']);
+        \cs_set('theme', [
+            'title' => 'Purchase Lists',
+            'back' => \back_url(),
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Purchase Lists',
+                    'link' => false,
+                ],
+            ],
+            'rprefix' => 'admin.purchase',
+        ]);
+    }
+
+    /**
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(PurchaseDataTable $dataTable)
     {
-        return view('purchase::index');
+        return $dataTable->render('purchase::index');
     }
 
     /**

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Purchase\Http\Controllers\PurchaseController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,7 @@
 |
 */
 
-Route::prefix('purchase')->group(function() {
-    Route::get('/', 'PurchaseController@index');
+Route::prefix('admin/purchase')->as('admin.purchase.')->group(function () {
+    Route::resource('/', PurchaseController::class)->parameter('', 'purchase');
+    Route::post('{purchase}/status-update', [PurchaseController::class, 'statusUpdate'])->name('status-update');
 });
