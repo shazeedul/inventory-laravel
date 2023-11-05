@@ -21,9 +21,6 @@ class ProductDataTable extends DataTable
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->editColumn('supplier_id', function ($query) {
-                return $query->supplier->name;
-            })
             ->editColumn('unit_id', function ($query) {
                 return $query->unit->name;
             })
@@ -81,12 +78,6 @@ class ProductDataTable extends DataTable
                 ->orderable(false),
             Column::make('name')
                 ->title(@localize('Name'))
-                ->addClass('text-center')
-                ->width(100)
-                ->searchable(true)
-                ->orderable(false),
-            Column::make('supplier_id')
-                ->title(@localize('Supplier'))
                 ->addClass('text-center')
                 ->width(100)
                 ->searchable(true)

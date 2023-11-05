@@ -11,7 +11,6 @@
     </div>
     <div class="sidebar-body">
         <ul id="left-side-nav" class="nav ">
-
             <x-admin.nav-title title="Main" />
             <x-admin.nav-link href="{{ route('admin.dashboard') }}">
                 <i class="link-icon" data-feather="box"></i>
@@ -20,7 +19,7 @@
                 </span>
             </x-admin.nav-link>
             {{-- Supplier --}}
-            @if (module_active('supplier') || can('supplier_management'))
+            @if (module_active('supplier') && can('supplier_management'))
                 <x-admin.nav-title title="Supplier" />
                 <x-admin.multi-nav>
                     @slot('title')
@@ -35,7 +34,7 @@
                 </x-admin.multi-nav>
             @endif
             {{-- Customer --}}
-            @if (module_active('customer') || can('customer_management'))
+            @if (module_active('customer') && can('customer_management'))
                 <x-admin.nav-title title="Customer" />
                 <x-admin.multi-nav>
                     @slot('title')
@@ -50,7 +49,7 @@
                 </x-admin.multi-nav>
             @endif
             {{-- Unit --}}
-            @if (module_active('unit') || can('unit_management'))
+            @if (module_active('unit') && can('unit_management'))
                 <x-admin.nav-title title="Unit" />
                 <x-admin.multi-nav>
                     @slot('title')
@@ -65,7 +64,7 @@
                 </x-admin.multi-nav>
             @endif
             {{-- Category --}}
-            @if (module_active('category') || can('category_management'))
+            @if (module_active('category') && can('category_management'))
                 <x-admin.nav-title title="Category" />
                 <x-admin.multi-nav>
                     @slot('title')
@@ -80,7 +79,7 @@
                 </x-admin.multi-nav>
             @endif
             {{-- Product --}}
-            @if (module_active('product') || can('product_management'))
+            @if (module_active('product') && can('product_management'))
                 <x-admin.nav-title title="Product" />
                 <x-admin.multi-nav>
                     @slot('title')
@@ -95,7 +94,7 @@
                 </x-admin.multi-nav>
             @endif
             {{-- Purchase --}}
-            @if (module_active('purchase') || can('purchase_management'))
+            @if (module_active('purchase') && can('purchase_management'))
                 <x-admin.nav-title title="Purchase" />
                 <x-admin.multi-nav>
                     @slot('title')
@@ -106,6 +105,9 @@
                     @endslot
                     <x-admin.nav-link href="{{ route('admin.purchase.index') }}">
                         @localize('All Purchase')
+                    </x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.purchase.create') }}">
+                        @localize('New Purchase')
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif

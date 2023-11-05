@@ -28,23 +28,6 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group pt-1 pb-1">
-                        <label for="supplier_id" class="font-black">
-                            @localize('Supplier')
-                            <span class="text-danger">*</span>
-                        </label>
-                        <select name="supplier_id" id="supplier_id" class="form-control" style="width: 100%">
-                            @foreach ($suppliers as $key => $s)
-                                <option @selected(($item->supplier_id ?? old('supplier_id')) == $s->id) value="{{ $s->id }}">{{ $s->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('supplier_id')
-                            <p class="text-danger pt-2">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group pt-1 pb-1">
                         <label for="category_id" class="font-black">
                             @localize('Category')
                             <span class="text-danger">*</span>

@@ -2,9 +2,13 @@
 
 namespace Modules\Purchase\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Modules\Unit\Entities\Unit;
 use Illuminate\Routing\Controller;
+use Modules\Product\Entities\Product;
+use Modules\Category\Entities\Category;
+use Modules\Supplier\Entities\Supplier;
+use Illuminate\Contracts\Support\Renderable;
 use Modules\Purchase\DataTables\PurchaseDataTable;
 
 class PurchaseController extends Controller
@@ -15,9 +19,9 @@ class PurchaseController extends Controller
     public function __construct()
     {
         // set the request middleware for the controller
-        $this->middleware('request:ajax', ['only' => ['destroy', 'statusUpdate']]);
+        // $this->middleware('request:ajax', ['only' => ['destroy', 'statusUpdate']]);
         // set the strip scripts tag middleware for the controller
-        $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        // $this->middleware('strip_scripts_tag')->only(['store', 'update']);
         $this->middleware(['auth', 'verified', 'permission:purchase_management']);
         \cs_set('theme', [
             'title' => 'Purchase Lists',
@@ -51,7 +55,10 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        return view('purchase::create');
+        $suppliers = Supplier::where('status', 1)->get();
+        $products = Product::with('category', 'unit')->where('status', 1)->get();
+
+        return view('purchase::create', compact('suppliers', 'products'));
     }
 
     /**

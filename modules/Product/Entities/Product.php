@@ -16,7 +16,6 @@ class Product extends Model
     use HasFactory, DataTableActionBtn;
 
     protected $fillable = [
-        'supplier_id',
         'unit_id',
         'category_id',
         'name',
@@ -50,11 +49,6 @@ class Product extends Model
     public function editor()
     {
         return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
     }
 
     public function unit()

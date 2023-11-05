@@ -49,7 +49,7 @@
                                     </div>
                                 @endif
                                 <div class="">
-                                    {{ $tile ?? ''}}
+                                    {{ $tile ?? '' }}
                                 </div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
     <!-- END layout-wrapper -->
 
     @stack('modal')
-    <x-modal id="delete-modal" title="@localize('Delete Modal')">
+    <x-modal id="delete-modal" title="{{ @localize('Delete Modal') }}">
         <form action="javascript:void(0);" class="needs-validation modal-content" id="delete-modal-form">
             <div class="modal-body">
                 <p>@localize("Are you sure you want to delete this item? You won't be able to revert this item back!")

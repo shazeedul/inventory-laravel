@@ -3,26 +3,27 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{{__("Add")}} {{__("Language")}}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{ __('Add') }} {{ __('Language') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route(config('theme.rprefix').'.store') }}" method="POST">
+            <form action="{{ route(config('theme.rprefix') . '.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12 text-start">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>{{__('Short')}} {{__('Name')}}<span class="text-danger">*</span></label>
+                                    <label>{{ __('Short') }} {{ __('Name') }}<span
+                                            class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-md-1">
                                     :
                                 </div>
                                 <div class="col-md-7 ">
                                     <input type="text" name="title" class="form-control"
-                                        placeholder="{{__('Language')}} {{__('Short')}} Code(Ex: en)">
+                                        placeholder="{{ __('Language') }} {{ __('Short') }} Code(Ex: en)">
                                     @if ($errors->has('title'))
-                                    <div class="error text-danger">{{ $errors->first('title') }}</div>
+                                        <div class="error text-danger">{{ $errors->first('title') }}</div>
                                     @endif
                                 </div>
                             </div>
@@ -30,16 +31,17 @@
                         <div class="col-md-12 text-start mt-4">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label>{{__('Language')}} {{__('Name')}}<span class="text-danger">*</span></label>
+                                    <label>{{ __('Language') }} {{ __('Name') }}<span
+                                            class="text-danger">*</span></label>
                                 </div>
                                 <div class="col-md-1">
                                     :
                                 </div>
                                 <div class="col-md-7 ">
                                     <input type="text" name="lang_name" class="form-control"
-                                        placeholder="{{__('Language')}} {{__('Name')}}(Ex: English)">
+                                        placeholder="{{ __('Language') }} {{ __('Name') }}(Ex: English)">
                                     @if ($errors->has('lang_name'))
-                                    <div class="error text-danger">{{ $errors->first('lang_name') }}</div>
+                                        <div class="error text-danger">{{ $errors->first('lang_name') }}</div>
                                     @endif
                                 </div>
                             </div>
@@ -47,7 +49,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">{{__('Submit')}}</button>
+                    <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
                 </div>
             </form>
         </div>

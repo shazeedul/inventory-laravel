@@ -20,8 +20,6 @@ class RoleController extends Controller
         $this->middleware(['auth', 'verified', 'permission:role_management']);
         $this->middleware('request:ajax', ['only' => ['destroy']]);
         $this->middleware('strip_scripts_tag')->only(['store', 'update']);
-        // set the request middleware for the controller
-        $this->middleware('request:ajax', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
         \cs_set('theme', [
             'title' => 'Role Lists',
             'description' => 'Display a listing of roles in Database.',

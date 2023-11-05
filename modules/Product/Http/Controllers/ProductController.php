@@ -78,11 +78,10 @@ class ProductController extends Controller
             ],
         ]);
 
-        $suppliers = Supplier::where('status', true)->get();
         $units = Unit::where('status', true)->get();
         $categories = Category::where('status', true)->get();
 
-        return view('product::create_edit', compact('suppliers', 'units', 'categories'));
+        return view('product::create_edit', compact('units', 'categories'));
     }
 
     /**
@@ -93,7 +92,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'supplier_id' => 'required|integer',
             'unit_id' => 'required|integer',
             'category_id' => 'required|integer',
             'name' => 'required|string|max:191',
@@ -125,11 +123,10 @@ class ProductController extends Controller
             'update' => route(config('theme.rprefix') . '.update', $product->id),
         ]);
 
-        $suppliers = Supplier::where('status', true)->get();
         $units = Unit::where('status', true)->get();
         $categories = Category::where('status', true)->get();
 
-        return view('product::create_edit', ['item' => $product, 'suppliers' => $suppliers, 'units' => $units, 'categories' => $categories]);
+        return view('product::create_edit', ['item' => $product, 'units' => $units, 'categories' => $categories]);
     }
 
     /**
@@ -141,7 +138,6 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $data = $request->validate([
-            'supplier_id' => 'required|integer',
             'unit_id' => 'required|integer',
             'category_id' => 'required|integer',
             'name' => 'required|string|max:191',

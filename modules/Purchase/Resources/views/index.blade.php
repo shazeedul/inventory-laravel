@@ -1,8 +1,7 @@
 <x-app-layout>
     <x-card>
         <x-slot name="actions">
-            <a href="javascript:void(0);" class="btn btn-primary btn-sm"
-                onclick="axiosModal('{{ route(config('theme.rprefix') . '.create') }}')"><i
+            <a href="{{ route(config('theme.rprefix') . '.create') }}" class="btn btn-primary btn-sm"><i
                     class="fa fa-plus-circle"></i>&nbsp;@localize('Add New Purchase')</a>
         </x-slot>
 

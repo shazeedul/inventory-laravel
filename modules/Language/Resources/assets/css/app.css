@@ -7,7 +7,9 @@
     border-radius: 0.25rem;
 }
 
-#local-builder-table td:focus-visible, #local-builder-table td>div:focus-visible, .editable-value:focus-visible {
+#local-builder-table td:focus-visible,
+#local-builder-table td>div:focus-visible,
+.editable-value:focus-visible {
     display: block;
     width: 100%;
     padding: 0.469rem 0.8rem;
@@ -22,4 +24,12 @@
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     outline: 0;
+}
+
+#local-builder-table {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-x: auto;
+    width: auto !important;
 }
