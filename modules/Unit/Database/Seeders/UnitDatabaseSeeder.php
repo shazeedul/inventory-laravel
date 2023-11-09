@@ -3,6 +3,7 @@
 namespace Modules\Unit\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Unit\Entities\Unit;
 use Illuminate\Database\Eloquent\Model;
 
 class UnitDatabaseSeeder extends Seeder
@@ -16,6 +17,26 @@ class UnitDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        // $this->call("OthersTableSeeder");
+        $units = [
+            [
+                'name' => 'Unit 1',
+                'status' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'name' => 'Unit 2',
+                'status' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'name' => 'Unit 3',
+                'status' => 1,
+                'created_by' => 1,
+            ],
+        ];
+
+        foreach ($units as $unit) {
+            Unit::create($unit);
+        }
     }
 }

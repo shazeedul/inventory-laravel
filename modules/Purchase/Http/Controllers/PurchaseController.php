@@ -55,6 +55,25 @@ class PurchaseController extends Controller
      */
     public function create()
     {
+        cs_set('theme', [
+            'title' => 'Create New Purchase',
+            'description' => 'Creating New Purchase.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Purchase Lists',
+                    'link' => route('admin.purchase.index'),
+                ],
+                [
+                    'name' => 'Create New Purchase',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
         $suppliers = Supplier::where('status', 1)->get();
         $products = Product::with('category', 'unit')->where('status', 1)->get();
 
