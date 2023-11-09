@@ -75,7 +75,10 @@ class PurchaseController extends Controller
         ]);
 
         $suppliers = Supplier::where('status', 1)->get();
-        $products = Product::with('category', 'unit')->where('status', 1)->get();
+        $products = Product::with(['category:id,name', 'unit:id,name'])
+            ->where('status', 1)
+            ->get(['id', 'name', 'quantity', 'category_id', 'unit_id']);
+
 
         return view('purchase::create', compact('suppliers', 'products'));
     }
