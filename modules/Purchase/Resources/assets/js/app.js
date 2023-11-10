@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
         html += `<td><input type="number" name="quantity[]" class="form-control" id="quantity_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})"></td>`;
         html += `<td><input type="number" name="unit_price[]" class="form-control" id="unit_price_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})"></td>`;
         html += `<td><input type="text" name="description[]" class="form-control" id="description_${count}"></td>`;
-        html += `<td><input type="number" name="total_price[]" class="form-control" id="total_price_${count}" readonly></td>`;
+        html += `<td><input type="number" name="total_price[]" class="form-control" id="total_${count}" readonly></td>`;
         html += `<td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-trash"></i></button></td>`;
         html += `</tr>`;
         $('#purchaseItem').append(html);
@@ -52,5 +52,17 @@ function calculateTotalPrice(count) {
     var quantity = $(`#quantity_${count}`).val();
     var unit_price = $(`#unit_price_${count}`).val();
     var total_price = quantity * unit_price;
-    $(`#total_price_${count}`).val(total_price);
+    $(`#total_${count}`).val(total_price);
+}
+
+// get purchase total price
+function getPurchaseTotalPrice() {
+    var total = 0;
+    $('input[name^="total"]').each(function() {
+        var value = parseFloat($(this).val());
+        if (!isNaN(value)) {
+            total += value;
+        }
+    });
+    $('#grandTotal').val(total);
 }

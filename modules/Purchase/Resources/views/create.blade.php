@@ -46,10 +46,12 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="number" name="quantity[]" id="quantity_1" class="form-control" onchange="calculateTotalPrice(1)" onkeyup="calculateTotalPrice(1)">
+                                <input type="number" name="quantity[]" id="quantity_1" class="form-control"
+                                    onchange="calculateTotalPrice(1)" onkeyup="calculateTotalPrice(1)">
                             </td>
                             <td>
-                                <input type="number" name="unit_price[]" id="unit_price_1" class="form-control" onchange="calculateTotalPrice(1)" onkeyup="calculateTotalPrice(1)">
+                                <input type="number" name="unit_price[]" id="unit_price_1" class="form-control"
+                                    onchange="calculateTotalPrice(1)" onkeyup="calculateTotalPrice(1)">
                             </td>
                             <td>
                                 <input type="text" name="description[]" id="description_1" class="form-control">
@@ -75,6 +77,18 @@
                 </table>
             </div>
         </div>
+    </div>
+    <div class="footer m-3">
+        <ul class="nav align-items-end justify-content-end text-end">
+            <li class="nav-item pe-2">
+                <b>@localize('Total Amount')</b>
+                <input type="number" id="grandTotal" class="text-end form-control grandTotal"
+                    name="total_price" value="0.00" readonly />
+            </li>
+            <li class="nav-item pe-2">
+                <button class="btn btn-secondary" type="submit">@localize('Submit')</button>
+            </li>
+        </ul>
     </div>
     @push('lib-styles')
         <link rel="stylesheet" href="{{ nanopkg_asset('vendor/select2/select2.min.css') }}" type="text/css" />
