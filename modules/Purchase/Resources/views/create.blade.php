@@ -38,7 +38,7 @@
                         <input type="hidden" id="rowCount" value="1">
                         <tr>
                             <td>
-                                <select name="product_id[]" id="product_id_1" class="form-control product_id">
+                                <select name="product_id[]" id="product_id_1" class="form-control product_id" required>
                                     <option value="">@localize('Select Product')</option>
                                     @foreach ($products as $key => $p)
                                         <option value="{{ $p->id }}">{{ $p->name }}</option>
@@ -46,18 +46,21 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="number" name="quantity[]" id="quantity_1" class="form-control"
-                                    onchange="calculateTotalPrice(1)" onkeyup="calculateTotalPrice(1)">
+                                <input type="number" name="quantity[]" id="quantity_1"
+                                    class="form-control form-number-input" onchange="calculateTotalPrice(1)"
+                                    onkeyup="calculateTotalPrice(1)" value="0.00">
                             </td>
                             <td>
-                                <input type="number" name="unit_price[]" id="unit_price_1" class="form-control"
-                                    onchange="calculateTotalPrice(1)" onkeyup="calculateTotalPrice(1)">
+                                <input type="number" name="unit_price[]" id="unit_price_1"
+                                    class="form-control form-number-input" onchange="calculateTotalPrice(1)"
+                                    onkeyup="calculateTotalPrice(1)" value="0.00">
                             </td>
                             <td>
                                 <input type="text" name="description[]" id="description_1" class="form-control">
                             </td>
                             <td>
-                                <input type="number" name="total[]" id="total_1" class="form-control" readonly>
+                                <input type="number" name="total[]" id="total_1"
+                                    class="form-control" value="0.00" readonly>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm removeRow"><i
@@ -82,8 +85,8 @@
         <ul class="nav align-items-end justify-content-end text-end">
             <li class="nav-item pe-2">
                 <b>@localize('Total Amount')</b>
-                <input type="number" id="grandTotal" class="text-end form-control grandTotal"
-                    name="total_price" value="0.00" readonly />
+                <input type="number" id="grandTotal" class="text-end form-control grandTotal" name="total_price"
+                    value="0.00" readonly />
             </li>
             <li class="nav-item pe-2">
                 <button class="btn btn-secondary" type="submit">@localize('Submit')</button>

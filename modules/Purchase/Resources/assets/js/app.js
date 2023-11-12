@@ -13,10 +13,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var html = "";
         html += "<tr>";
         html += `<td><select name="product_id[]" class="form-control product_id" id="product_id_${count}"></select></td>`;
-        html += `<td><input type="number" name="quantity[]" class="form-control" id="quantity_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})"></td>`;
-        html += `<td><input type="number" name="unit_price[]" class="form-control" id="unit_price_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})"></td>`;
+        html += `<td><input type="number" name="quantity[]" class="form-control form-number-input" id="quantity_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})" value="0.00"></td>`;
+        html += `<td><input type="number" name="unit_price[]" class="form-control form-number-input" id="unit_price_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})" value="0.00"></td>`;
         html += `<td><input type="text" name="description[]" class="form-control" id="description_${count}"></td>`;
-        html += `<td><input type="number" name="total_price[]" class="form-control" id="total_${count}" readonly></td>`;
+        html += `<td><input type="number" name="total[]" class="form-control" id="total_${count}" readonly value="0.00"></td>`;
         html += `<td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-trash"></i></button></td>`;
         html += `</tr>`;
         $("#purchaseItem").append(html);

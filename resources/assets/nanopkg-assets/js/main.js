@@ -8,6 +8,26 @@ $(document).ready(function () {
     // $(".needs-validation").validate();
     axiosModelInit();
     $(".needs-validation").valid();
+
+    $(document).on(
+        "click focus",
+        ".form-number-input:not(.focussed)",
+        function () {
+            var $inp = $(this),
+                formNumberInpOldVal = $inp.val();
+
+            $inp.select()
+                .addClass("focussed")
+                .unbind("blur.numberInputTriggerReset");
+
+            $inp.on("blur.numberInputTriggerReset", function (event2) {
+                if (!$inp.val()) {
+                    $inp.val(formNumberInpOldVal || 0).trigger("change");
+                }
+                $inp.removeClass("focussed");
+            });
+        }
+    );
 });
 
 /**

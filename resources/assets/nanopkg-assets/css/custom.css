@@ -250,3 +250,10 @@ legend {
 .tox-statusbar__branding {
     display: none !important;
 }
+
+/* Style for read-only input fields */
+input[readonly] {
+    background-color: #f2f2f2;
+    color: #666;
+    cursor: not-allowed;
+}
