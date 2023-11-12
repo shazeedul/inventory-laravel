@@ -1,17 +1,17 @@
-document.addEventListener("DOMContentLoaded", function() {
-    $('#supplier_id').select2({
+document.addEventListener("DOMContentLoaded", function () {
+    $("#supplier_id").select2({
         tags: true,
     });
 
-    $('.product_id').select2({
+    $(".product_id").select2({
         tags: true,
     });
-    
+
     // addRow
-    $(document).on('click', '#addRow', function () {
+    $(document).on("click", "#addRow", function () {
         var count = parseInt($("#rowCount").val()) + 1;
-        var html = '';
-        html += '<tr>';
+        var html = "";
+        html += "<tr>";
         html += `<td><select name="product_id[]" class="form-control product_id" id="product_id_${count}"></select></td>`;
         html += `<td><input type="number" name="quantity[]" class="form-control" id="quantity_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})"></td>`;
         html += `<td><input type="number" name="unit_price[]" class="form-control" id="unit_price_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})"></td>`;
@@ -19,31 +19,31 @@ document.addEventListener("DOMContentLoaded", function() {
         html += `<td><input type="number" name="total_price[]" class="form-control" id="total_${count}" readonly></td>`;
         html += `<td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-trash"></i></button></td>`;
         html += `</tr>`;
-        $('#purchaseItem').append(html);
+        $("#purchaseItem").append(html);
 
         // add $product_id_ count option
-        var option = '';
+        var option = "";
         option += `<option value="">Select Product</option>`;
-        products.forEach(function(product) {
+        products.forEach(function (product) {
             option += `<option value="${product.id}">${product.name}</option>`;
         });
         $(`#product_id_${count}`).html(option);
 
         $("#rowCount").val(count);
 
-        $('.product_id').select2({
+        $(".product_id").select2({
             tags: true,
         });
     });
 
     // removeRow
-    $(document).on('click', '.removeRow', function () {
+    $(document).on("click", ".removeRow", function () {
         // check this closest tr is not last
-        if ($('#purchaseItem tr').length == 1) {
-            toastr.error('You can not remove last row!');
+        if ($("#purchaseItem tr").length == 1) {
+            toastr.error("You can not remove last row!");
             return false;
         }
-        $(this).closest('tr').remove();
+        $(this).closest("tr").remove();
     });
 });
 
@@ -53,16 +53,18 @@ function calculateTotalPrice(count) {
     var unit_price = $(`#unit_price_${count}`).val();
     var total_price = quantity * unit_price;
     $(`#total_${count}`).val(total_price);
+    getPurchaseTotalPrice();
 }
 
 // get purchase total price
 function getPurchaseTotalPrice() {
     var total = 0;
-    $('input[name^="total"]').each(function() {
+    $("#grandTotal").val(0);
+    $('input[name^="total"]').each(function () {
         var value = parseFloat($(this).val());
         if (!isNaN(value)) {
             total += value;
         }
     });
-    $('#grandTotal').val(total);
+    $("#grandTotal").val(total);
 }
