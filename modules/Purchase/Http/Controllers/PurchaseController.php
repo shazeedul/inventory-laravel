@@ -7,6 +7,7 @@ use Modules\Unit\Entities\Unit;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Product;
+use Illuminate\Support\Facades\Session;
 use Modules\Category\Entities\Category;
 use Modules\Purchase\Entities\Purchase;
 use Modules\Supplier\Entities\Supplier;
@@ -118,7 +119,9 @@ class PurchaseController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.purchase.index')->with('', 'Purchase Create Successfully.');
+            Session::flush('success', 'Purchase Create Successfully.');
+
+            return redirect()->route('admin.purchase.index');
         } catch (\Throwable $th) {
             DB::rollBack();
 
@@ -138,23 +141,85 @@ class PurchaseController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param int $id
+     * @param Purchase $purchase
      * @return Renderable
      */
-    public function edit($id)
+    public function edit(Purchase $purchase)
     {
-        return view('purchase::edit');
+        \cs_set('theme', [
+            'update' => route(config('theme.rprefix') . '.update', $purchase->id),
+        ]);
+
+        cs_set('theme', [
+            'title' => 'Edit Purchase',
+            'description' => 'Editing Purchase.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Purchase Lists',
+                    'link' => route('admin.purchase.index'),
+                ],
+                [
+                    'name' => 'Edit Purchase',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        // dd($purchase->with('purchaseDetails')->first());
+
+        return view('purchase::edit', [
+            'purchase' => $purchase->with('purchaseDetails')->first(),
+            'suppliers' => Supplier::where('status', 1)->get(),
+            'products' => Product::with(['category:id,name', 'unit:id,name'])
+                ->where('status', 1)
+                ->get(['id', 'name', 'quantity', 'category_id', 'unit_id']),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
+     * @param PurchaseStoreRequest $request
+     * @param Purchase $purchase
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(PurchaseStoreRequest $request, Purchase $purchase)
     {
-        //
+        $request->validated();
+        DB::beginTransaction();
+        try {
+            $purchase->update([
+                'supplier_id' => $request->supplier_id,
+                'date' => $request->date,
+                'total_price' => $request->total_price,
+            ]);
+
+            // details update or create
+            foreach ($request->product_id as $key => $product_id) {
+                $purchase->purchaseDetails()->updateOrCreate(
+                    [
+                        'id' => $request->purchase_detail_id[$key],
+                    ],
+                    [
+                        'product_id' => $product_id,
+                        'quantity' => $request->quantity[$key],
+                        'unit_price' => $request->unit_price[$key],
+                        'description' => $request->description[$key],
+                        'price' => $request->total[$key],
+                    ]
+                );
+            }
+
+            DB::commit();
+            Session::flush('success', 'Purchase Update Successfully.');
+            return redirect()->route('admin.purchase.index');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->withErrors('Some thing wrong.' . $th->getMessage());
+        }
     }
 
     /**

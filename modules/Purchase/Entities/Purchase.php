@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Purchase extends Model
 {
-    use HasFactory, DataTableActionBtn;
+    use HasFactory;
 
     protected $fillable = [
         'purchase_no',
@@ -87,6 +87,12 @@ class Purchase extends Model
     public function scopeTotalApproved($query)
     {
         return $query->where('status', 1)->count();
+    }
+
+    // purchase date format mm/dd/yy attribute
+    public function getPurchaseDateAttribute()
+    {
+        return $this->date->format('mm/dd/Y');
     }
 
     // public function scopeTotalPurchaseByMonth($query)

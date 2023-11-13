@@ -25,10 +25,14 @@ class PurchaseDataTable extends DataTable
                 return $query->date->format('d M, Y');
             })
             ->editColumn('status', function ($query) {
-                return $query->status == 1 ? '<span class="badge badge-success">Approve</span>' : '<span class="badge badge-danger">Pending</span>';
+                return $query->status == 1 ? '<span class="badge bg-success">Approve</span>' : '<span class="badge bg-danger">Pending</span>';
             })
             ->addColumn('action', function ($query) {
-                return $query->actionBtn(['show' => false, 'edit' => false, 'delete' => true]);
+                return '<div aria-label="Action Button">
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm my-1 mx-1" onclick="' . "axiosModal('" . route(config('theme.rprefix') . '.show', $query->id) . '\')"><i class="fa fa-eye"></i></a>
+                    <a href="' . route(config('theme.rprefix') . '.edit', $query->id) . '" class="btn btn-secondary btn-sm my-1 mx-1" ><i class="fa fa-edit"></i></a>
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="' . "delete_modal('" . route(config('theme.rprefix') . '.destroy', $query->id) . '\')"  title="' . __('Delete') . '"><i class="fa fa-trash"></i></a>
+                </div>';
             })
             ->rawColumns(['status', 'action'])
             ->setRowId('id')

@@ -11,8 +11,6 @@ class PurchaseDetail extends Model
 
     protected $fillable = [
         'purchase_id',
-        'supplier_id',
-        'category_id',
         'product_id',
         'quantity',
         'unit_price',
@@ -29,16 +27,6 @@ class PurchaseDetail extends Model
     public function purchase()
     {
         return $this->belongsTo(Purchase::class);
-    }
-
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
     }
 
     public function product()
