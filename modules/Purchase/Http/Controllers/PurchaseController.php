@@ -111,7 +111,7 @@ class PurchaseController extends Controller
                         'quantity' => $quantity,
                         'unit_price' => $unit_price,
                         'description' => $description,
-                        'total' => $total,
+                        'price' => $total,
                     ];
                 }, $request->product_id, $request->quantity, $request->unit_price, $request->description, $request->total)
             );
@@ -122,7 +122,7 @@ class PurchaseController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return redirect()->back()->withInput()->withErrors('Some thing wrong.');
+            return redirect()->back()->withInput()->withErrors('Some thing wrong.' . $th->getMessage());
         }
     }
 
@@ -164,6 +164,7 @@ class PurchaseController extends Controller
      */
     public function destroy(Purchase $purchase)
     {
+        $purchase->purchaseDetails()->delete();
         $purchase->delete();
 
         return response()->success('', 'Purchase deleted successfully.');

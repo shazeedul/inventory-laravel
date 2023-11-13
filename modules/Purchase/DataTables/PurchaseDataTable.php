@@ -21,11 +21,14 @@ class PurchaseDataTable extends DataTable
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            ->editColumn('date', function ($query) {
+                return $query->date->format('d M, Y');
+            })
             ->editColumn('status', function ($query) {
                 return $query->status == 1 ? '<span class="badge badge-success">Approve</span>' : '<span class="badge badge-danger">Pending</span>';
             })
             ->addColumn('action', function ($query) {
-                return $query->actionBtn(['show' => true, 'edit' => true, 'delete' => true]);
+                return $query->actionBtn(['show' => false, 'edit' => false, 'delete' => true]);
             })
             ->rawColumns(['status', 'action'])
             ->setRowId('id')
