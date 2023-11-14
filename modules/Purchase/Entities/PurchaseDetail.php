@@ -2,7 +2,9 @@
 
 namespace Modules\Purchase\Entities;
 
+use Modules\Product\Entities\Product;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Purchase\Entities\Purchase;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PurchaseDetail extends Model
@@ -31,7 +33,7 @@ class PurchaseDetail extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class)->withTrashed();
+        return $this->belongsTo(Product::class);
     }
 
     public function scopePending($query)

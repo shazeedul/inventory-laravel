@@ -6,6 +6,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="md-3">
+                        {{-- @dd($purchase->purchase_date) --}}
                         <label for="example-text-input" class="form-label">@localize('Purchase Date')</label>
                         <input class="form-control example-date-input" name="date" type="date" id="date"
                             value="{{ $purchase->purchase_date }}">
@@ -44,6 +45,7 @@
                             @foreach ($purchase->purchaseDetails as $key => $item)
                                 <tr>
                                     <td>
+                                        <input type="hidden" name="purchase_details_id[]" value="{{ $item->id }}">
                                         <select name="product_id[]" id="product_id_{{ $key + 1 }}"
                                             class="form-control product_id" required>
                                             @foreach ($products as $key => $p)

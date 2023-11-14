@@ -12,6 +12,7 @@ use Modules\Category\Entities\Category;
 use Modules\Purchase\Entities\Purchase;
 use Modules\Supplier\Entities\Supplier;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Purchase\Entities\PurchaseDetail;
 use Modules\Purchase\DataTables\PurchaseDataTable;
 use Modules\Purchase\Http\Requests\PurchaseStoreRequest;
 
@@ -131,12 +132,17 @@ class PurchaseController extends Controller
 
     /**
      * Show the specified resource.
-     * @param int $id
+     * @param Purchase $purchase
      * @return Renderable
      */
-    public function show($id)
+    public function show(Purchase $purchase)
     {
-        return view('purchase::show');
+        // with details
+        $purchase->with(['purchaseDetails' => function ($q) {
+            $q->with('product:id,name');
+        }])->first();
+
+        return view('purchase::show', ['purchase' => $purchase]);
     }
 
     /**
@@ -197,11 +203,19 @@ class PurchaseController extends Controller
                 'total_price' => $request->total_price,
             ]);
 
+            // delete purchase details
+            foreach ($purchase->purchaseDetails as $purchaseDetail) {
+                if (!in_array($purchaseDetail->id, $request->purchase_details_id)) {
+                    $purchaseDetail->delete();
+                }
+            }
+
             // details update or create
             foreach ($request->product_id as $key => $product_id) {
+
                 $purchase->purchaseDetails()->updateOrCreate(
                     [
-                        'id' => $request->purchase_detail_id[$key],
+                        'id' => $request->purchase_details_id[$key],
                     ],
                     [
                         'product_id' => $product_id,

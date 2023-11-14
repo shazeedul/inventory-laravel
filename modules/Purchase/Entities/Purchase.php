@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Purchase\Entities\PurchaseDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Supplier\Entities\Supplier;
 
 class Purchase extends Model
 {
@@ -89,10 +90,14 @@ class Purchase extends Model
         return $query->where('status', 1)->count();
     }
 
-    // purchase date format mm/dd/yy attribute
     public function getPurchaseDateAttribute()
     {
-        return $this->date->format('mm/dd/Y');
+        return $this->date->format('Y-m-d');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     // public function scopeTotalPurchaseByMonth($query)
