@@ -10,4 +10,58 @@
         </div>
     </x-card>
     <div id="page-axios-data" data-table-id="#product-table"></div>
+    @push('js')
+        <script>
+            function showApproveAlert(route) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to approve this item.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, approve it!'
+                }).then((result) => {
+                    // if (result.isConfirmed) {
+                    //     console.log(route);
+                    //     // axios.post(route)
+                    //     //     .then(function(response) {
+                    //     //         if (response.data.success) {
+                    //     //             Swal.fire(
+                    //     //                 'Approved!',
+                    //     //                 'Your item has been approved.',
+                    //     //                 'success'
+                    //     //             )
+                    //     //             // window.location.reload();
+                    //     //         }
+                    //     //     })
+                    //     //     .catch(function(error) {
+                    //     //         console.log(error);
+                    //     //     });
+                    // }
+                    if (result.isConfirmed) {
+                        console.log(route);
+                        axios.post(route, {
+                                _token: '{{ csrf_token() }}',
+                                status: 1
+                            }).then(function(response) {
+                                if (response.data.success) {
+                                    Swal.fire(
+                                        'Approved!',
+                                        'Your item has been approved.',
+                                        'success'
+                                    )
+                                    window.location.reload();
+                                }
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            });
+                    } else if (result.isDenied) {
+                        Swal.fire("Changes are not saved", "", "info");
+                    }
+                });
+            }
+        </script>
+    @endpush
 </x-app-layout>

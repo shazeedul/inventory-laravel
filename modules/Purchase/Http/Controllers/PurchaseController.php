@@ -248,4 +248,31 @@ class PurchaseController extends Controller
 
         return response()->success('', 'Purchase deleted successfully.');
     }
+
+    /**
+     * Purchase status update
+     * @param Request $request
+     * @param Purchase $purchase
+     * @return void
+     */
+    public function approve(Request $request, Purchase $purchase)
+    {
+        $request->validate([
+            'status' => 'required|boolean',
+        ]);
+
+        $purchase->update([
+            'status' => $request->status,
+        ]);
+
+        // update details table product iterate quantity increase
+        foreach ($purchase->purchaseDetails as $purchaseDetail) {
+            $product = Product::find($purchaseDetail->product_id);
+            $product->update([
+                'quantity' => $product->quantity + $purchaseDetail->quantity,
+            ]);
+        }
+
+        return response()->success('', 'Purchase status update successfully.');
+    }
 }

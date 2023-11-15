@@ -16,5 +16,5 @@ use Modules\Purchase\Http\Controllers\PurchaseController;
 
 Route::prefix('admin/purchase')->as('admin.purchase.')->group(function () {
     Route::resource('/', PurchaseController::class)->parameter('', 'purchase');
-    Route::post('{purchase}/status-update', [PurchaseController::class, 'statusUpdate'])->name('status-update');
+    Route::post('{purchase}/approve', [PurchaseController::class, 'approve'])->name('approve');
 });

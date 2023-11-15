@@ -201,7 +201,7 @@ function axiosModelInit() {
 }
 
 /**
- * Shoing axios modal
+ * Showing axios modal
  * @param string url
  * @param string method default GET
  * @param object data default null
@@ -240,7 +240,7 @@ function axiosModal(
         .then(function (response) {
             // find modal
             var ajaxModal = $("#ajaxModal");
-            // set modal size and remove other calsses
+            // set modal size and remove other classes
             ajaxModal
                 .find(".modal-dialog")
                 .removeClass()
