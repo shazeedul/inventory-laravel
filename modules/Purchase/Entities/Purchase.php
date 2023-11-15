@@ -37,7 +37,6 @@ class Purchase extends Model
             static::creating(function ($model) {
                 $model->created_by = Auth::id();
                 $model->purchase_no = rand(100000, 999999);
-                $model->date = now();
             });
             static::updating(function ($model) {
                 $model->updated_by = Auth::id();

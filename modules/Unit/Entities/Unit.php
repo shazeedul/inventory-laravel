@@ -2,8 +2,10 @@
 
 namespace Modules\Unit\Entities;
 
+use App\Models\User;
 use App\Traits\DataTableActionBtn;
 use Illuminate\Support\Facades\Auth;
+use Modules\Product\Entities\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -42,6 +44,11 @@ class Unit extends Model
     public function editor()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 
     /**

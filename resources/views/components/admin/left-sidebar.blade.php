@@ -111,6 +111,24 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Invoice --}}
+            @if (module_active('invoice') && can('invoice_management'))
+                <x-admin.nav-title title="Invoice" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Invoice')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.invoice.index') }}">
+                        @localize('All Invoice')
+                    </x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.invoice.create') }}">
+                        @localize('New Invoice')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             @if (can('permission_management') ||
                     can('role_read') ||
                     can('user_management') ||

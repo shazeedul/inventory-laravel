@@ -22,23 +22,6 @@
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, approve it!'
                 }).then((result) => {
-                    // if (result.isConfirmed) {
-                    //     console.log(route);
-                    //     // axios.post(route)
-                    //     //     .then(function(response) {
-                    //     //         if (response.data.success) {
-                    //     //             Swal.fire(
-                    //     //                 'Approved!',
-                    //     //                 'Your item has been approved.',
-                    //     //                 'success'
-                    //     //             )
-                    //     //             // window.location.reload();
-                    //     //         }
-                    //     //     })
-                    //     //     .catch(function(error) {
-                    //     //         console.log(error);
-                    //     //     });
-                    // }
                     if (result.isConfirmed) {
                         console.log(route);
                         axios.post(route, {

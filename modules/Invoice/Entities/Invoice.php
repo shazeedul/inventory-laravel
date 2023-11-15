@@ -1,25 +1,29 @@
 <?php
 
-namespace Modules\Category\Entities;
+namespace Modules\Invoice\Entities;
 
-use App\Traits\DataTableActionBtn;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Modules\Product\Entities\Product;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Invoice\Entities\InvoiceDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Category\Database\factories\CategoryFactory;
 
-class Category extends Model
+class Invoice extends Model
 {
-    use HasFactory, DataTableActionBtn;
+    use HasFactory;
 
     protected $fillable = [
-        'name',
+        'invoice_no',
+        'date',
+        'description',
         'status',
+        'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
-        'status' => 'integer',
+        'date' => 'date',
+        'status' => 'boolean',
     ];
 
     protected static function boot()
@@ -29,11 +33,17 @@ class Category extends Model
         if (Auth::check()) {
             static::creating(function ($model) {
                 $model->created_by = Auth::id();
+                $model->invoice_no = rand(100000, 999999);
             });
             static::updating(function ($model) {
                 $model->updated_by = Auth::id();
             });
         }
+    }
+
+    public function invoiceDetails()
+    {
+        return $this->hasMany(InvoiceDetail::class);
     }
 
     public function creator()
@@ -44,11 +54,6 @@ class Category extends Model
     public function editor()
     {
         return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    public function products()
-    {
-        return $this->hasMany(Product::class);
     }
 
     /**

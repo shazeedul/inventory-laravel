@@ -1,22 +1,22 @@
 <x-app-layout>
-    <form action="{{ route('admin.purchase.store') }}" method="post">
+    <form action="{{ route('admin.invoice.create') }}" method="post">
         @csrf
         <x-card>
             <div class="row">
                 <div class="col-md-4">
                     <div class="md-3">
-                        <label for="example-text-input" class="form-label">@localize('Purchase Date')</label>
+                        <label for="example-text-input" class="form-label">@localize('Invoice Date')</label>
                         <input class="form-control example-date-input" name="date" type="date" id="date"
-                            value="{{ old('date') }}">
+                            value="{{ Carbon::now()->format('Y-m-d') ?? old('date') }}">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="md-3">
-                        <label for="example-text-input" class="form-label">@localize('Supplier')</label>
-                        <select name="supplier_id" id="supplier_id" class="form-control">
-                            <option value="">@localize('Select Supplier')</option>
-                            @foreach ($suppliers as $key => $s)
-                                <option value="{{ $s->id }}" @selected(old('supplier_id') == $s->id)>{{ $s->name }}
+                        <label for="example-text-input" class="form-label">@localize('Customer')</label>
+                        <select name="customer_id" id="customer_id" class="form-control">
+                            <option value="">@localize('Select Customer')</option>
+                            @foreach ($customers as $key => $c)
+                                <option value="{{ $c->id }}" @selected(old('customer_id') == $c->id)>{{ $c->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -31,25 +31,36 @@
                         <thead>
                             <tr>
                                 <th class="text-center">@localize('Product')</th>
+                                <th class="text-center">@localize('Category')</th>
+                                <th class="text-center">@localize('Unit')</th>
+                                <th class="text-center">@localize('Stock')</th>
                                 <th class="text-center">@localize('Quantity')</th>
                                 <th class="text-center">@localize('Unit Price')</th>
-                                <th class="text-center">@localize('Description')</th>
                                 <th class="text-center">@localize('Total')</th>
                                 <th class="text-center">@localize('Action')</th>
                             </tr>
                         </thead>
-                        <tbody id="purchaseItem">
+                        <tbody id="invoiceItem">
                             <input type="hidden" id="rowCount" value="1">
                             <tr>
-                                <td>
+                                <td style="width: 25%">
                                     <select name="product_id[]" id="product_id_1" class="form-control product_id"
-                                        required>
+                                        onclick="get_product()" required>
                                         <option value="">@localize('Select Product')</option>
                                         @foreach ($products as $key => $p)
                                             <option value="{{ $p->id }}">{{ $p->name }} --
                                                 {{ $p->category->name }}({{ $p->unit->name }})</option>
                                         @endforeach
                                     </select>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-number-input" id="category_1" readonly />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-number-input" id="unit_1" readonly />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control form-number-input" id="stock_1" readonly />
                                 </td>
                                 <td>
                                     <input type="number" name="quantity[]" id="quantity_1"
@@ -60,9 +71,6 @@
                                     <input type="number" name="unit_price[]" id="unit_price_1"
                                         class="form-control form-number-input" onchange="calculateTotalPrice(1)"
                                         onkeyup="calculateTotalPrice(1)" value="0.00">
-                                </td>
-                                <td>
-                                    <input type="text" name="description[]" id="description_1" class="form-control">
                                 </td>
                                 <td>
                                     <input type="number" name="total[]" id="total_1" class="form-control"
@@ -76,7 +84,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5"></td>
+                                <td colspan="7"></td>
                                 <td>
                                     <button type="button" class="btn btn-warning btn-sm" id="addRow"><i
                                             class="fa fa-plus"></i></button>
@@ -107,7 +115,7 @@
         <script src="{{ nanopkg_asset('vendor/select2/select2.min.js') }}"></script>
     @endpush
     @push('js')
-        <script src="{{ module_asset('Purchase/js/app.min.js') }}"></script>
+        <script src="{{ module_asset('Invoice/js/app.min.js') }}"></script>
         <script>
             var products = @json($products);
         </script>

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Invoice\Http\Controllers\InvoiceController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,7 @@
 |
 */
 
-Route::prefix('invoice')->group(function() {
-    Route::get('/', 'InvoiceController@index');
+Route::prefix('admin/invoice')->as('admin.invoice.')->group(function () {
+    Route::resource('/', InvoiceController::class)->parameter('', 'invoice');
+    Route::post('{invoice}/approve', [InvoiceController::class, 'approve'])->name('approve');
 });

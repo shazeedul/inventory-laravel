@@ -72,6 +72,9 @@ class RolePermissionTableSeeder extends Seeder
             'Purchase' => [
                 'purchase_management',
             ],
+            'Invoice' => [
+                'invoice_management',
+            ],
         ];
         $roles = [
             'User' => [],

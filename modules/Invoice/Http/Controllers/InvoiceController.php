@@ -5,16 +5,46 @@ namespace Modules\Invoice\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Customer\Entities\Customer;
+use Modules\Invoice\DataTables\InvoiceDataTable;
+use Modules\Product\Entities\Product;
 
 class InvoiceController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // set the request middleware for the controller
+        $this->middleware('request:ajax', ['only' => ['destroy', 'approve']]);
+        // set the strip scripts tag middleware for the controller
+        // $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        $this->middleware(['auth', 'verified', 'permission:invoice_management']);
+        \cs_set('theme', [
+            'title' => 'Invoice Lists',
+            'back' => \back_url(),
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Invoice Lists',
+                    'link' => false,
+                ],
+            ],
+            'rprefix' => 'admin.invoice',
+        ]);
+    }
+
+    /**
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(InvoiceDataTable $dataTable)
     {
-        return view('invoice::index');
+        return $dataTable->render('invoice::index');
     }
 
     /**
@@ -23,7 +53,29 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        return view('invoice::create');
+        cs_set('theme', [
+            'title' => 'Create New Invoice',
+            'description' => 'Creating New Invoice.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Invoice Lists',
+                    'link' => route('admin.invoice.index'),
+                ],
+                [
+                    'name' => 'Create New Invoice',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        $products = Product::with(['category:id,name', 'unit:id,name'])->whereStatus(1)->get();
+        $customers = Customer::whereStatus(1)->get();
+
+        return view('invoice::create', compact('products', 'customers'));
     }
 
     /**
