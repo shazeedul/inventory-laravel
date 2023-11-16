@@ -7,7 +7,7 @@
                     <div class="md-3">
                         <label for="example-text-input" class="form-label">@localize('Invoice Date')</label>
                         <input class="form-control example-date-input" name="date" type="date" id="date"
-                            value="{{ Carbon::now()->format('Y-m-d') ?? old('date') }}">
+                            value="{{ old('date') ?? Carbon::now()->format('Y-m-d') }}">
                     </div>
                 </div>
                 <div class="col-md-4">

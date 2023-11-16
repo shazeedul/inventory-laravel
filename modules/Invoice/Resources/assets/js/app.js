@@ -6,6 +6,40 @@ document.addEventListener("DOMContentLoaded", function () {
         tags: true,
     });
 
+    // addRow
+    $(document).on("click", "#addRow", function () {
+        var count = parseInt($("#rowCount").val()) + 1;
+        var html = "";
+        html += "<tr>";
+        html += `<td><input type="hidden" name="invoice_details_id[]" /><select name="product_id[]" class="form-control product_id" id="product_id_${count}"></select></td>`;
+        html += `<td><input type="number" class="form-control form-number-input" id="category_1" readonly /></td>`;
+        html += `<td><input type="number" class="form-control form-number-input" id="unit_1" readonly /></td>
+                                <td>
+                                    <input type="number" class="form-control form-number-input" id="stock_1" readonly />
+                                </td>
+        html += `<td><input type="number" name="quantity[]" class="form-control form-number-input" id="quantity_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})" value="0.00"></td>`;
+        html += `<td><input type="number" name="unit_price[]" class="form-control form-number-input" id="unit_price_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})" value="0.00"></td>`;
+        html += `<td><input type="text" name="description[]" class="form-control" id="description_${count}"></td>`;
+        html += `<td><input type="number" name="total[]" class="form-control" id="total_${count}" readonly value="0.00"></td>`;
+        html += `<td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-trash"></i></button></td>`;
+        html += `</tr>`;
+        $("#invoiceItem").append(html);
+
+        // add $product_id_ count option
+        var option = "";
+        option += `<option value="">Select Product</option>`;
+        products.forEach(function (product) {
+            option += `<option value="${product.id}">${product.name}</option>`;
+        });
+        $(`#product_id_${count}`).html(option);
+
+        $("#rowCount").val(count);
+
+        $(".product_id").select2({
+            tags: true,
+        });
+    });
+
     // removeRow
     $(document).on("click", ".removeRow", function () {
         // check this closest tr is not last
