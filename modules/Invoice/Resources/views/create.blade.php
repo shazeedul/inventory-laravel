@@ -45,22 +45,25 @@
                             <tr>
                                 <td style="width: 25%">
                                     <select name="product_id[]" id="product_id_1" class="form-control product_id"
-                                        onclick="get_product()" required>
+                                        onchange="getProduct(1)" required>
                                         <option value="">@localize('Select Product')</option>
                                         @foreach ($products as $key => $p)
                                             <option value="{{ $p->id }}">{{ $p->name }} --
-                                                {{ $p->category->name }}({{ $p->unit->name }})</option>
+                                                {{ $p->category->name }} ({{ $p->unit->name }})</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control form-number-input" id="category_1" readonly />
+                                    <input type="text" class="form-control form-number-input" id="category_1"
+                                        readonly />
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control form-number-input" id="unit_1" readonly />
+                                    <input type="text" class="form-control form-number-input" id="unit_1"
+                                        readonly />
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control form-number-input" id="stock_1" readonly />
+                                    <input type="number" class="form-control form-number-input" id="stock_1"
+                                        readonly />
                                 </td>
                                 <td>
                                     <input type="number" name="quantity[]" id="quantity_1"

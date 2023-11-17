@@ -5,49 +5,60 @@ document.addEventListener("DOMContentLoaded", function () {
     $(".product_id").select2({
         tags: true,
     });
+    var existingProductIds = [];
 
     // addRow
     $(document).on("click", "#addRow", function () {
         var count = parseInt($("#rowCount").val()) + 1;
         var html = "";
+        // Check for unique product IDs in existing rows
+        $(".product_id").each(function () {
+            var productId = $(this).val();
+            if (productId) {
+                existingProductIds.push(productId);
+            }
+        });
+        
         html += "<tr>";
-        html += `<td><input type="hidden" name="invoice_details_id[]" /><select name="product_id[]" class="form-control product_id" id="product_id_${count}"></select></td>`;
-        html += `<td><input type="number" class="form-control form-number-input" id="category_1" readonly /></td>`;
-        html += `<td><input type="number" class="form-control form-number-input" id="unit_1" readonly /></td>
-                                <td>
-                                    <input type="number" class="form-control form-number-input" id="stock_1" readonly />
-                                </td>
+        html += `<td><select name="product_id[]" class="form-control product_id" id="product_id_${count}" onchange="getProduct(${count})"></select></td>`;
+        html += `<td><input type="text" class="form-control form-number-input" id="category_${count}" readonly /></td>`;
+        html += `<td><input type="text" class="form-control form-number-input" id="unit_${count}" readonly /></td>`;
+        html += `<td><input type="number" class="form-control form-number-input" id="stock_${count}" readonly /></td>`;
         html += `<td><input type="number" name="quantity[]" class="form-control form-number-input" id="quantity_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})" value="0.00"></td>`;
         html += `<td><input type="number" name="unit_price[]" class="form-control form-number-input" id="unit_price_${count}" onchange="calculateTotalPrice(${count})" onkeyup="calculateTotalPrice(${count})" value="0.00"></td>`;
-        html += `<td><input type="text" name="description[]" class="form-control" id="description_${count}"></td>`;
         html += `<td><input type="number" name="total[]" class="form-control" id="total_${count}" readonly value="0.00"></td>`;
         html += `<td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-trash"></i></button></td>`;
         html += `</tr>`;
+
+        // Append the new row
         $("#invoiceItem").append(html);
 
-        // add $product_id_ count option
-        var option = "";
-        option += `<option value="">Select Product</option>`;
-        products.forEach(function (product) {
-            option += `<option value="${product.id}">${product.name}</option>`;
-        });
-        $(`#product_id_${count}`).html(option);
+        // Populate options for the newly added dropdown, excluding existing product IDs
+        populateProductOptions(count, existingProductIds);
 
+        // Update the row count
         $("#rowCount").val(count);
 
-        $(".product_id").select2({
+        // Initialize select2 for the newly added dropdown
+        $(`#product_id_${count}`).select2({
             tags: true,
         });
     });
 
-    // removeRow
+    // Remove Row
     $(document).on("click", ".removeRow", function () {
-        // check this closest tr is not last
-        if ($("#invoiceItem tr").length == 1) {
-            toastr.error("You can not remove last row!");
-            return false;
+        // Check if this is not the last row
+        if ($("#invoiceItem tr").length > 1) {
+            var removedProductId = $(this).closest("tr").find('.product_id').val();
+
+            // Remove the product ID from existingProductIds array
+            existingProductIds = existingProductIds.filter(id => id !== removedProductId);
+
+            // Remove the row
+            $(this).closest("tr").remove();
+        } else {
+            toastr.error("You cannot remove the last row!");
         }
-        $(this).closest("tr").remove();
     });
 });
 
@@ -73,7 +84,28 @@ function getPurchaseTotalPrice() {
     $("#grandTotal").val(total);
 }
 
-// get product data by products json data
-function get_product() {
+function getProduct(count) {
+    // get product id by call this getProduct function
+    var product_id = $(`#product_id_${count}`).val();
+    // get product by product id
+    var product = products.find((product) => product.id == product_id);
+    // category, unit, stock
+    $(`#category_${count}`).val(product.category.name);
+    $(`#unit_${count}`).val(product.unit.name);
+    $(`#stock_${count}`).val(product.quantity);
+    if (product.quantity == 0 || product.quantity < 1 || product.quantity == 0.00) {
+        $(`#quantity_${count}`).attr('readonly', 'readonly');
+        $(`#unit_price_${count}`).attr('readonly', 'readonly');
+    }
+}
 
+function populateProductOptions(count, excludeProductIds) {
+    var option = `<option value="">Select Product</option>`;
+    products.forEach(function (product) {
+        // Exclude products with IDs present in existing rows
+        if (!excludeProductIds.includes(product.id.toString())) {
+            option += `<option value="${product.id}">${product.name} -- ${product.category.name} (${product.unit.name})</option>`;
+        }
+    });
+    $(`#product_id_${count}`).html(option);
 }
