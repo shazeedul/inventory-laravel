@@ -2,12 +2,16 @@
 
 namespace Modules\Invoice\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Customer\Entities\Customer;
-use Modules\Invoice\DataTables\InvoiceDataTable;
+use Illuminate\Support\Facades\DB;
+use Modules\Invoice\Entities\Invoice;
 use Modules\Product\Entities\Product;
+use Illuminate\Support\Facades\Session;
+use Modules\Customer\Entities\Customer;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\Invoice\DataTables\InvoiceDataTable;
+use Modules\Invoice\Http\Requests\InvoiceStoreRequest;
 
 class InvoiceController extends Controller
 {
@@ -80,12 +84,38 @@ class InvoiceController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param Request $request
+     * @param InvoiceStoreRequest $request
      * @return Renderable
      */
-    public function store(Request $request)
+    public function store(InvoiceStoreRequest $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $invoice = Invoice::create([
+                'customer_id' => $request->customer_id,
+                'date' => $request->date,
+            ]);
+
+            $invoice->invoiceDetails()->createMany(
+                array_map(function ($product_id, $quantity, $unit_price, $total) {
+                    return [
+                        'product_id' => $product_id,
+                        'quantity' => $quantity,
+                        'unit_price' => $unit_price,
+                        'price' => $total,
+                    ];
+                }, $request->product_id, $request->quantity, $request->unit_price, $request->total)
+            );
+
+            DB::commit();
+
+            Session::flush('success', 'Invoice Create Successfully.');
+
+            return redirect()->route('admin.invoice.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -121,11 +151,14 @@ class InvoiceController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param int $id
+     * @param Invoice  $invoice
      * @return Renderable
      */
-    public function destroy($id)
+    public function destroy(Invoice $invoice)
     {
-        //
+        $invoice->invoiceDetails()->delete();
+        $invoice->delete();
+
+        return response()->success('', 'Invoice deleted successfully.');
     }
 }

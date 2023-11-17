@@ -1,5 +1,5 @@
 <x-app-layout>
-    <form action="{{ route('admin.invoice.create') }}" method="post">
+    <form action="{{ route('admin.invoice.store') }}" method="post">
         @csrf
         <x-card>
             <div class="row">

@@ -136,7 +136,6 @@ class PurchaseController extends Controller
      */
     public function show(Purchase $purchase)
     {
-        // with details
         $purchase->with(['purchaseDetails' => function ($q) {
             $q->with('product:id,name');
         }])->first();
