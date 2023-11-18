@@ -3,7 +3,6 @@
 namespace Modules\Purchase\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modules\Unit\Entities\Unit;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Product;

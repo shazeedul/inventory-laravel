@@ -5,16 +5,44 @@ namespace Modules\Stock\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Stock\DataTables\StockReportDataTable;
 
 class StockController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // set the request middleware for the controller
+        $this->middleware('request:ajax', ['only' => ['destroy']]);
+        // set the strip scripts tag middleware for the controller
+        // $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        $this->middleware(['auth', 'verified', 'permission:stock_management']);
+        \cs_set('theme', [
+            'title' => 'Stock Report',
+            'back' => \back_url(),
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Stock Report',
+                    'link' => false,
+                ],
+            ],
+            'rprefix' => 'admin.stock',
+        ]);
+    }
+
+    /**
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(StockReportDataTable $dataTable)
     {
-        return view('stock::index');
+        return $dataTable->render('stock::index');
     }
 
     /**

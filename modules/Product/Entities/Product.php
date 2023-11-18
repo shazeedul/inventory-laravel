@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Category\Entities\Category;
 use Modules\Supplier\Entities\Supplier;
+use Modules\Invoice\Entities\InvoiceDetail;
+use Modules\Purchase\Entities\PurchaseDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
@@ -59,6 +61,16 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function purchaseDetail()
+    {
+        return $this->hasMany(PurchaseDetail::class);
+    }
+
+    public function invoiceDetail()
+    {
+        return $this->hasMany(InvoiceDetail::class);
     }
 
     /**

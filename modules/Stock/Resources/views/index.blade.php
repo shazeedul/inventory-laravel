@@ -1,9 +1,11 @@
-@extends('stock::layouts.master')
+<x-app-layout>
+    <x-card>
+        <x-slot name="actions">
+        </x-slot>
 
-@section('content')
-    <h1>Hello World</h1>
-
-    <p>
-        This view is loaded from module: {!! config('stock.name') !!}
-    </p>
-@endsection
+        <div>
+            <x-data-table :dataTable="$dataTable" />
+        </div>
+    </x-card>
+    <div id="page-axios-data" data-table-id="#stock-table"></div>
+</x-app-layout>
