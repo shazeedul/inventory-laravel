@@ -120,12 +120,15 @@ class InvoiceController extends Controller
 
     /**
      * Show the specified resource.
-     * @param int $id
+     * @param Invoice $invoice
      * @return Renderable
      */
-    public function show($id)
+    public function show(Invoice $invoice)
     {
-        return view('invoice::show');
+        $invoice->with(['invoiceDetails' => function ($q) {
+            $q->with('product:id,name');
+        }, 'customer'])->first();
+        return view('invoice::show', ['invoice' => $invoice]);
     }
 
     /**

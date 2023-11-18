@@ -138,7 +138,7 @@ class PurchaseController extends Controller
     {
         $purchase->with(['purchaseDetails' => function ($q) {
             $q->with('product:id,name');
-        }])->first();
+        }, 'supplier'])->first();
 
         return view('purchase::show', ['purchase' => $purchase]);
     }

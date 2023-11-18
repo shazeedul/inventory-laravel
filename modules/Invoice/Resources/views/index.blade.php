@@ -34,7 +34,8 @@
                                         'Your item has been approved.',
                                         'success'
                                     )
-                                    window.location.reload();
+                                    var table = $("#page-axios-data").data("table-id");
+                                    $(table).DataTable().ajax.reload();
                                 }
                             })
                             .catch(function(error) {

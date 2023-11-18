@@ -2,14 +2,14 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h3>{{ ___('Purchase Details') }}</h3>
+                <h3>{{ ___('Invoice Details') }}</h3>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between">
-                    <h4>{{ ___('Purchase Items') }}</h4>
+                    <h4>{{ ___('Invoice Items') }}</h4>
                     <div>
-                        <h4 class="d-inline">{{ ___('Supplier Name') }}:</h4>
-                        <p class="d-inline"><strong>{{ $purchase->supplier->name }}</strong></p>
+                        <h4 class="d-inline">{{ ___('Customer Name') }}:</h4>
+                        <p class="d-inline"><strong>{{ $invoice?->customer?->name }}</strong></p>
                     </div>
                 </div>
                 <table class="table">
@@ -18,17 +18,15 @@
                             <th>{{ ___('Product') }}</th>
                             <th>{{ ___('Quantity') }}</th>
                             <th>{{ ___('Unit Price') }}</th>
-                            <th>{{ ___('Description') }}</th>
                             <th>{{ ___('Total') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($purchase->purchaseDetails as $detail)
+                        @foreach ($invoice->invoiceDetails as $detail)
                             <tr>
-                                <td>{{ $detail->product->name }}</td>
+                                <td>{{ $detail?->product?->name }}</td>
                                 <td>{{ $detail->quantity }}</td>
                                 <td>{{ $detail->unit_price }}</td>
-                                <td>{{ Str::limit($detail->description, 10) }}</td>
                                 <td>{{ $detail->price }}</td>
                             </tr>
                         @endforeach
@@ -37,10 +35,7 @@
 
                 <div class="row gutters-sm d-flex justify-content-between mt-2">
                     <div class="col-md-6">
-                        <strong>{{ ___('Purchase Date') }}:</strong> {{ $purchase->purchase_date }}
-                    </div>
-                    <div class="col-md-6">
-                        <strong>{{ ___('Total Price') }}:</strong> {{ $purchase->total_price }}
+                        <strong>{{ ___('Invoice Date') }}:</strong> {{ $invoice->invoice_date }}
                     </div>
                 </div>
             </div>

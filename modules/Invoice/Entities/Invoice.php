@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Invoice\Entities\InvoiceDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Customer\Entities\Customer;
 
 class Invoice extends Model
 {
@@ -14,6 +15,7 @@ class Invoice extends Model
 
     protected $fillable = [
         'invoice_no',
+        'customer_id',
         'date',
         'description',
         'status',
@@ -46,6 +48,11 @@ class Invoice extends Model
         return $this->hasMany(InvoiceDetail::class);
     }
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -54,6 +61,11 @@ class Invoice extends Model
     public function editor()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function getInvoiceDateAttribute()
+    {
+        return $this->date->format('Y-m-d');
     }
 
     /**

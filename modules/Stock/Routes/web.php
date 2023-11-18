@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Stock\Http\Controllers\StockController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,6 @@
 |
 */
 
-Route::prefix('stock')->group(function() {
-    Route::get('/', 'StockController@index');
+Route::prefix('admin/stock')->as('admin.stock.')->group(function () {
+    Route::get('/', [StockController::class, 'index'])->name('index');
 });

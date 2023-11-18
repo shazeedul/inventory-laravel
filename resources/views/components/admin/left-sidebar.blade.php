@@ -129,6 +129,21 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Stock --}}
+            @if (module_active('stock') && can('stock_management'))
+                <x-admin.nav-title title="Stock" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Stock')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.stock.index') }}">
+                        @localize('All Stock')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             @if (can('permission_management') ||
                     can('role_read') ||
                     can('user_management') ||
