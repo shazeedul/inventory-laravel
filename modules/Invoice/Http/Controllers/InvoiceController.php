@@ -23,7 +23,6 @@ class InvoiceController extends Controller
         // set the request middleware for the controller
         $this->middleware('request:ajax', ['only' => ['destroy', 'approve']]);
         // set the strip scripts tag middleware for the controller
-        // $this->middleware('strip_scripts_tag')->only(['store', 'update']);
         $this->middleware(['auth', 'verified', 'permission:invoice_management']);
         \cs_set('theme', [
             'title' => 'Invoice Lists',
@@ -109,7 +108,7 @@ class InvoiceController extends Controller
 
             DB::commit();
 
-            Session::flush('success', 'Invoice Create Successfully.');
+            Session::flash('success', 'Invoice Create Successfully.');
 
             return redirect()->route('admin.invoice.index');
         } catch (\Exception $e) {

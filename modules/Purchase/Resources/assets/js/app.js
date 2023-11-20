@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var option = "";
         option += `<option value="">Select Product</option>`;
         products.forEach(function (product) {
-            option += `<option value="${product.id}">${product.name}</option>`;
+            option += `<option value="${product.id}">${product.name} -- ${product.category.name} (${product.unit.name})</option>`;
         });
         $(`#product_id_${count}`).html(option);
 

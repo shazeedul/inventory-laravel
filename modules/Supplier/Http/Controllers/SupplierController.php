@@ -94,7 +94,7 @@ class SupplierController extends Controller
 
         Supplier::create($data);
 
-        return redirect()->route('admin.supplier.index')->with('success', 'Supplier created successfully.');
+        return response()->success('', 'Supplier created successfully.');
     }
 
     /**
@@ -138,7 +138,7 @@ class SupplierController extends Controller
 
         $supplier->update($data);
 
-        return redirect()->route('admin.supplier.index')->with('success', 'Supplier updated successfully.');
+        return response()->success('', 'Supplier updated successfully.');
     }
 
     /**
@@ -150,7 +150,7 @@ class SupplierController extends Controller
     {
         $supplier->delete();
 
-        return response()->success('', 'Supplier deleted successfully.',200);
+        return response()->success('', 'Supplier deleted successfully.', 200);
     }
 
     /**

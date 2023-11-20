@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 existingProductIds.push(productId);
             }
         });
-        
+
         html += "<tr>";
         html += `<td><select name="product_id[]" class="form-control product_id" id="product_id_${count}" onchange="getProduct(${count})"></select></td>`;
         html += `<td><input type="text" class="form-control form-number-input" id="category_${count}" readonly /></td>`;
@@ -49,10 +49,15 @@ document.addEventListener("DOMContentLoaded", function () {
     $(document).on("click", ".removeRow", function () {
         // Check if this is not the last row
         if ($("#invoiceItem tr").length > 1) {
-            var removedProductId = $(this).closest("tr").find('.product_id').val();
+            var removedProductId = $(this)
+                .closest("tr")
+                .find(".product_id")
+                .val();
 
             // Remove the product ID from existingProductIds array
-            existingProductIds = existingProductIds.filter(id => id !== removedProductId);
+            existingProductIds = existingProductIds.filter(
+                (id) => id !== removedProductId
+            );
 
             // Remove the row
             $(this).closest("tr").remove();
@@ -93,9 +98,16 @@ function getProduct(count) {
     $(`#category_${count}`).val(product.category.name);
     $(`#unit_${count}`).val(product.unit.name);
     $(`#stock_${count}`).val(product.quantity);
-    if (product.quantity == 0 || product.quantity < 1 || product.quantity == 0.00) {
-        $(`#quantity_${count}`).attr('readonly', 'readonly');
-        $(`#unit_price_${count}`).attr('readonly', 'readonly');
+    if (
+        product.quantity == 0 ||
+        product.quantity < 1 ||
+        product.quantity == 0.0
+    ) {
+        $(`#quantity_${count}`).attr("readonly", "readonly");
+        $(`#unit_price_${count}`).attr("readonly", "readonly");
+    } else {
+        $(`#quantity_${count}`).removeAttr("readonly", "readonly");
+        $(`#unit_price_${count}`).removeAttr("readonly", "readonly");
     }
 }
 

@@ -7,7 +7,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Product;
 use Illuminate\Support\Facades\Session;
-use Modules\Category\Entities\Category;
 use Modules\Purchase\Entities\Purchase;
 use Modules\Supplier\Entities\Supplier;
 use Illuminate\Contracts\Support\Renderable;
@@ -22,10 +21,10 @@ class PurchaseController extends Controller
     public function __construct()
     {
         // set the request middleware for the controller
+        $this->middleware(['auth', 'verified', 'permission:purchase_management']);
         $this->middleware('request:ajax', ['only' => ['destroy', 'approve']]);
         // set the strip scripts tag middleware for the controller
         // $this->middleware('strip_scripts_tag')->only(['store', 'update']);
-        $this->middleware(['auth', 'verified', 'permission:purchase_management']);
         \cs_set('theme', [
             'title' => 'Purchase Lists',
             'back' => \back_url(),
@@ -118,13 +117,13 @@ class PurchaseController extends Controller
 
             DB::commit();
 
-            Session::flush('success', 'Purchase Create Successfully.');
+            Session::flash('success', 'Purchase Create Successfully.');
 
-            return redirect()->route('admin.purchase.index');
+            return \redirect()->route('admin.purchase.index');
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            return redirect()->back()->withInput()->withErrors('Some thing wrong.' . $th->getMessage());
+            return \redirect()->back()->withInput()->withErrors('Some thing wrong.' . $th->getMessage());
         }
     }
 
@@ -149,10 +148,6 @@ class PurchaseController extends Controller
      */
     public function edit(Purchase $purchase)
     {
-        \cs_set('theme', [
-            'update' => route(config('theme.rprefix') . '.update', $purchase->id),
-        ]);
-
         cs_set('theme', [
             'title' => 'Edit Purchase',
             'description' => 'Editing Purchase.',
@@ -170,6 +165,7 @@ class PurchaseController extends Controller
                     'link' => false,
                 ],
             ],
+            'update' => route(config('theme.rprefix') . '.update', $purchase->id),
         ]);
 
         // dd($purchase->with('purchaseDetails')->first());
@@ -225,11 +221,11 @@ class PurchaseController extends Controller
             }
 
             DB::commit();
-            Session::flush('success', 'Purchase Update Successfully.');
-            return redirect()->route('admin.purchase.index');
+            Session::flash('success', 'Purchase Update Successfully.');
+            return \redirect()->route('admin.purchase.index');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->withInput()->withErrors('Some thing wrong.' . $th->getMessage());
+            return \redirect()->back()->withInput()->withErrors('Some thing wrong.' . $th->getMessage());
         }
     }
 

@@ -27,6 +27,5 @@ class StatusCheck
         }
 
         return $next($request);
-
     }
 }

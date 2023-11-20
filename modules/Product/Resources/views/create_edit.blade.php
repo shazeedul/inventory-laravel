@@ -1,6 +1,6 @@
 <form action="{{ config('theme.update') ?? route(config('theme.rprefix') . '.store') }}" method="POST"
     class="needs-validation modal-content" novalidate="novalidate" enctype="multipart/form-data"
-    onsuumit="suumitFormAxios(event)">
+    onsubmit="submitFormAxios(event)">
     @csrf
     @if (config('theme.update'))
         @method('PUT')
