@@ -16,5 +16,5 @@ use Modules\Invoice\Http\Controllers\InvoiceController;
 
 Route::prefix('admin/invoice')->as('admin.invoice.')->group(function () {
     Route::resource('/', InvoiceController::class)->parameter('', 'invoice');
-    Route::post('{invoice}/approve', [InvoiceController::class, 'approve'])->name('approve');
+    Route::get('{invoice}/approve', [InvoiceController::class, 'approve'])->name('approve');
 });

@@ -21,7 +21,7 @@ class InvoiceController extends Controller
     public function __construct()
     {
         // set the request middleware for the controller
-        $this->middleware('request:ajax', ['only' => ['destroy', 'approve']]);
+        $this->middleware('request:ajax', ['only' => ['destroy']]);
         // set the strip scripts tag middleware for the controller
         $this->middleware(['auth', 'verified', 'permission:invoice_management']);
         \cs_set('theme', [
@@ -162,5 +162,18 @@ class InvoiceController extends Controller
         $invoice->delete();
 
         return response()->success('', 'Invoice deleted successfully.');
+    }
+
+    /**
+     * Approve the specified resource from storage.
+     * @param Invoice  $invoice
+     * @return Renderable
+     */
+    public function approve(Invoice $invoice)
+    {
+        $invoice = $invoice->with(['invoiceDetail' => function ($q) {
+            $q->with('product:id,name,quantity');
+        }, 'customer']);
+        return view('invoice::approve', ['invoice' => $invoice]);
     }
 }

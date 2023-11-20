@@ -31,7 +31,7 @@ class InvoiceDataTable extends DataTable
                 $button = '';
                 $button .= '<a href="javascript:void(0);" class="btn btn-primary btn-sm my-1 mx-1" onclick="' . "axiosModal('" . route(config('theme.rprefix') . '.show', $query->id) . '\')"><i class="fa fa-eye"></i></a>';
                 if ($query->status == 0) {
-                    // $button .= '<a href="javascript:void(0);" class="btn btn-success bg-success text-white btn-sm my-1 mx-1" onclick="' . "showApproveAlert('" . route(config('theme.rprefix') . '.approve', $query->id) . '\')"  title="' . __('Approve') . '"><i class="fa fa-check"></i></a>';
+                    $button .= '<a href="' . route(config('theme.rprefix') . '.approve', $query->id) . '" class="btn btn-success bg-success text-white btn-sm my-1 mx-1" title="' . __('Approve') . '"><i class="fa fa-check"></i></a>';
                     // $button .= '<a href="' . route(config('theme.rprefix') . '.edit', $query->id) . '" class="btn btn-secondary btn-sm my-1 mx-1" ><i class="fa fa-edit"></i></a>';
                     $button .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="' . "delete_modal('" . route(config('theme.rprefix') . '.destroy', $query->id) . '\')"  title="' . __('Delete') . '"><i class="fa fa-trash"></i></a>';
                 }
