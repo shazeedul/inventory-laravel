@@ -1,5 +1,5 @@
 {{-- <div class="table-responsive"> --}}
-{{ $dataTable->table() }}
+{!! $dataTable->table(['class' => 'table table-bordered'], true) !!}
 {{-- </div> --}}
 
 @push('lib-styles')

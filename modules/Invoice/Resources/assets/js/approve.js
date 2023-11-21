@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             success: function (res) {
                 if (res.success) {
-                    window.location = res.responseJSON.redirect_url;
+                    toastr.success(res.message);
+                    window.location = res.data.redirect_url;
                 }
             },
             error: function (err) {

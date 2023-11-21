@@ -223,6 +223,6 @@ class InvoiceController extends Controller
             $invoiceDetail->product->decrement('quantity', $invoiceDetail->quantity);
         }
 
-        return response()->success(['redirect_url' => route('admin.invoice.index'), 'Invoice approve successfully.']);
+        return response()->success(['redirect_url' => route('admin.invoice.index')], 'Invoice approve successfully.');
     }
 }
