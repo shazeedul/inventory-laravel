@@ -166,14 +166,63 @@ class InvoiceController extends Controller
 
     /**
      * Approve the specified resource from storage.
-     * @param Invoice  $invoice
+     * @param $invoice
      * @return Renderable
      */
-    public function approve(Invoice $invoice)
+    public function approveList($invoice)
     {
-        $invoice = $invoice->with(['invoiceDetail' => function ($q) {
-            $q->with('product:id,name,quantity');
-        }, 'customer']);
+        cs_set('theme', [
+            'title' => 'Invoice approve list',
+            'description' => 'Invoice approve list.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Invoice Lists',
+                    'link' => route('admin.invoice.index'),
+                ],
+                [
+                    'name' => 'Invoice approve list',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        $invoice = Invoice::with(['invoiceDetails' => function ($q) {
+            $q->with(['product:id,name,quantity']);
+        }, 'customer'])->findOrFail($invoice);
+
         return view('invoice::approve', ['invoice' => $invoice]);
+    }
+
+    public function approve($invoice)
+    {
+        $invoice = Invoice::findOrFail($invoice);
+        // check invoice already approve
+        if ($invoice->status == 1) {
+            return response()->error('', 'Invoice already approved.');
+        }
+
+        $invoice->with(['invoiceDetails' => function ($q) {
+            $q->with(['product:id,name,quantity']);
+        }]);
+
+        // check invoice details data each product quantity not getter then item quantity
+        foreach ($invoice->invoiceDetails as $invoiceDetail) {
+            if ($invoiceDetail->product->quantity < $invoiceDetail->quantity) {
+                return response()->error('', 'Product quantity not getter then item quantity.');
+            }
+        }
+
+        // update invoice status
+        $invoice->update(['status' => 1]);
+        // decrease product quantity after approved
+        foreach ($invoice->invoiceDetails as $invoiceDetail) {
+            $invoiceDetail->product->decrement('quantity', $invoiceDetail->quantity);
+        }
+
+        return response()->success(['redirect_url' => route('admin.invoice.index'), 'Invoice approve successfully.']);
     }
 }
