@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Modules\Account\Http\Controllers\FinancialYearController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +14,6 @@
 |
 */
 
-Route::prefix('account')->group(function() {
-    Route::get('/', 'AccountController@index');
+Route::prefix('admin/account')->as('admin.account.')->group(function () {
+    Route::get('/financial-year', [FinancialYearController::class, 'index'])->name('financial-year.index');
 });

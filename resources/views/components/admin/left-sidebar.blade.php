@@ -18,6 +18,21 @@
                     @localize('Dashboard')
                 </span>
             </x-admin.nav-link>
+            {{-- Account --}}
+            @if (module_active('account') && can('account_management'))
+                <x-admin.nav-title title="Account" />
+                <x-admin.multi-nav>
+                    @slot('title')
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">
+                            @localize('Account')
+                        </span>
+                    @endslot
+                    <x-admin.nav-link href="{{ route('admin.account.financial-year.index') }}">
+                        @localize('Financial Year')
+                    </x-admin.nav-link>
+                </x-admin.multi-nav>
+            @endif
             {{-- Supplier --}}
             @if (module_active('supplier') && can('supplier_management'))
                 <x-admin.nav-title title="Supplier" />

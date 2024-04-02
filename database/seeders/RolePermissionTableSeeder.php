@@ -54,6 +54,9 @@ class RolePermissionTableSeeder extends Seeder
             'Backup' => [
                 'backup_management',
             ],
+            'Account' => [
+                'account_management',
+            ],
             'Supplier' => [
                 'supplier_management',
             ],
