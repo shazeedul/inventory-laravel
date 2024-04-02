@@ -1,0 +1,23 @@
+{
+    "name": "shazeeduldev/account",
+    "description": "",
+    "authors": [
+        {
+            "name": "SYED SHAZEEDUL ISLAM",
+            "email": "info@shazeedul.dev"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Account\\": ""
+        }
+    }
+}

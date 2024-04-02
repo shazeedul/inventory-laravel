@@ -210,11 +210,11 @@ class InvoiceController extends Controller
         }]);
 
         // check invoice details data each product quantity not getter then item quantity
-        foreach ($invoice->invoiceDetails as $invoiceDetail) {
-            if ($invoiceDetail->product->quantity < $invoiceDetail->quantity) {
-                return response()->error('', 'Product quantity not getter then item quantity.');
-            }
-        }
+        // foreach ($invoice->invoiceDetails as $invoiceDetail) {
+        //     if ($invoiceDetail->product->quantity < $invoiceDetail->quantity) {
+        //         return response()->error('', 'Product quantity not getter then item quantity.');
+        //     }
+        // }
 
         // update invoice status
         $invoice->update(['status' => 1]);

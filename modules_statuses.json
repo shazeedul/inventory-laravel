@@ -14,5 +14,6 @@
     "Category": true,
     "Purchase": true,
     "Invoice": true,
-    "Stock": true
+    "Stock": true,
+    "Account": true
 }
