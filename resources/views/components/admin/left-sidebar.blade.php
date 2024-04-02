@@ -33,9 +33,10 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- POS Segment --}}
+            <x-admin.nav-title title="POS Management" />
             {{-- Supplier --}}
             @if (module_active('supplier') && can('supplier_management'))
-                <x-admin.nav-title title="Supplier" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
@@ -50,7 +51,6 @@
             @endif
             {{-- Customer --}}
             @if (module_active('customer') && can('customer_management'))
-                <x-admin.nav-title title="Customer" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
@@ -65,7 +65,6 @@
             @endif
             {{-- Unit --}}
             @if (module_active('unit') && can('unit_management'))
-                <x-admin.nav-title title="Unit" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
@@ -80,7 +79,6 @@
             @endif
             {{-- Category --}}
             @if (module_active('category') && can('category_management'))
-                <x-admin.nav-title title="Category" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
@@ -95,7 +93,6 @@
             @endif
             {{-- Product --}}
             @if (module_active('product') && can('product_management'))
-                <x-admin.nav-title title="Product" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
@@ -110,7 +107,6 @@
             @endif
             {{-- Purchase --}}
             @if (module_active('purchase') && can('purchase_management'))
-                <x-admin.nav-title title="Purchase" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
@@ -128,7 +124,6 @@
             @endif
             {{-- Invoice --}}
             @if (module_active('invoice') && can('invoice_management'))
-                <x-admin.nav-title title="Invoice" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
@@ -144,9 +139,10 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
+            {{-- Report --}}
+            <x-admin.nav-title title="Report" />
             {{-- Stock --}}
             @if (module_active('stock') && can('stock_management'))
-                <x-admin.nav-title title="Stock" />
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>
