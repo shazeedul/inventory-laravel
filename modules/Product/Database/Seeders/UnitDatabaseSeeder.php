@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Unit\Database\Seeders;
+namespace Modules\Product\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\Unit\Entities\Unit;
+use Modules\Product\Entities\Unit;
 use Illuminate\Database\Eloquent\Model;
 
 class UnitDatabaseSeeder extends Seeder

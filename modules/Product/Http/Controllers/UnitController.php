@@ -1,12 +1,11 @@
 <?php
 
-namespace Modules\Unit\Http\Controllers;
+namespace Modules\Product\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modules\Unit\Entities\Unit;
+use Modules\Product\Entities\Unit;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Session;
-use Modules\Unit\DataTables\UnitDataTable;
+use Modules\Product\DataTables\UnitDataTable;
 use Illuminate\Contracts\Support\Renderable;
 
 class UnitController extends Controller
@@ -48,7 +47,7 @@ class UnitController extends Controller
             'description' => 'Display a listing of units.',
         ]);
 
-        return $dataTable->render('unit::index');
+        return $dataTable->render('product::unit.index');
     }
 
     /**
@@ -76,7 +75,7 @@ class UnitController extends Controller
             ],
         ]);
 
-        return view('unit::create_edit');
+        return view('product::unit.create_edit');
     }
 
     /**
@@ -116,7 +115,7 @@ class UnitController extends Controller
             'update' => route(config('theme.rprefix') . '.update', $unit->id),
         ]);
 
-        return view('unit::create_edit', ['item' => $unit]);
+        return view('product::unit.create_edit', ['item' => $unit]);
     }
 
     /**

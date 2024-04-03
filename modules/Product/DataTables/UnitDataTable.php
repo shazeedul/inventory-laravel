@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\Unit\DataTables;
+namespace Modules\Product\DataTables;
 
-use Modules\Unit\Entities\Unit;
+use Modules\Product\Entities\Unit;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;

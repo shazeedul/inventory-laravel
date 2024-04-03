@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Product\Http\Controllers\UnitController;
 use Modules\Product\Http\Controllers\ProductController;
 use Modules\Product\Http\Controllers\CategoryController;
 
@@ -23,4 +24,9 @@ Route::prefix('admin/product')->as('admin.product.')->group(function () {
 Route::prefix('admin/category')->as('admin.category.')->group(function () {
     Route::resource('/', CategoryController::class)->parameter('', 'category');
     Route::post('{category}/status-update', [CategoryController::class, 'statusUpdate'])->name('status-update');
+});
+
+Route::prefix('admin/unit')->as('admin.unit.')->group(function () {
+    Route::resource('/', UnitController::class)->parameter('', 'unit');
+    Route::post('{unit}/status-update', [UnitController::class, 'statusUpdate'])->name('status-update');
 });

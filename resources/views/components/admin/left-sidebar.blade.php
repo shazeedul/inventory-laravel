@@ -63,48 +63,32 @@
                     </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
-            {{-- Unit --}}
-            @if (module_active('unit') && can('unit_management'))
-                <x-admin.multi-nav>
-                    @slot('title')
-                        <i class="link-icon" data-feather="box"></i>
-                        <span class="link-title">
-                            @localize('Unit')
-                        </span>
-                    @endslot
-                    <x-admin.nav-link href="{{ route('admin.unit.index') }}">
-                        @localize('All Unit')
-                    </x-admin.nav-link>
-                </x-admin.multi-nav>
-            @endif
-            {{-- Category --}}
-            @if (module_active('product') && can('category_management'))
-                <x-admin.multi-nav>
-                    @slot('title')
-                        <i class="link-icon" data-feather="box"></i>
-                        <span class="link-title">
-                            @localize('Category')
-                        </span>
-                    @endslot
-                    <x-admin.nav-link href="{{ route('admin.category.index') }}">
-                        @localize('All Category')
-                    </x-admin.nav-link>
-                </x-admin.multi-nav>
-            @endif
-            {{-- Product --}}
-            @if (module_active('product') && can('product_management'))
-                <x-admin.multi-nav>
-                    @slot('title')
-                        <i class="link-icon" data-feather="box"></i>
-                        <span class="link-title">
-                            @localize('Product')
-                        </span>
-                    @endslot
+            <x-admin.multi-nav>
+                @slot('title')
+                    <i class="link-icon" data-feather="box"></i>
+                    <span class="link-title">
+                        @localize('Product')
+                    </span>
+                @endslot
+                {{-- Product --}}
+                @if (module_active('product') && can('product_management'))
                     <x-admin.nav-link href="{{ route('admin.product.index') }}">
                         @localize('All Product')
                     </x-admin.nav-link>
-                </x-admin.multi-nav>
-            @endif
+                @endif
+                {{-- Category --}}
+                @if (module_active('product') && can('category_management'))
+                    <x-admin.nav-link href="{{ route('admin.category.index') }}">
+                        @localize('All Category')
+                    </x-admin.nav-link>
+                @endif
+                {{-- Unit --}}
+                @if (module_active('product') && can('unit_management'))
+                    <x-admin.nav-link href="{{ route('admin.unit.index') }}">
+                        @localize('All Unit')
+                    </x-admin.nav-link>
+                @endif
+            </x-admin.multi-nav>
             {{-- Purchase --}}
             @if (module_active('purchase') && can('purchase_management'))
                 <x-admin.multi-nav>

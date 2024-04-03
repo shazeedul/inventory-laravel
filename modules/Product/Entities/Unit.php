@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Unit\Entities;
+namespace Modules\Product\Entities;
 
 use App\Models\User;
 use App\Traits\DataTableActionBtn;
