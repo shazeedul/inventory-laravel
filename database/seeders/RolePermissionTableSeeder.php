@@ -56,6 +56,7 @@ class RolePermissionTableSeeder extends Seeder
             ],
             'Account' => [
                 'account_management',
+                'financial_year_management',
             ],
             'Supplier' => [
                 'supplier_management',
@@ -63,13 +64,9 @@ class RolePermissionTableSeeder extends Seeder
             'Customer' => [
                 'customer_management',
             ],
-            'Unit' => [
-                'unit_management',
-            ],
-            'Category' => [
-                'category_management',
-            ],
             'Product' => [
+                'unit_management',
+                'category_management',
                 'product_management',
             ],
             'Purchase' => [
