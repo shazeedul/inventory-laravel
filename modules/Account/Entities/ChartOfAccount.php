@@ -19,6 +19,7 @@ class ChartOfAccount extends Model
         'is_budget',
         'is_depreciation',
         'is_subtype',
+        'account_sub_type_id',
         'is_stock',
         'is_fixed_asset_schedule',
         'depreciation_rate',

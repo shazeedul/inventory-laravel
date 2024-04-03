@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('is_budget')->default(false);
             $table->boolean('is_depreciation')->default(false);
             $table->boolean('is_subtype')->default(false);
+            $table->unsignedBigInteger('account_sub_type_id')->nullable();
             $table->boolean('is_stock')->default(false);
             $table->boolean('is_fixed_asset_schedule')->default(false);
             $table->unsignedBigInteger('depreciation_rate')->nullable();
