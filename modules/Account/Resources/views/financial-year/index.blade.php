@@ -2,7 +2,7 @@
     <x-card>
         <x-slot name="actions">
             <a href="javascript:void(0);" class="btn btn-primary btn-sm me-2"
-                onclick="closeYearModal('{{ route(config('theme.rprefix') . '.close') }}')"><i
+                onclick="axiosModal('{{ route(config('theme.rprefix') . '.close') }}')"><i
                     class="fa fa-close"></i>&nbsp;@localize('Close Financial Year')</a>
             <a href="javascript:void(0);" class="btn btn-primary btn-sm"
                 onclick="axiosModal('{{ route(config('theme.rprefix') . '.create') }}')"><i
@@ -14,13 +14,4 @@
         </div>
     </x-card>
     <div id="page-axios-data" data-table-id="#financial_year-table"></div>
-    @push('js')
-        <script>
-            function closeYearModal(url) {
-                console.log(url);
-                alert('Hello');
-                axiosModal(url);
-            }
-        </script>
-    @endpush
 </x-app-layout>
