@@ -4,6 +4,7 @@ namespace Modules\Customer\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Account\Entities\AccountSubCode;
 use Modules\Customer\Entities\Customer;
 
 class CustomerDatabaseSeeder extends Seeder
@@ -45,7 +46,14 @@ class CustomerDatabaseSeeder extends Seeder
         ];
 
         foreach ($customers as $customer) {
-            Customer::create($customer);
+            $cus = Customer::create($customer);
+            AccountSubCode::create([
+                'account_sub_type_id' => 3,
+                'reference_id' => $cus->id,
+                'code' => str_pad($cus->id, 10, '0', STR_PAD_LEFT),
+                'name' => $cus->name,
+                'status' => true,
+            ]);
         }
     }
 }

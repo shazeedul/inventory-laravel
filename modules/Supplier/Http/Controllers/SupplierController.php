@@ -2,11 +2,12 @@
 
 namespace Modules\Supplier\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Supplier\DataTables\SupplierDataTable;
 use Modules\Supplier\Entities\Supplier;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\AccountSubCode;
+use Modules\Supplier\DataTables\SupplierDataTable;
 
 class SupplierController extends Controller
 {
@@ -92,7 +93,14 @@ class SupplierController extends Controller
             'address' => 'nullable|string|max:255',
         ]);
 
-        Supplier::create($data);
+        $supplier = Supplier::create($data);
+        AccountSubCode::create([
+            'account_sub_type_id' => 4,
+            'reference_id' => $supplier->id,
+            'code' => str_pad($supplier->id, 10, '0', STR_PAD_LEFT),
+            'name' => $supplier->name,
+            'status' => true,
+        ]);
 
         return response()->success('', 'Supplier created successfully.');
     }

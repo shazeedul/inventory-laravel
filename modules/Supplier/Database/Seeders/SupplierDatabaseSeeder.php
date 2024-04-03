@@ -5,6 +5,7 @@ namespace Modules\Supplier\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Supplier\Entities\Supplier;
+use Modules\Account\Entities\AccountSubCode;
 
 class SupplierDatabaseSeeder extends Seeder
 {
@@ -45,7 +46,14 @@ class SupplierDatabaseSeeder extends Seeder
         ];
 
         foreach ($suppliers as $supplier) {
-            Supplier::create($supplier);
+            $sup = Supplier::create($supplier);
+            AccountSubCode::create([
+                'account_sub_type_id' => 4,
+                'reference_id' => $sup->id,
+                'code' => str_pad($sup->id, 10, '0', STR_PAD_LEFT),
+                'name' => $sup->name,
+                'status' => true,
+            ]);
         }
     }
 }

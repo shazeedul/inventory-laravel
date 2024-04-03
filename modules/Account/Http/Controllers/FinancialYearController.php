@@ -18,7 +18,7 @@ class FinancialYearController extends Controller
         // set the request middleware for the controller
         $this->middleware('request:ajax', ['only' => ['destroy']]);
         // set the strip scripts tag middleware for the controller
-        $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        $this->middleware('strip_scripts_tag')->only(['store', 'update', 'closeStore']);
         $this->middleware(['auth', 'verified', 'permission:financial_year_management']);
         \cs_set('theme', [
             'title' => 'Financial Year Lists',
