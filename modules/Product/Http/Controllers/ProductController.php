@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Modules\Unit\Entities\Unit;
 use Illuminate\Routing\Controller;
 use Modules\Product\Entities\Product;
-use Modules\Category\Entities\Category;
+use Modules\Product\Entities\Category;
 use Modules\Supplier\Entities\Supplier;
 use Illuminate\Contracts\Support\Renderable;
 use Modules\Product\DataTables\ProductDataTable;
@@ -50,7 +50,7 @@ class ProductController extends Controller
             'description' => 'Display a listing of products.',
         ]);
 
-        return $dataTable->render('product::index');
+        return $dataTable->render('product::product.index');
     }
 
     /**
@@ -81,7 +81,7 @@ class ProductController extends Controller
         $units = Unit::where('status', true)->get();
         $categories = Category::where('status', true)->get();
 
-        return view('product::create_edit', compact('units', 'categories'));
+        return view('product::product.create_edit', compact('units', 'categories'));
     }
 
     /**
@@ -126,7 +126,7 @@ class ProductController extends Controller
         $units = Unit::where('status', true)->get();
         $categories = Category::where('status', true)->get();
 
-        return view('product::create_edit', ['item' => $product, 'units' => $units, 'categories' => $categories]);
+        return view('product::product.create_edit', ['item' => $product, 'units' => $units, 'categories' => $categories]);
     }
 
     /**

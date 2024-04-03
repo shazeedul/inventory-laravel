@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Category\DataTables;
+namespace Modules\Product\DataTables;
 
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Modules\Category\Entities\Category;
+use Modules\Product\Entities\Category;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;

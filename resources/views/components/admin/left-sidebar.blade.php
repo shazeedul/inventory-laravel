@@ -78,7 +78,7 @@
                 </x-admin.multi-nav>
             @endif
             {{-- Category --}}
-            @if (module_active('category') && can('category_management'))
+            @if (module_active('product') && can('category_management'))
                 <x-admin.multi-nav>
                     @slot('title')
                         <i class="link-icon" data-feather="box"></i>

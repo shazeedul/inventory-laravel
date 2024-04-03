@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Category\Http\Controllers;
+namespace Modules\Product\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Category\DataTables\CategoryDataTable;
-use Modules\Category\Entities\Category;
+use Modules\Product\DataTables\CategoryDataTable;
+use Modules\Product\Entities\Category;
 
 class CategoryController extends Controller
 {
@@ -36,7 +36,7 @@ class CategoryController extends Controller
             'rprefix' => 'admin.category',
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -47,7 +47,7 @@ class CategoryController extends Controller
             'description' => 'Display a listing of categories.',
         ]);
 
-        return $dataTable->render('category::index');
+        return $dataTable->render('product::category.index');
     }
 
     /**
@@ -74,8 +74,8 @@ class CategoryController extends Controller
                 ],
             ],
         ]);
-        
-        return view('category::create_edit');
+
+        return view('product::category.create_edit');
     }
 
     /**
@@ -115,7 +115,7 @@ class CategoryController extends Controller
             'update' => route(config('theme.rprefix') . '.update', $category->id),
         ]);
 
-        return view('category::create_edit', ['item' => $category]);
+        return view('product::category.create_edit', ['item' => $category]);
     }
 
     /**

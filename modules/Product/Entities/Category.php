@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Category\Entities;
+namespace Modules\Product\Entities;
 
+use App\Models\User;
 use App\Traits\DataTableActionBtn;
 use Illuminate\Support\Facades\Auth;
 use Modules\Product\Entities\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Category\Database\factories\CategoryFactory;
 
 class Category extends Model
 {
