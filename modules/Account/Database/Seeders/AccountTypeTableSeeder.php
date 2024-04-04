@@ -31,11 +31,11 @@ class AccountTypeTableSeeder extends Seeder
                 'created_at' => now(),
             ],
             3 => [
-                'name' => 'Expenditure',
+                'name' => 'Expense',
                 'created_at' => now(),
             ],
             4 => [
-                'name' => 'Owner Equity',
+                'name' => 'Owner Equity/Capital',
                 'created_at' => now(),
             ],
         ]);
