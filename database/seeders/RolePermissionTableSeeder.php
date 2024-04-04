@@ -38,6 +38,9 @@ class RolePermissionTableSeeder extends Seeder
                 'user_management',
                 'role_management',
                 'permission_management',
+                'sub_code_management',
+                'account_predefine_management',
+                'account_predefine_update',
             ],
 
             'Dashboard' => [

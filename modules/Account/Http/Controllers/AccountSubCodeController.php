@@ -5,16 +5,44 @@ namespace Modules\Account\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Account\DataTables\SubCodeDataTable;
 
 class AccountSubCodeController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // set the request middleware for the controller
+        $this->middleware('request:ajax', ['only' => ['destroy']]);
+        // set the strip scripts tag middleware for the controller
+        $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        $this->middleware(['auth', 'verified', 'permission:sub_code_management']);
+        \cs_set('theme', [
+            'title' => 'Sub Code Lists',
+            'back' => \back_url(),
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Sub Code Lists',
+                    'link' => false,
+                ],
+            ],
+            'rprefix' => 'admin.account.sub_code',
+        ]);
+    }
+
+    /**
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(SubCodeDataTable $dataTable)
     {
-        return view('account::index');
+        return $dataTable->render('account::sub_code.index');
     }
 
     /**

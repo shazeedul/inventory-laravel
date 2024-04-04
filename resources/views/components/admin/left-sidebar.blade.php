@@ -31,6 +31,12 @@
                     <x-admin.nav-link href="{{ route('admin.account.financial-year.index') }}">
                         @localize('Financial Year')
                     </x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.account.sub_code.index') }}">
+                        @localize('Sub Code')
+                    </x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.account.predefine.index') }}">
+                        @localize('Predefine')
+                    </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
             {{-- POS Segment --}}

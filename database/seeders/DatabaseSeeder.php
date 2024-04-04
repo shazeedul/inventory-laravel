@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Database\Seeders\RolePermissionTableSeeder;
+use Modules\Account\Database\Seeders\AccountDatabaseSeeder;
 use Modules\Setting\Database\Seeders\SettingSeeder;
 use Modules\Language\Database\Seeders\LanguageTableSeeder;
 use Modules\Customer\Database\Seeders\CustomerDatabaseSeeder;
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
             CustomerDatabaseSeeder::class,
             SupplierDatabaseSeeder::class,
             ProductDatabaseSeeder::class,
+            AccountDatabaseSeeder::class,
         ]);
         Artisan::call('optimize:clear');
     }
