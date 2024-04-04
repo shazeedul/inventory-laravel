@@ -93,16 +93,6 @@ class FinancialYearController extends Controller
     }
 
     /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      * @param FinancialYear $financialYear
      * @return Renderable
@@ -148,7 +138,6 @@ class FinancialYearController extends Controller
 
     /**
      * Close Financial Year
-     * @return Renderable
      */
     public function close()
     {
@@ -158,7 +147,7 @@ class FinancialYearController extends Controller
             'rprefix' => 'admin.account.financial-year',
         ]);
 
-        return view('account::financial-year.closing_year', ['financialYears' => FinancialYear::where('status', false)->get()]);
+        return view('account::financial-year.closing_year', ['financialYears' => FinancialYear::where('status', true)->get()]);
     }
 
     /**

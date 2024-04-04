@@ -16,7 +16,7 @@ use Modules\Account\Http\Controllers\FinancialYearController;
 
 Route::prefix('admin/account')->as('admin.account.')->group(function () {
     Route::name('financial-year.')->prefix('financial-year')->group(function () {
-        Route::resource('/', FinancialYearController::class)->parameter('', 'financialYear');
+        Route::resource('/', FinancialYearController::class)->parameter('', 'financialYear')->except('show');
         Route::get('/close', [FinancialYearController::class, 'close'])->name('close');
         Route::post('/close', [FinancialYearController::class, 'closeStore'])->name('close.store');
     });
