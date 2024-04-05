@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Account\Http\Controllers\FinancialYearController;
 use Modules\Account\Http\Controllers\AccountSubCodeController;
+use Modules\Account\Http\Controllers\ChartOfAccountController;
 use Modules\Account\Http\Controllers\AccountPredefineController;
 
 /*
@@ -27,4 +28,7 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
     });
     Route::get('/predefine', [AccountPredefineController::class, 'index'])->name('predefine.index');
     Route::post('/predefine', [AccountPredefineController::class, 'store'])->name('predefine.store');
+    Route::name('coa.')->prefix('coa')->group(function () {
+        Route::get('/', [ChartOfAccountController::class, 'index'])->name('index');
+    });
 });

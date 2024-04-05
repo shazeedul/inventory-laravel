@@ -5,16 +5,54 @@ namespace Modules\Account\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Account\Entities\AccountSubType;
+use Modules\Account\Entities\ChartOfAccount;
+use Modules\Account\Entities\Currency;
 
 class ChartOfAccountController extends Controller
 {
+    /**
+     * construct function
+     */
+    public function __construct()
+    {
+        // set the request middleware for the controller
+        $this->middleware('request:ajax', ['only' => ['destroy']]);
+        // set the strip scripts tag middleware for the controller
+        $this->middleware('strip_scripts_tag')->only(['store', 'update']);
+        $this->middleware(['auth', 'verified', 'permission:coa_management']);
+        \cs_set('theme', [
+            'title' => 'Chart Of Account',
+            'back' => \back_url(),
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Chart Of Account',
+                    'link' => false,
+                ],
+            ],
+            'rprefix' => 'admin.account.financial-year',
+        ]);
+    }
     /**
      * Display a listing of the resource.
      * @return Renderable
      */
     public function index()
     {
-        return view('account::index');
+        $accMainHead         = ChartOfAccount::where('is_active', 1)->where('head_level', 1)->where('parent_id', 0)->get();
+        $accSecondLabelHead  = ChartOfAccount::where('is_active', 1)->where('head_level', 2)->get();
+        $accHeadWithoutFands = ChartOfAccount::where('is_active', 1)
+            ->whereNot('head_level', 2)
+            ->whereNot('head_level', 1)->get();
+
+        $subTypes = AccountSubType::where('status', 1)->get();
+        $currencies = Currency::where('status', 1)->get();
+
+        return view('account::coa.index', compact('accMainHead', 'accSecondLabelHead',  'accHeadWithoutFands', 'subTypes'));
     }
 
     /**
