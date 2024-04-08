@@ -31,6 +31,9 @@
                     <x-admin.nav-link href="{{ route('admin.account.financial-year.index') }}">
                         @localize('Financial Year')
                     </x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.account.coa.index') }}">
+                        @localize('Chart Of Account')
+                    </x-admin.nav-link>
                     <x-admin.nav-link href="{{ route('admin.account.sub_code.index') }}">
                         @localize('Sub Code')
                     </x-admin.nav-link>
