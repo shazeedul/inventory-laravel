@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('lib-styles')
-        <link rel="stylesheet" href="{{ module_asset('account/css/theme/style.min.css') }}">
+        <link rel="stylesheet" href="{{ module_asset('account/themes/default/style.min.css') }}">
     @endpush
     @push('css')
         <style>
@@ -108,22 +108,33 @@
         <script>
             $(function() {
                 $('#jstree').jstree({
-                    core: {
-                        themes: {
-                            responsive: false,
-                            dots: true,
+                    'core': {
+                        'themes': {
+                            'responsive': false,
+                            'dots': true,
+                            'icons': true,
                         },
-                        check_callback: true,
+                        "check_callback": true
                     },
-                    types: {
+                    'types': {
                         "default": {
-                            icon: "fas fa-folder text-warning"
+                            'icon': "fas fa-folder text-warning"
                         },
-                        file: {
-                            icon: "fas fa-file text-info"
+                        'file': {
+                            'icon': "fas fa-file text-info"
                         }
                     },
-                    plugins: ['types']
+                    'plugins': ["types", "wholerow", "search"]
+                });
+                var to = false;
+                $('#treesearch').keyup(function() {
+                    if (to) {
+                        clearTimeout(to);
+                    }
+                    to = setTimeout(function() {
+                        var v = $('#treesearch').val();
+                        $('#jstree').jstree(true).search(v);
+                    }, 250);
                 });
             });
         </script>
