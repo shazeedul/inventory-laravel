@@ -76,22 +76,20 @@ class ChartOfAccountController extends Controller
 
     /**
      * Show the specified resource.
-     * @param int $id
-     * @return Renderable
+     * @param ChartOfAccount $chartOfAccount
      */
-    public function show($id)
+    public function show(ChartOfAccount $chartOfAccount)
     {
-        return view('account::show');
+        return response()->success($chartOfAccount);
     }
 
     /**
      * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
+     * @param ChartOfAccount $chartOfAccount
      */
-    public function edit($id)
+    public function edit(ChartOfAccount $chartOfAccount)
     {
-        return view('account::edit');
+        return response()->success('');
     }
 
     /**

@@ -28,7 +28,9 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
     });
     Route::get('/predefine', [AccountPredefineController::class, 'index'])->name('predefine.index');
     Route::post('/predefine', [AccountPredefineController::class, 'store'])->name('predefine.store');
-    Route::name('coa.')->prefix('coa')->group(function () {
+    Route::prefix('coa')->name('coa.')->group(function () {
         Route::get('/', [ChartOfAccountController::class, 'index'])->name('index');
+        Route::get('/edit/chartOfAccount}', [ChartOfAccountController::class, 'edit'])->name('edit');
+        Route::get('/show/{chartOfAccount}', [ChartOfAccountController::class, 'show'])->name('show');
     });
 });

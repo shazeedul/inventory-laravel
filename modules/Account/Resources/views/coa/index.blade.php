@@ -29,7 +29,7 @@
 
             .chart-form {
                 position: fixed;
-                top: 150px;
+                top: 180px;
                 background: #fdfbf4;
                 padding: 30px;
             }
@@ -45,58 +45,10 @@
                         <i class="typcn typcn-zoom-outline search__helper" data-sa-action="search-close"></i>
                     </div>
                 </div>
-                {{-- @include('accounts::coa.subblade.coatree') --}}
-                <div id="jstree">
-                    <ul>
-                        <li data-jstree='{ "opened" : true }'>{{ localize('COA') }}
-                            <ul>
-                                @forelse ($accMainHead as $acHeadKye => $accHeadValue)
-                                    <li data-jstree='{ "selected" : false }' data-id="{{ $accHeadValue->id }}">
-                                        {{ $accHeadValue->name }} - {{ $accHeadValue->code }}
-                                        @foreach ($accSecondLabelHead as $acSecondHeadKye => $accSecondHeadValue)
-                                            @if ($accSecondHeadValue->parent_id == $accHeadValue->id)
-                                                <ul>
-                                                    <li data-jstree='{ "selected" : false }'
-                                                        data-id="{{ $accSecondHeadValue->id }}">
-                                                        {{ $accSecondHeadValue->name }} -
-                                                        {{ $accSecondHeadValue->code }}
-                                                        @if ($accHeadWithoutFands->where('parent_id', $accSecondHeadValue->id)->isNotEmpty())
-                                                            @foreach ($accHeadWithoutFands->where('parent_id', $accSecondHeadValue->id) as $allOtherKey => $accHeadWithoutFansValue)
-                                                                <ul>
-                                                                    <li data-jstree='{ "selected" : false }'
-                                                                        data-id="{{ $accHeadWithoutFansValue->id }}">
-                                                                        {{ $accHeadWithoutFansValue->name }} -
-                                                                        {{ $accHeadWithoutFansValue->code }}
-                                                                        @if ($accHeadWithoutFands->where('parent_id', $accHeadWithoutFansValue->id)->isNotEmpty())
-                                                                            @foreach ($accHeadWithoutFands->where('parent_id', $accHeadWithoutFansValue->id) as $allFourthKey => $fourthLabelValue)
-                                                                                <ul>
-                                                                                    <li data-jstree='{ "selected" : false }'
-                                                                                        data-id="{{ $fourthLabelValue->id }}">
-                                                                                        {{ $fourthLabelValue->name }} -
-                                                                                        {{ $fourthLabelValue->code }}
-                                                                                    </li>
-                                                                                </ul>
-                                                                            @endforeach
-                                                                        @endif
-                                                                    </li>
-                                                                </ul>
-                                                            @endforeach
-                                                        @endif
-                                                    </li>
-                                                </ul>
-                                            @endif
-                                        @endforeach
-                                    </li>
-                                @empty
-                                    <li>@localize('No Data Found')</li>
-                                @endforelse
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                @include('account::coa.tree')
             </div>
             <div class="col-md-6 col-sm-12">
-                {{-- @include('accounts::coa.subblade.coafrom') --}}
+                @include('account::coa.form')
             </div>
         </div>
     </x-card>
@@ -116,15 +68,7 @@
                         },
                         "check_callback": true
                     },
-                    'types': {
-                        "default": {
-                            'icon': "fas fa-folder text-warning"
-                        },
-                        'file': {
-                            'icon': "fas fa-file text-info"
-                        }
-                    },
-                    'plugins': ["types", "wholerow", "search"]
+                    'plugins': ["wholerow", "search"]
                 });
                 var to = false;
                 $('#treesearch').keyup(function() {
@@ -138,5 +82,6 @@
                 });
             });
         </script>
+        <script src="{{ module_asset('account/js/app.js') }}"></script>
     @endpush
 </x-app-layout>
