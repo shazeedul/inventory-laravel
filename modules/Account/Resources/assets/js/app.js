@@ -57,7 +57,6 @@ function checkUpdate(id) {
         url: url,
         async: false,
         success: function (data) {
-            console.log(data.data);
             $("#addCoaFrom").html("");
             $("#editCoaFrom").html("");
             $("#deleteCoaFrom").html("");
