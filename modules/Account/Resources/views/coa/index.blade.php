@@ -28,10 +28,10 @@
             }
 
             .chart-form {
-                position: fixed;
-                top: 180px;
+                /* position: fixed;
+                                                                                                    top: 180px; */
                 background: #fdfbf4;
-                padding: 30px;
+                padding: 20px;
             }
         </style>
     @endpush
@@ -52,6 +52,7 @@
             </div>
         </div>
     </x-card>
+    <input type="hidden" id="accountSubType" value="{{ json_encode($subTypes) }}">
     @push('lib-scripts')
         <script src="{{ module_asset('account/js/jstree.min.js') }}"></script>
         <script src="{{ module_asset('account/js/tree-view.active.js') }}"></script>
@@ -83,5 +84,6 @@
             });
         </script>
         <script src="{{ module_asset('account/js/app.js') }}"></script>
+        <script src="{{ module_asset('account/js/load.js') }}"></script>
     @endpush
 </x-app-layout>

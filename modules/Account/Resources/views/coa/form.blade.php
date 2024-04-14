@@ -1,18 +1,19 @@
 <div class="chart-form" id="chart-form">
-    <form id="coaAddForm" action="#" method="POST">
+    <form id="coaAddForm" action="{{ route('admin.account.coa.store') }}" method="POST">
         @csrf
         <div id="addCoaFrom">
         </div>
     </form>
 
-    <form id="coaEditForm" action="#" method="POST">
+    <form id="coaEditForm" action="{{ route('admin.account.coa.update') }}" method="POST">
         @csrf
         <div id="editCoaFrom">
         </div>
     </form>
 
-    <form id="coaDeleteForm" action="#" method="POST">
+    <form id="coaDeleteForm" action="{{ route('admin.account.coa.destroy') }}" method="POST">
         @csrf
+        @method('delete')
         <div id="deleteCoaFrom">
         </div>
     </form>
