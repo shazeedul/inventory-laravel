@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Account\DataTables\SubCodeDataTable;
+use Modules\Account\Entities\AccountSubCode;
 
 class AccountSubCodeController extends Controller
 {
@@ -103,5 +104,16 @@ class AccountSubCodeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Get SubCode information by ChatOfAccount ID
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getSubCodeBySubType(Request $request)
+    {
+        $subCodes = AccountSubCode::where('account_sub_type_id', $request->subType)->where('status', true)->get(['id', 'name']);
+        return \response()->success($subCodes, localize('Sub Code List'), 200);
     }
 }

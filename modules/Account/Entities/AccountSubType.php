@@ -2,8 +2,8 @@
 
 namespace Modules\Account\Entities;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class AccountSubType extends Model
 {
@@ -14,4 +14,13 @@ class AccountSubType extends Model
         'name',
         'status',
     ];
+
+    /**
+     * Relation with AccountSubCode model.
+     *
+     */
+    public function accountSubCodes()
+    {
+        return $this->hasMany(AccountSubCode::class, 'account_sub_type_id', 'id');
+    }
 }

@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Account\Http\Controllers\FinancialYearController;
+use Modules\Account\Http\Controllers\AccountPredefineController;
 use Modules\Account\Http\Controllers\AccountSubCodeController;
 use Modules\Account\Http\Controllers\ChartOfAccountController;
-use Modules\Account\Http\Controllers\AccountPredefineController;
+use Modules\Account\Http\Controllers\FinancialYearController;
+use Modules\Account\Http\Controllers\OpeningBalanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +16,7 @@ use Modules\Account\Http\Controllers\AccountPredefineController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::prefix('admin/account')->as('admin.account.')->group(function () {
     Route::name('financial-year.')->prefix('financial-year')->group(function () {
@@ -25,6 +26,7 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
     });
     Route::name('sub_code.')->prefix('sub-code')->group(function () {
         Route::resource('/', AccountSubCodeController::class)->parameter('', 'subCode')->only('index');
+        Route::post('/sub_code/subType', [AccountSubCodeController::class, 'getSubCodeBySubType'])->name('getSubCodesBySubType');
     });
     Route::get('/predefine', [AccountPredefineController::class, 'index'])->name('predefine.index');
     Route::post('/predefine', [AccountPredefineController::class, 'store'])->name('predefine.store');
@@ -35,5 +37,9 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::get('/show/{chartOfAccount}', [ChartOfAccountController::class, 'show'])->name('show');
         Route::post('/update', [ChartOfAccountController::class, 'update'])->name('update');
         Route::delete('/destroy', [ChartOfAccountController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('opening-balance')->name('opening.balance.')->group(function () {
+        Route::resource('/', OpeningBalanceController::class)->parameter('', 'openingBalance')->except('show');
     });
 });

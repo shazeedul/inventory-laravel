@@ -38,10 +38,6 @@ class RolePermissionTableSeeder extends Seeder
                 'user_management',
                 'role_management',
                 'permission_management',
-                'sub_code_management',
-                'account_predefine_management',
-                'account_predefine_update',
-                'coa_management',
             ],
 
             'Dashboard' => [
@@ -61,6 +57,15 @@ class RolePermissionTableSeeder extends Seeder
             'Account' => [
                 'account_management',
                 'financial_year_management',
+                'predefine_account',
+                'account_predefine_update',
+                'sub_code_management',
+                'coa_management',
+                'opening_balance_management',
+                'opening_balance_create',
+                'opening_balance_update',
+                'opening_balance_delete',
+                'voucher_management',
             ],
             'Supplier' => [
                 'supplier_management',

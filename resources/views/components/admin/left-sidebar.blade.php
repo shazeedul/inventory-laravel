@@ -40,6 +40,9 @@
                     <x-admin.nav-link href="{{ route('admin.account.predefine.index') }}">
                         @localize('Predefine')
                     </x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.account.opening.balance.index') }}">
+                        @localize('Opening Balance')
+                    </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
             {{-- POS Segment --}}
