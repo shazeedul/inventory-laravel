@@ -19,7 +19,7 @@ class AccountPredefineController extends Controller
         $this->middleware('request:ajax', ['only' => ['destroy']]);
         // set the strip scripts tag middleware for the controller
         $this->middleware(['permission:account_predefine_update'])->only(['store']);
-        $this->middleware(['auth', 'verified', 'permission:account_predefine']);
+        $this->middleware(['auth', 'verified', 'permission:predefine_account']);
         \cs_set('theme', [
             'title' => 'Account Predefine Lists',
             'back' => \back_url(),

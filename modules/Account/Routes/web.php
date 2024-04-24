@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Account\DataTables\DebitVoucherDataTable;
 use Modules\Account\Http\Controllers\AccountPredefineController;
 use Modules\Account\Http\Controllers\AccountSubCodeController;
 use Modules\Account\Http\Controllers\ChartOfAccountController;
+use Modules\Account\Http\Controllers\DebitVoucherController;
 use Modules\Account\Http\Controllers\FinancialYearController;
 use Modules\Account\Http\Controllers\OpeningBalanceController;
 
@@ -41,5 +43,9 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
 
     Route::prefix('opening-balance')->name('opening.balance.')->group(function () {
         Route::resource('/', OpeningBalanceController::class)->parameter('', 'openingBalance')->except('show');
+    });
+
+    Route::prefix('voucher')->as('voucher.')->group(function(){
+        Route::get('/debit', [DebitVoucherController::class])
     });
 });
