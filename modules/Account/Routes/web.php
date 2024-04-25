@@ -2,12 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Account\DataTables\DebitVoucherDataTable;
-use Modules\Account\Http\Controllers\AccountPredefineController;
+use Modules\Account\Http\Controllers\DebitVoucherController;
+use Modules\Account\Http\Controllers\ContraVoucherController;
+use Modules\Account\Http\Controllers\CreditVoucherController;
+use Modules\Account\Http\Controllers\FinancialYearController;
 use Modules\Account\Http\Controllers\AccountSubCodeController;
 use Modules\Account\Http\Controllers\ChartOfAccountController;
-use Modules\Account\Http\Controllers\DebitVoucherController;
-use Modules\Account\Http\Controllers\FinancialYearController;
+use Modules\Account\Http\Controllers\JournalVoucherController;
 use Modules\Account\Http\Controllers\OpeningBalanceController;
+use Modules\Account\Http\Controllers\AccountPredefineController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +48,26 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::resource('/', OpeningBalanceController::class)->parameter('', 'openingBalance')->except('show');
     });
 
-    Route::prefix('voucher')->as('voucher.')->group(function(){
-        Route::get('/debit', [DebitVoucherController::class])
+    Route::prefix('voucher')->as('voucher.')->group(function () {
+        Route::name('debit.')->group(function () {
+            Route::get('/debit', [DebitVoucherController::class, 'index'])->name('index');
+            Route::get('/debit/create', [DebitVoucherController::class, 'index'])->name('create');
+            Route::get('/debit', [DebitVoucherController::class, 'index'])->name('index');
+        });
+        Route::name('credit.')->group(function () {
+            Route::get('/credit', [CreditVoucherController::class, 'index'])->name('index');
+            Route::get('/credit/create', [CreditVoucherController::class, 'index'])->name('create');
+            Route::get('/credit', [CreditVoucherController::class, 'index'])->name('index');
+        });
+        Route::name('contra.')->group(function () {
+            Route::get('/contra', [ContraVoucherController::class, 'index'])->name('index');
+            Route::get('/contra/create', [ContraVoucherController::class, 'index'])->name('create');
+            Route::get('/contra', [ContraVoucherController::class, 'index'])->name('index');
+        });
+        Route::name('journal.')->group(function () {
+            Route::get('/journal', [JournalVoucherController::class, 'index'])->name('index');
+            Route::get('/journal/create', [JournalVoucherController::class, 'index'])->name('create');
+            Route::get('/journal', [JournalVoucherController::class, 'index'])->name('index');
+        });
     });
 });

@@ -2,19 +2,47 @@
 
 namespace Modules\Account\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\DataTables\ContraVoucherDataTable;
 
 class ContraVoucherController extends Controller
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // set the request middleware for the controller
+        $this->middleware('request:ajax', ['only' => ['destroy']]);
+        // set the strip scripts tag middleware for the controller
+        // $this->middleware(['permission:account_predefine_update'])->only(['store']);
+        // $this->middleware(['auth', 'verified', 'permission:predefine_account']);
+        \cs_set('theme', [
+            'title' => 'Contra Voucher List',
+            'back' => \back_url(),
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Contra Voucher List',
+                    'link' => false,
+                ],
+            ],
+            'rprefix' => 'admin.account.voucher.contra',
+        ]);
+    }
+
+    /**
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(ContraVoucherDataTable $dataTable)
     {
-        return view('account::index');
+        return $dataTable->render('account::vouchers.contra.index');
     }
 
     /**

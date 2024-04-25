@@ -10,7 +10,7 @@ use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class DebitVoucherDataTable extends DataTable
+class ContraVoucherDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -45,7 +45,7 @@ class DebitVoucherDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('debit-voucher-table')
+            ->setTableId('contra-voucher-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->responsive(true)
@@ -133,6 +133,6 @@ class DebitVoucherDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'DebitVoucher' . date('YmdHis');
+        return 'ContraVoucher' . date('YmdHis');
     }
 }

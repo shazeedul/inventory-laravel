@@ -137,13 +137,14 @@
 
                                     {{-- code_editor --}}
                                     @case('code_editor')
-                                        <?php $options = $setting->details; ?>
+                                        @php $options = $setting->details; @endphp
                                         <!-- prettier-ignore-start -->
-                            <div id="{{ $setting->key }}" data-theme="{{ @$options['theme'] }}"
-                                data-language="{{ @$options['language'] }}" class="ace_editor min_height_400"
-                                name="data[{{ $setting->id }}]">{{
-                                $setting->value ?? '' }}</div>
-                            <!-- prettier-ignore-end -->
+                                        <div id="{{ $setting->key }}" data-theme="{{ @$options['theme'] }}"
+                                            data-language="{{ @$options['language'] }}" class="ace_editor min_height_400"
+                                            name="data[{{ $setting->id }}]">{{
+                                            $setting->value ?? '' }}
+                                        </div>
+                                        <!-- prettier-ignore-end -->
                                         <textarea name="data[{{ $setting->id }}]" id="{{ $setting->key }}_textarea" class="hidden">{{ $setting->value ?? '' }}</textarea>
                                     @break
 
