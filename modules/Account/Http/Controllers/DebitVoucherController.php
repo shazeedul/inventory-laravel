@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Account\DataTables\DebitVoucherDataTable;
+use Modules\Account\Entities\ChartOfAccount;
 
 class DebitVoucherController extends Controller
 {
@@ -51,7 +52,28 @@ class DebitVoucherController extends Controller
      */
     public function create()
     {
-        return view('account::create');
+        cs_set('theme', [
+            'title' => 'Debit Voucher',
+            'description' => 'Creating Debit Voucher.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Debit Voucher Lists',
+                    'link' => route('admin.account.voucher.debit.index'),
+                ],
+                [
+                    'name' => 'Create Debit Voucher',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        $accounts = ChartOfAccount::where('head_level', 4)->where('is_active', true)->orderBy('name', 'ASC')->get();
+
+        return view('account::vouchers.debit.create', compact('accounts'));
     }
 
     /**
