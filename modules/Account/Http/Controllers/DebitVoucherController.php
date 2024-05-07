@@ -2,11 +2,13 @@
 
 namespace Modules\Account\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Account\DataTables\DebitVoucherDataTable;
+use Modules\Account\Entities\FinancialYear;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\AccountVoucher;
 use Modules\Account\Entities\ChartOfAccount;
+use Modules\Account\DataTables\DebitVoucherDataTable;
 
 class DebitVoucherController extends Controller
 {
@@ -19,7 +21,7 @@ class DebitVoucherController extends Controller
         $this->middleware('request:ajax', ['only' => ['destroy']]);
         // set the strip scripts tag middleware for the controller
         // $this->middleware(['permission:account_predefine_update'])->only(['store']);
-        // $this->middleware(['auth', 'verified', 'permission:predefine_account']);
+        $this->middleware(['auth', 'verified']);
         \cs_set('theme', [
             'title' => 'Debit Voucher List',
             'back' => \back_url(),
@@ -83,7 +85,31 @@ class DebitVoucherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'account_head' => 'required',
+            'voucher_date'       => 'required',
+        ]);
+
+        $financial_year = FinancialYear::where('status', true)->where('is_closed', false)->first();
+        $latestVoucher  = AccountVoucher::orderBy('created_at', 'DESC')->first();
+
+        foreach ($request->debits as $key => $value) {
+            $voucher = new AccountVoucher();
+            $voucher->chart_of_account_id = $value['coa_id'];
+            $voucher->reverse_code = $request->account_head;
+            $voucher->financial_year_id = $financial_year->id;
+            $voucher->voucher_date = $request->voucher_date;
+            $voucher->account_voucher_type_id = 1;
+            $voucher->narration = $request->remarks;
+            $voucher->account_sub_type_id = $value['sub_type_id'] ?? null;
+            $voucher->account_sub_code_id = $value['sub_code_id'] ?? null;
+            $voucher->voucher_no = 'DV-' . str_pad(($latestVoucher ? $latestVoucher->id : 0) + 1, 6, "0", STR_PAD_LEFT);
+            $voucher->ledger_comment = $value['ledger_comment'] ?? '';
+            $voucher->debit          = $value['amount'] ?? 0.00;
+            $voucher->save();
+        }
+
+        return redirect()->route('admin.account.voucher.debit.index')->with('success', localize('Debit Voucher created successfully.'));
     }
 
     /**

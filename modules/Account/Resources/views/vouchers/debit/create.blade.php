@@ -8,8 +8,11 @@
         </x-slot>
 
         <div>
-            <form action="#" method="post">
+            <form action="{{ route('admin.account.voucher.debit.store') }}" method="post">
                 @csrf
+                <input type="hidden" id="accounts" value="{{ json_encode($accounts) }}" />
+                <input type="hidden" id="subCodeUrl"
+                    value="{{ route('admin.account.sub_code.getSubCodesBySubType') }}" />
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group mb-2 mx-0 row">
@@ -17,7 +20,7 @@
                                     class="text-danger">*</span></label>
                             <div class="col-lg-9">
                                 <select name="account_head" id="account_head" class="form-select select2">
-                                    <option value="">@localize('select_one')</option>
+                                    <option>@localize('select_one')</option>
                                     @foreach ($accounts as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
@@ -40,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered table-hover" id="debtAccVoucher">
+                <table class="table table-bordered table-hover" id="debitAccVoucher">
                     <thead>
                         <tr>
                             <th width="25%" class="text-center">@localize('account_name')</th>
@@ -53,42 +56,40 @@
                     <tbody id="debitVoucher">
                         <tr>
                             <td>
-                                <select name="debits[1][coa_id]" id="code_1" class="form-control select2"
-                                    onchange="load_subtypeOpen(this.value,1)">
+                                <select name="debits[0][coa_id]" class="form-control select2"
+                                    onchange="load_subtypeOpen(this)">
                                     <option selected disabled>@localize('select_amount')</option>
                                     @foreach ($accounts as $account)
-                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                        <option value="{{ $account->id }}"
+                                            data-subTypeId="{{ $account->account_sub_type_id }}">{{ $account->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </td>
                             <td>
-                                <select name="debits[1][sub_code_id]" id="subtype_1" class="form-control" disabled>
+                                <select name="debits[0][sub_code_id]" class="form-control select2" disabled>
                                     <option>@localize('select_subtype')</option>
                                 </select>
+                                <input type="hidden" name="debits[0][sub_type_id]" value="" />
                             </td>
                             <td>
-                                <input type="text" name="debits[1][ledger_comment]" value=""
-                                    class="form-control text-end" id="ledger_comment_1" autocomplete="off">
+                                <input type="text" name="debits[0][ledger_comment]" class="form-control text-end"
+                                    autocomplete="off" />
                             </td>
                             <td>
-                                <input type="number" step="0.01" name="debits[1][amount]" value=""
-                                    min="1" class="form-control text-end" id="txtCredit_1"
-                                    onkeyup="calculationCreditOpen(1)" autocomplete="off">
-                                <input type="hidden" step="0.01" name="debits[1][is_subtype]" id="isSubtype_1"
-                                    value="1" autocomplete="off">
+                                <input type="number" step="0.01" name="debits[0][amount]" min="1"
+                                    class="form-control text-end amount" onkeyup="calculation()" autocomplete="off" />
                             </td>
                             <td>
                                 <button class="btn btn-danger btn-sm" type="button" value="Delete"
-                                    onclick="deleteRowDebtOpen(this)" autocomplete="off"><i
-                                        class="fa fa-trash"></i></button>
+                                    onclick="deleteRow(this)" autocomplete="off"><i class="fa fa-trash"></i></button>
                             </td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
                             <td>
-                                <button type="button" id="add_more" class="btn btn-primary"
-                                    onclick="addAccountOpen('debitVoucher');"
+                                <button type="button" id="add_more" class="btn btn-primary" onclick="addRow();"
                                     autocomplete="off">@localize('add_more')</button>
                             </td>
                             <td colspan="2" class="text-end">
@@ -97,19 +98,129 @@
 
                             <td class="text-end">
                                 <input type="text" id="grandTotal" class="form-control text-end" name="grand_total"
-                                    value="" readonly="readonly" autocomplete="off">
+                                    readonly="readonly" autocomplete="off">
                             </td>
                         </tr>
                     </tfoot>
                 </table>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary m-2 submit_button"
+                        id="create_submit">@localize('save')</button>
+                </div>
             </form>
         </div>
     </x-card>
+    @push('lib-styles')
+        <link href="{{ nanopkg_asset('vendor/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
+    @endpush
+    @push('lib-scripts')
+        <script src="{{ nanopkg_asset('vendor/select2/select2.min.js') }}"></script>
+    @endpush
+    @push('js')
+        <script>
+            var accounts = JSON.parse($(`#accounts`).val());
+            var options = '';
+            accounts.forEach(element => {
+                options +=
+                    `<option value="${element.id}" data-subTypeId="${element.account_sub_type_id}">${element.name}</option>`;
+            });
+            $(document).ready(function() {
+                $(".select2").select2();
+            });
+
+            function addRow() {
+                var table = $("#debitAccVoucher");
+                var row = `<tr>`;
+                row += `<td><select name="debits[][coa_id]" class="form-control select2"
+                            onchange="load_subtypeOpen(this)">
+                            <option selected disabled>` + localize('select_amount') + `</option>`;
+                row += options;
+                row += `</select></td>`;
+                row += `<td><select name="debits[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
+                        'select_subtype') +
+                    `</option></select><input type="hidden" name="debits[0][sub_type_id]" value="" /></td>`;
+                row +=
+                    `<td><input type="text" name="debits[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
+                row +=
+                    `<td><input type="number" step="0.01" name="debits[][amount]" 
+                        min="1" class="form-control text-end amount"
+                        onkeyup="calculation()" autocomplete="off"></td>`;
+                row +=
+                    `<td> <button class="btn btn-danger btn-sm" type="button" value="Delete"
+                        onclick="deleteRow(this)" autocomplete="off"><i class="fa fa-trash"></i></button></td>`;
+                row += `</tr>`;
+                $('#debitAccVoucher tbody').append(row);
+                arrayAlign('debitAccVoucher');
+                $('.select2').select2();
+            }
+
+            function deleteRow(e) {
+                // Find the closest table element
+                var table = $(e).closest('table');
+                // Check if there's only one row left in the table body
+                if (table.find('tbody tr').length === 1) {
+                    // If there's only one row left, don't delete it
+                    alert('Cannot delete the last row.');
+                    return;
+                }
+                // Find the parent row element (tr) and remove it
+                $(e).closest('tr').remove();
+                arrayAlign(table.attr('id'));
+                calculation();
+            }
+
+            function calculation() {
+                var total = 0;
+                $('.amount').each(function() {
+                    total += parseFloat($(this).val()) || 0;
+                });
+                $('#grandTotal').val(total);
+            }
+
+            function arrayAlign(table) {
+                var tb = document.getElementById(table);
+                var tbody = tb.getElementsByTagName("tbody")[0];
+                // find the each tbody tr element
+                var rows = tbody.getElementsByTagName('tr');
+
+                for (var i = 0; i < rows.length; i++) {
+                    var select = rows[i].querySelectorAll('input, select');
+                    select.forEach(function(input) {
+                        var name = input.getAttribute('name');
+                        var newName = name.replace(/\[\d*\]/, '[' + i + ']');
+                        input.setAttribute('name', newName);
+                    });
+                }
+            }
+
+            function load_subtypeOpen(e) {
+                var coa_id = e.value;
+                var subTypeId = e.options[e.selectedIndex].getAttribute('data-subTypeId');
+                var url = $('#subCodeUrl').val();
+                if (subTypeId) {
+                    axios.post(
+                        url, {
+                            subType: subTypeId
+                        }
+                    ).then((response) => {
+                        if (response.data.data.length > 0) {
+                            var subCodes = response.data.data;
+                            var selectSubCode = e.closest('tr').querySelector('select[name*="sub_code_id"]');
+                            var selectSubType = e.closest('tr').querySelector('input[name*="sub_type_id"]');
+                            selectSubType.value = subTypeId;
+                            selectSubCode.innerHTML = '';
+                            subCodes.forEach(element => {
+                                selectSubCode.innerHTML +=
+                                    `<option value="${element.id}">${element.name}</option>`;
+                            });
+                            selectSubCode.disabled = false;
+                            $(".select2").select2();
+                        }
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
+            }
+        </script>
+    @endpush
 </x-app-layout>
-@push('js')
-    <script>
-        $(document).ready(function() {
-            $(".select2").select2();
-        });
-    </script>
-@endpush

@@ -3,6 +3,11 @@
 namespace Modules\Account\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Account\Entities\FinancialYear;
+use Modules\Account\Entities\AccountSubCode;
+use Modules\Account\Entities\AccountSubType;
+use Modules\Account\Entities\ChartOfAccount;
+use Modules\Account\Entities\AccountVoucherType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AccountVoucher extends Model
@@ -33,4 +38,59 @@ class AccountVoucher extends Model
         'approved_by',
         'approved_at',
     ];
+
+    public function chartOfAccount()
+    {
+        return $this->belongsTo(ChartOfAccount::class);
+    }
+
+    public function financialYear()
+    {
+        return $this->belongsTo(FinancialYear::class);
+    }
+
+    public function accountSubType()
+    {
+        return $this->belongsTo(AccountSubType::class);
+    }
+
+    public function accountSubCode()
+    {
+        return $this->belongsTo(AccountSubCode::class);
+    }
+
+    public function voucherType()
+    {
+        return $this->belongsTo(AccountVoucherType::class, 'account_voucher_type_id');
+    }
+
+    public function reverseCode()
+    {
+        return $this->belongsTo(ChartOfAccount::class, 'reverse_code');
+    }
+
+    public function reverseSubType()
+    {
+        return $this->belongsTo(AccountSubType::class, 'reverse_sub_type_id');
+    }
+
+    public function reverseSubCode()
+    {
+        return $this->belongsTo(AccountSubCode::class, 'reverse_sub_code_id');
+    }
+
+    public function getVoucherDateAttribute($value)
+    {
+        return date('d-m-Y', strtotime($value));
+    }
+
+    public function getReverseCodeAttribute($value)
+    {
+        return ChartOfAccount::find($value)?->name;
+    }
+
+    public function getMainCodeAttribute()
+    {
+        return ChartOfAccount::find($this->chart_of_account_id)?->name;
+    }
 }
