@@ -66,7 +66,7 @@ class AccountVoucher extends Model
 
     public function reverseCode()
     {
-        return $this->belongsTo(ChartOfAccount::class, 'reverse_code');
+        return $this->belongsTo(ChartOfAccount::class, 'reverse_code', 'id');
     }
 
     public function reverseSubType()
@@ -82,15 +82,5 @@ class AccountVoucher extends Model
     public function getVoucherDateAttribute($value)
     {
         return date('d-m-Y', strtotime($value));
-    }
-
-    public function getReverseCodeAttribute($value)
-    {
-        return ChartOfAccount::find($value)?->name;
-    }
-
-    public function getMainCodeAttribute()
-    {
-        return ChartOfAccount::find($this->chart_of_account_id)?->name;
     }
 }

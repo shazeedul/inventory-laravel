@@ -145,11 +145,12 @@ class DebitVoucherController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
+     * @param AccountVoucher $voucher
      */
-    public function destroy($id)
+    public function destroy(AccountVoucher $voucher)
     {
-        //
+        dd($voucher->voucher_no);
+        $voucher->delete();
+        return response()->success('', localize('Debit Voucher deleted successfully.'));
     }
 }

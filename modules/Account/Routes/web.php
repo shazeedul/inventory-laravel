@@ -53,7 +53,9 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
             Route::get('/debit', [DebitVoucherController::class, 'index'])->name('index');
             Route::get('/debit/create', [DebitVoucherController::class, 'create'])->name('create');
             Route::post('/debit/create', [DebitVoucherController::class, 'store'])->name('store');
-            Route::get('/debit', [DebitVoucherController::class, 'index'])->name('index');
+            Route::get('/debit/edit/{id}', [DebitVoucherController::class, 'edit'])->name('edit');
+            Route::get('/debit/show/{id}', [DebitVoucherController::class, 'show'])->name('show');
+            Route::delete('/debit/destroy/{id}', [DebitVoucherController::class, 'destroy'])->name('destroy');
         });
         Route::name('credit.')->group(function () {
             Route::get('/credit', [CreditVoucherController::class, 'index'])->name('index');

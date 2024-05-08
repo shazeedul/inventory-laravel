@@ -2,13 +2,15 @@
 
 namespace Modules\Account\DataTables;
 
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Modules\Account\Entities\AccountVoucher;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
+use Modules\Account\Entities\AccountVoucher;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class DebitVoucherDataTable extends DataTable
 {
@@ -24,10 +26,23 @@ class DebitVoucherDataTable extends DataTable
 
             ->addColumn('action', function ($query) {
                 $button = '';
+                $button .= '<a href="' . route('admin.account.voucher.debit.show', $query->id) . '" class="btn btn-primary btn-sm me-2"><i class="fas fa-eye"></i></a>';
+                if (!$query->is_approved) {
+                    $button .= '<a href="' . route('admin.account.voucher.debit.edit', $query->id) . '" class="btn btn-secondary btn-sm me-2"><i class="fas fa-edit"></i></a>';
+                    $button .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="' . "delete_modal('" . route('admin.account.voucher.debit.destroy', $query->id) .  '\')"  title="' . localize('Delete') . '"><i class="fa fa-trash"></i></a>';
+                } else {
+                    $button .= '<a href="javascript:void(0);" class="btn btn-warning btn-sm" onclick="' . "reverseData('" . $query->id . '\')"  title="' . localize('Reverse') . '"><i class="fas fa-undo"></i></a>';
+                }
                 return $button;
             })
+            ->editColumn('ledger_comment', function ($query) {
+                return Str::limit($query->ledger_comment, 10);
+            })
             ->editColumn('chart_of_account_id', function ($query) {
-                return $query->main_code;
+                return $query->chartOfAccount?->name;
+            })
+            ->editColumn('reverse_code', function ($query) {
+                return $query->reverseCode?->name;
             })
             ->rawColumns(['action'])
             ->setRowId('id')
@@ -39,7 +54,7 @@ class DebitVoucherDataTable extends DataTable
      */
     public function query(AccountVoucher $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->with(['chartOfAccount', 'reverseCode']);
     }
 
     /**
