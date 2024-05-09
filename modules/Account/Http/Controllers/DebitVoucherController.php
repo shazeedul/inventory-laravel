@@ -93,7 +93,7 @@ class DebitVoucherController extends Controller
         $financial_year = FinancialYear::where('status', true)->where('is_closed', false)->first();
         $latestVoucher  = AccountVoucher::orderBy('created_at', 'DESC')->first();
 
-        foreach ($request->debits as $key => $value) {
+        foreach ($request->debits as $value) {
             $voucher = new AccountVoucher();
             $voucher->chart_of_account_id = $value['coa_id'];
             $voucher->reverse_code = $request->account_head;
@@ -114,43 +114,62 @@ class DebitVoucherController extends Controller
 
     /**
      * Show the specified resource.
-     * @param int $id
+     * @param AccountVoucher $debit
      * @return Renderable
      */
-    public function show($id)
+    public function show(AccountVoucher $debit)
     {
-        return view('account::show');
+        $debit->load(['reverseCode', 'chartOfAccount', 'accountSubCode']);
+        return view('account::vouchers.debit.show', compact('debit'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     * @param int $id
+     * @param AccountVoucher $debit
      * @return Renderable
      */
-    public function edit($id)
+    public function edit(AccountVoucher $debit)
     {
-        return view('account::edit');
+        cs_set('theme', [
+            'title' => 'Debit Voucher',
+            'description' => 'Edit Debit Voucher.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Debit Voucher Lists',
+                    'link' => route('admin.account.voucher.debit.index'),
+                ],
+                [
+                    'name' => 'Edit Debit Voucher',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        return view('account::vouchers.debit.edit');
     }
 
     /**
      * Update the specified resource in storage.
      * @param Request $request
-     * @param int $id
+     * @param AccountVoucher $debit
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, AccountVoucher $debit)
     {
         //
     }
 
     /**
      * Remove the specified resource from storage.
-     * @param AccountVoucher $voucher
+     * @param AccountVoucher $debit
      */
-    public function destroy(AccountVoucher $voucher)
+    public function destroy(AccountVoucher $debit)
     {
-        dd($voucher->voucher_no);
-        $voucher->delete();
+        $debit->delete();
         return response()->success('', localize('Debit Voucher deleted successfully.'));
     }
 }

@@ -83,4 +83,14 @@ class AccountVoucher extends Model
     {
         return date('d-m-Y', strtotime($value));
     }
+
+    public function scopeVoucherNo($query, $voucher_no)
+    {
+        return $query->where('voucher_no', $voucher_no);
+    }
+
+    public function getAllVouchersByNoAttribute()
+    {
+        return $this->voucherNo($this->voucher_no)->get();
+    }
 }

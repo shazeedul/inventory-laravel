@@ -180,7 +180,6 @@
             function arrayAlign(table) {
                 var tb = document.getElementById(table);
                 var tbody = tb.getElementsByTagName("tbody")[0];
-                // find the each tbody tr element
                 var rows = tbody.getElementsByTagName('tr');
 
                 for (var i = 0; i < rows.length; i++) {

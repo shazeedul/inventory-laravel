@@ -26,7 +26,7 @@ class DebitVoucherDataTable extends DataTable
 
             ->addColumn('action', function ($query) {
                 $button = '';
-                $button .= '<a href="' . route('admin.account.voucher.debit.show', $query->id) . '" class="btn btn-primary btn-sm me-2"><i class="fas fa-eye"></i></a>';
+                $button .= '<a href="javascript:void(0);"  onclick="' . "axiosModal('" . route('admin.account.voucher.debit.show', $query->id) . '\')" title="' . localize('Show') . '" class="btn btn-primary btn-sm me-2"><i class="fas fa-eye"></i></a>';
                 if (!$query->is_approved) {
                     $button .= '<a href="' . route('admin.account.voucher.debit.edit', $query->id) . '" class="btn btn-secondary btn-sm me-2"><i class="fas fa-edit"></i></a>';
                     $button .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="' . "delete_modal('" . route('admin.account.voucher.debit.destroy', $query->id) .  '\')"  title="' . localize('Delete') . '"><i class="fa fa-trash"></i></a>';
