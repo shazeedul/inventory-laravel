@@ -5,6 +5,7 @@ namespace Modules\Account\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\DataTables\ContraVoucherDataTable;
 
 class ContraVoucherController extends Controller
@@ -18,7 +19,7 @@ class ContraVoucherController extends Controller
         $this->middleware('request:ajax', ['only' => ['destroy']]);
         // set the strip scripts tag middleware for the controller
         // $this->middleware(['permission:account_predefine_update'])->only(['store']);
-        // $this->middleware(['auth', 'verified', 'permission:predefine_account']);
+        $this->middleware(['auth', 'verified']);
         \cs_set('theme', [
             'title' => 'Contra Voucher List',
             'back' => \back_url(),
@@ -51,7 +52,32 @@ class ContraVoucherController extends Controller
      */
     public function create()
     {
-        return view('account::create');
+        cs_set('theme', [
+            'title' => 'Contra Voucher',
+            'description' => 'Creating Contra Voucher.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Contra Voucher Lists',
+                    'link' => route('admin.account.voucher.contra.index'),
+                ],
+                [
+                    'name' => 'Create Contra Voucher',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        $accounts = ChartOfAccount::where('head_level', 4)
+            ->where('is_subtype', false)
+            ->where('is_active', true)
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return view('account::vouchers.contra.create', compact('accounts'));
     }
 
     /**

@@ -22,7 +22,6 @@ class CreditVoucherDataTable extends DataTable
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-
             ->addColumn('action', function ($query) {
                 $button = '';
                 $button .= '<a href="javascript:void(0);"  onclick="' . "axiosModal('" . route('admin.account.voucher.credit.show', $query->id) . '\')" title="' . localize('Show') . '" class="btn btn-primary btn-sm me-2"><i class="fas fa-eye"></i></a>';
