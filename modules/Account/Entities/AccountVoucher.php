@@ -39,6 +39,15 @@ class AccountVoucher extends Model
         'approved_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->voucher_no = str_pad(AccountVoucher::max('id') + 1, 6, "0", STR_PAD_LEFT);
+        });
+    }
+
     public function chartOfAccount()
     {
         return $this->belongsTo(ChartOfAccount::class);
@@ -51,17 +60,17 @@ class AccountVoucher extends Model
 
     public function accountSubType()
     {
-        return $this->belongsTo(AccountSubType::class);
+        return $this->belongsTo(AccountSubType::class, 'account_sub_type_id', 'id');
     }
 
     public function accountSubCode()
     {
-        return $this->belongsTo(AccountSubCode::class);
+        return $this->belongsTo(AccountSubCode::class, 'account_sub_code_id', 'id');
     }
 
     public function voucherType()
     {
-        return $this->belongsTo(AccountVoucherType::class, 'account_voucher_type_id');
+        return $this->belongsTo(AccountVoucherType::class, 'account_voucher_type_id', 'id');
     }
 
     public function reverseCode()
@@ -86,7 +95,7 @@ class AccountVoucher extends Model
 
     public function scopeVoucherNo($query, $voucher_no)
     {
-        return $query->where('voucher_no', $voucher_no);
+        return $query->with(['accountSubCode', 'accountSubType', 'reverseSubCode', 'reverseSubType'])->where('voucher_no', $voucher_no);
     }
 
     public function getAllVouchersByNoAttribute()

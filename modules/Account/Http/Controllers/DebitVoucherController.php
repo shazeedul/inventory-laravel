@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Modules\Account\Entities\AccountVoucher;
 use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\DataTables\DebitVoucherDataTable;
+use Modules\Account\Entities\AccountSubCode;
 
 class DebitVoucherController extends Controller
 {
@@ -103,9 +104,8 @@ class DebitVoucherController extends Controller
             $voucher->narration = $request->remarks;
             $voucher->account_sub_type_id = $value['sub_type_id'] ?? null;
             $voucher->account_sub_code_id = $value['sub_code_id'] ?? null;
-            $voucher->voucher_no = 'DV-' . str_pad(($latestVoucher ? $latestVoucher->id : 0) + 1, 6, "0", STR_PAD_LEFT);
             $voucher->ledger_comment = $value['ledger_comment'] ?? '';
-            $voucher->debit          = $value['amount'] ?? 0.00;
+            $voucher->debit = $value['amount'] ?? 0.00;
             $voucher->save();
         }
 
@@ -149,7 +149,11 @@ class DebitVoucherController extends Controller
             ],
         ]);
 
-        return view('account::vouchers.debit.edit');
+        $accounts = ChartOfAccount::where('head_level', 4)->where('is_active', true)->orderBy('name', 'ASC')->get();
+
+        $accountSubCodes = AccountSubCode::where('status', true)->get();
+
+        return view('account::vouchers.debit.edit', compact('accounts', 'debit', 'accountSubCodes'));
     }
 
     /**
@@ -158,9 +162,34 @@ class DebitVoucherController extends Controller
      * @param AccountVoucher $debit
      * @return Renderable
      */
-    public function update(Request $request, AccountVoucher $debit)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'account_head' => 'required',
+            'voucher_date'       => 'required',
+        ]);
+
+        $financial_year = FinancialYear::where('status', true)->where('is_closed', false)->first();
+        $latestVoucher  = AccountVoucher::orderBy('created_at', 'DESC')->first();
+
+        foreach ($request->debits as $value) {
+            AccountVoucher::updateOrCreate([
+                'id' => $value['id'],
+            ], [
+                'chart_of_account_id' => $value['coa_id'],
+                'reverse_code' => $request->account_head,
+                'financial_year_id' => $financial_year->id,
+                'voucher_date' => $request->voucher_date,
+                'account_voucher_type_id' => 1,
+                'narration' => $request->remarks,
+                'account_sub_type_id' => $value['sub_type_id'] ?? null,
+                'account_sub_code_id' => $value['sub_code_id'] ?? null,
+                'ledger_comment' => $value['ledger_comment'] ?? '',
+                'debit'          => $value['amount'] ?? 0.00,
+            ]);
+        }
+
+        return redirect()->route('admin.account.voucher.debit.index')->with('success', localize('Debit Voucher updated successfully.'));
     }
 
     /**

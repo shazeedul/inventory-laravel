@@ -38,11 +38,20 @@ class DebitVoucherDataTable extends DataTable
             ->editColumn('ledger_comment', function ($query) {
                 return Str::limit($query->ledger_comment, 10);
             })
+            ->editColumn('account_sub_type_id', function ($query) {
+                return $query->accountSubType?->name ?? '--';
+            })
             ->editColumn('chart_of_account_id', function ($query) {
-                return $query->chartOfAccount?->name;
+                return $query->chartOfAccount?->name ?? '--';
             })
             ->editColumn('reverse_code', function ($query) {
                 return $query->reverseCode?->name;
+            })
+            ->editColumn('debit', function ($query) {
+                return $query->debit ?? 0.00;
+            })
+            ->editColumn('credit', function ($query) {
+                return $query->credit ?? 0.00;
             })
             ->rawColumns(['action'])
             ->setRowId('id')
@@ -54,7 +63,7 @@ class DebitVoucherDataTable extends DataTable
      */
     public function query(AccountVoucher $model): QueryBuilder
     {
-        return $model->newQuery()->with(['chartOfAccount', 'reverseCode']);
+        return $model->newQuery()->with(['chartOfAccount', 'reverseCode', 'accountSubType'])->orderBy('voucher_no', 'DESC');
     }
 
     /**
