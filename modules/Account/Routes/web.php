@@ -50,11 +50,7 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
 
     Route::prefix('voucher')->as('voucher.')->group(function () {
         Route::resource('/debit', DebitVoucherController::class);
-        Route::name('credit.')->group(function () {
-            Route::get('/credit', [CreditVoucherController::class, 'index'])->name('index');
-            Route::get('/credit/create', [CreditVoucherController::class, 'index'])->name('create');
-            Route::get('/credit', [CreditVoucherController::class, 'index'])->name('index');
-        });
+        Route::resource('/credit', CreditVoucherController::class);
         Route::name('contra.')->group(function () {
             Route::get('/contra', [ContraVoucherController::class, 'index'])->name('index');
             Route::get('/contra/create', [ContraVoucherController::class, 'index'])->name('create');

@@ -3,14 +3,13 @@
         <x-slot name="actions">
             <a href="{{ route(config('theme.rprefix') . '.index') }}" class="btn btn-primary btn-sm">
                 <i class="fa fa-list"></i>&nbsp;
-                @localize('Debit Voucher')
+                @localize('Credit Voucher')
             </a>
         </x-slot>
 
         <div>
-            <form action="{{ route('admin.account.voucher.debit.update', $debit->id) }}" method="post">
+            <form action="{{ route('admin.account.voucher.credit.store') }}" method="post">
                 @csrf
-                @method('PATCH')
                 <input type="hidden" id="accounts" value="{{ json_encode($accounts) }}" />
                 <input type="hidden" id="subCodeUrl"
                     value="{{ route('admin.account.sub_code.getSubCodesBySubType') }}" />
@@ -24,25 +23,25 @@
                                     class="form-select select2">
                                     <option>@localize('select_one')</option>
                                     @foreach ($accounts as $item)
-                                        <option value="{{ $item->id }}" @selected($debit->reverseCode->id == $item->id)>
-                                            {{ $item->name }}</option>
+                                        <option value="{{ $item->id }}"
+                                            data-is-bank-nature="{{ $item->is_bank_nature }}">{{ $item->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div id="bank_nature" class="{{ $debit->reverseCode?->is_bank_nature == 1 ? null : 'd-none' }}">
+                        <div id="bank_nature" class="d-none">
                             <div class="form-group mb-2 mx-0 row">
                                 <label for="cheque_no" class="col-sm-3 col-form-label">@localize('cheque_no')</label>
                                 <div class="col-lg-9">
                                     <input type="text" name="cheque_no" id="cheque_no" class="form-control"
-                                        value="{{ $debit->cheque_no }}" placeholder="@localize('cheque_no')" />
+                                        placeholder="@localize('cheque_no')" />
                                 </div>
                             </div>
                             <div class="form-group mb-2 mx-0 row">
                                 <label for="cheque_date" class="col-sm-3 col-form-label">@localize('cheque_date')</label>
                                 <div class="col-lg-9">
                                     <input type="date" name="cheque_date" id="cheque_date" class="form-control"
-                                        value="{{ \Carbon\Carbon::parse($debit->cheque_date)->format('Y-m-d') }}"
                                         placeholder="@localize('cheque_date')" />
                                 </div>
                             </div>
@@ -50,7 +49,7 @@
                                 <label for="is_honour" class="col-sm-3 col-form-label">@localize('is_honour')</label>
                                 <div class="col-lg-9">
                                     <input type="checkbox" name="is_honour" id="is_honour" class="form-check-input"
-                                        @checked($debit->is_honour == 1) placeholder="@localize('is_honour')" value="1" />
+                                        placeholder="@localize('is_honour')" value="1" />
                                 </div>
                             </div>
                         </div>
@@ -59,18 +58,18 @@
                                     class="text-danger">*</span></label>
                             <div class="col-lg-9">
                                 <input type="date" name="voucher_date" id="voucher_date" class="form-control"
-                                    value="{{ \Carbon\Carbon::parse($debit->voucher_date)->format('Y-m-d') }}" />
+                                    value="{{ now()->format('Y-m-d') }}" />
                             </div>
                         </div>
                         <div class="form-group mb-2 mx-0 row">
                             <label for="Remarks" class="col-sm-3 col-form-label">@localize('remarks')</label>
                             <div class="col-lg-9">
-                                <textarea name="remarks" class="form-control" id="remarks" rows="3" placeholder="@localize('remarks')">{{ $debit->narration }}</textarea>
+                                <textarea name="remarks" class="form-control" id="remarks" rows="3" placeholder="@localize('remarks')"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered table-hover" id="debitAccVoucher">
+                <table class="table table-bordered table-hover" id="creditAccVoucher">
                     <thead>
                         <tr>
                             <th width="25%" class="text-center">@localize('account_name')</th>
@@ -80,49 +79,39 @@
                             <th width="10%" class="text-center">@localize('action')</th>
                         </tr>
                     </thead>
-                    <tbody id="debitVoucher">
-                        @foreach ($debit->all_vouchers_by_no as $item)
-                            <tr>
-                                <td>
-                                    <select name="debits[{{ $loop->index }}][coa_id]" class="form-select select2">
-                                        <option>@localize('select_one')</option>
-                                        @foreach ($accounts as $account)
-                                            <option value="{{ $account->id }}" @selected($item->chart_of_account_id == $account->id)>
-                                                {{ $account->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" name="debits[{{ $loop->index }}][id]"
-                                        value="{{ $item->id }}" />
-                                </td>
-                                <td>
-                                    <select name="debits[{{ $loop->index }}][sub_code_id]" class="form-select select2"
-                                        @disabled(!$item->accountSubCode)>
-                                        <option>@localize('select_one')</option>
-                                        @foreach ($accountSubCodes as $subCode)
-                                            @if ($subCode->account_sub_type_id == $item->accountSubType?->id)
-                                                <option value="{{ $subCode->id }}" @selected($item->accountSubCode?->id == $subCode->id)>
-                                                    {{ $subCode->name }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" name="debits[{{ $loop->index }}][sub_type_id]"
-                                        value="{{ $item->account_sub_type_id }}" />
-                                </td>
-                                <td>
-                                    <input type="text" name="debits[{{ $loop->index }}][ledger_comment]"
-                                        class="form-control text-end" value="{{ $item->ledger_comment }}" />
-                                </td>
-                                <td>
-                                    <input type="number" name="debits[{{ $loop->index }}][amount]"
-                                        class="form-control text-end amount" value="{{ $item->debit }}" />
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm"value="Delete"
-                                        onclick="deleteRow(this)" autocomplete="off"><i
-                                            class="fa fa-trash"></i></button>
-                                </td>
-                            </tr>
-                        @endforeach
+                    <tbody id="creditVoucher">
+                        <tr>
+                            <td>
+                                <select name="credits[0][coa_id]" class="form-control select2"
+                                    onchange="load_subtypeOpen(this)">
+                                    <option selected disabled>@localize('select_amount')</option>
+                                    @foreach ($accounts as $account)
+                                        <option value="{{ $account->id }}"
+                                            data-subTypeId="{{ $account->account_sub_type_id }}">{{ $account->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>
+                                <select name="credits[0][sub_code_id]" class="form-control select2" disabled>
+                                    <option>@localize('select_subtype')</option>
+                                </select>
+                                <input type="hidden" name="credits[0][sub_type_id]" value="" />
+                            </td>
+                            <td>
+                                <input type="text" name="credits[0][ledger_comment]" class="form-control text-end"
+                                    autocomplete="off" />
+                            </td>
+                            <td>
+                                <input type="number" step="0.01" name="credits[0][amount]" min="1"
+                                    class="form-control text-end amount" onkeyup="calculation()"
+                                    autocomplete="off" />
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" type="button" value="Delete"
+                                    onclick="deleteRow(this)" autocomplete="off"><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
                     </tbody>
                     <tfoot>
                         <tr>
@@ -164,34 +153,31 @@
             });
             $(document).ready(function() {
                 $(".select2").select2();
-                calculation();
             });
 
             function addRow() {
-                var table = $("#debitAccVoucher");
+                var table = $("#creditAccVoucher");
                 var row = `<tr>`;
-                row += `<td><select name="debits[][coa_id]" class="form-control select2"
+                row += `<td><select name="credits[][coa_id]" class="form-control select2"
                             onchange="load_subtypeOpen(this)">
                             <option selected disabled>` + localize('select_amount') + `</option>`;
                 row += options;
-                row += `</select>`;
-                row += `<input type="hidden" name="debits[][id]" value="" />`;
-                row += `</td>`;
-                row += `<td><select name="debits[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
+                row += `</select></td>`;
+                row += `<td><select name="credits[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
                         'select_subtype') +
-                    `</option></select><input type="hidden" name="debits[0][sub_type_id]" value="" /></td>`;
+                    `</option></select><input type="hidden" name="credits[0][sub_type_id]" value="" /></td>`;
                 row +=
-                    `<td><input type="text" name="debits[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
+                    `<td><input type="text" name="credits[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
                 row +=
-                    `<td><input type="number" step="0.01" name="debits[][amount]" 
+                    `<td><input type="number" step="0.01" name="credits[][amount]" 
                         min="1" class="form-control text-end amount"
                         onkeyup="calculation()" autocomplete="off"></td>`;
                 row +=
                     `<td> <button class="btn btn-danger btn-sm" type="button" value="Delete"
                         onclick="deleteRow(this)" autocomplete="off"><i class="fa fa-trash"></i></button></td>`;
                 row += `</tr>`;
-                $('#debitAccVoucher tbody').append(row);
-                arrayAlign('debitAccVoucher');
+                $('#creditAccVoucher tbody').append(row);
+                arrayAlign('creditAccVoucher');
                 $('.select2').select2();
             }
 

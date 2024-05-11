@@ -19,12 +19,38 @@
                             <label for="account_head" class="col-sm-3 col-form-label">@localize('account_head')<span
                                     class="text-danger">*</span></label>
                             <div class="col-lg-9">
-                                <select name="account_head" id="account_head" class="form-select select2">
+                                <select name="account_head" id="account_head" onchange="checkBankNature()"
+                                    class="form-select select2">
                                     <option>@localize('select_one')</option>
                                     @foreach ($accounts as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        <option value="{{ $item->id }}"
+                                            data-is-bank-nature="{{ $item->is_bank_nature }}">{{ $item->name }}
+                                        </option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div id="bank_nature" class="d-none">
+                            <div class="form-group mb-2 mx-0 row">
+                                <label for="cheque_no" class="col-sm-3 col-form-label">@localize('cheque_no')</label>
+                                <div class="col-lg-9">
+                                    <input type="text" name="cheque_no" id="cheque_no" class="form-control"
+                                        placeholder="@localize('cheque_no')" />
+                                </div>
+                            </div>
+                            <div class="form-group mb-2 mx-0 row">
+                                <label for="cheque_date" class="col-sm-3 col-form-label">@localize('cheque_date')</label>
+                                <div class="col-lg-9">
+                                    <input type="date" name="cheque_date" id="cheque_date" class="form-control"
+                                        placeholder="@localize('cheque_date')" />
+                                </div>
+                            </div>
+                            <div class="form-group mb-2 mx-0 row">
+                                <label for="is_honour" class="col-sm-3 col-form-label">@localize('is_honour')</label>
+                                <div class="col-lg-9">
+                                    <input type="checkbox" name="is_honour" id="is_honour" class="form-check-input"
+                                        placeholder="@localize('is_honour')" value="1" />
+                                </div>
                             </div>
                         </div>
                         <div class="form-group mb-2 mx-0 row">
@@ -78,7 +104,8 @@
                             </td>
                             <td>
                                 <input type="number" step="0.01" name="debits[0][amount]" min="1"
-                                    class="form-control text-end amount" onkeyup="calculation()" autocomplete="off" />
+                                    class="form-control text-end amount" onkeyup="calculation()"
+                                    autocomplete="off" />
                             </td>
                             <td>
                                 <button class="btn btn-danger btn-sm" type="button" value="Delete"
@@ -97,8 +124,8 @@
                             </td>
 
                             <td class="text-end">
-                                <input type="text" id="grandTotal" class="form-control text-end" name="grand_total"
-                                    readonly="readonly" autocomplete="off">
+                                <input type="text" id="grandTotal" class="form-control text-end"
+                                    name="grand_total" readonly="readonly" autocomplete="off">
                             </td>
                         </tr>
                     </tfoot>
@@ -218,6 +245,19 @@
                     }).catch((error) => {
                         console.log(error);
                     });
+                }
+            }
+
+            function checkBankNature(e) {
+                var account_head = document.getElementById('account_head');
+                var isBankNature = account_head.options[account_head.selectedIndex].getAttribute('data-is-bank-nature');
+                if (isBankNature == 1) {
+                    document.getElementById('bank_nature').classList.remove('d-none');
+                } else {
+                    document.getElementById('bank_nature').classList.add('d-none');
+                    document.getElementById('cheque_no').value = '';
+                    document.getElementById('cheque_date').value = '';
+                    document.getElementById('is_honour').checked = false;
                 }
             }
         </script>

@@ -9,10 +9,11 @@ use Modules\Account\Entities\AccountSubType;
 use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\Entities\AccountVoucherType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AccountVoucher extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'chart_of_account_id',
@@ -42,10 +43,6 @@ class AccountVoucher extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::created(function ($model) {
-            $model->voucher_no = str_pad(AccountVoucher::max('id') + 1, 6, "0", STR_PAD_LEFT);
-        });
     }
 
     public function chartOfAccount()

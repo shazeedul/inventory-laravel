@@ -88,25 +88,30 @@ class DebitVoucherController extends Controller
     {
         $request->validate([
             'account_head' => 'required',
-            'voucher_date'       => 'required',
+            'voucher_date' => 'required',
         ]);
 
         $financial_year = FinancialYear::where('status', true)->where('is_closed', false)->first();
         $latestVoucher  = AccountVoucher::orderBy('created_at', 'DESC')->first();
+        $voucher_no = str_pad(($latestVoucher ? $latestVoucher->id : 0) + 1, 6, "0", STR_PAD_LEFT);
 
         foreach ($request->debits as $value) {
-            $voucher = new AccountVoucher();
-            $voucher->chart_of_account_id = $value['coa_id'];
-            $voucher->reverse_code = $request->account_head;
-            $voucher->financial_year_id = $financial_year->id;
-            $voucher->voucher_date = $request->voucher_date;
-            $voucher->account_voucher_type_id = 1;
-            $voucher->narration = $request->remarks;
-            $voucher->account_sub_type_id = $value['sub_type_id'] ?? null;
-            $voucher->account_sub_code_id = $value['sub_code_id'] ?? null;
-            $voucher->ledger_comment = $value['ledger_comment'] ?? '';
-            $voucher->debit = $value['amount'] ?? 0.00;
-            $voucher->save();
+            AccountVoucher::create([
+                'chart_of_account_id' => $value['coa_id'],
+                'reverse_code' => $request->account_head,
+                'financial_year_id' => $financial_year->id,
+                'voucher_date' => $request->voucher_date,
+                'account_voucher_type_id' => 1,
+                'cheque_no' => $request->cheque_no,
+                'cheque_date' => $request->cheque_date,
+                'is_honour' => isset($request->is_honour) ? $request->is_honour : 0,
+                'narration' => $request->remarks,
+                'account_sub_type_id' => $value['sub_type_id'] ?? null,
+                'account_sub_code_id' => $value['sub_code_id'] ?? null,
+                'ledger_comment' => $value['ledger_comment'] ?? '',
+                'debit' => $value['amount'] ?? 0.00,
+                'voucher_no' =>  $voucher_no,
+            ]);
         }
 
         return redirect()->route('admin.account.voucher.debit.index')->with('success', localize('Debit Voucher created successfully.'));
@@ -162,7 +167,7 @@ class DebitVoucherController extends Controller
      * @param AccountVoucher $debit
      * @return Renderable
      */
-    public function update(Request $request)
+    public function update(Request $request, AccountVoucher $debit)
     {
         $request->validate([
             'account_head' => 'required',
@@ -170,7 +175,14 @@ class DebitVoucherController extends Controller
         ]);
 
         $financial_year = FinancialYear::where('status', true)->where('is_closed', false)->first();
-        $latestVoucher  = AccountVoucher::orderBy('created_at', 'DESC')->first();
+        // Extract IDs from the debits array
+        $debitIds = collect($request->debits)->pluck('id')->toArray();
+
+        // Delete vouchers where voucher_no is in debit voucher numbers and id is not in debit ids
+        AccountVoucher::where('voucher_no', $debit->voucher_no)
+            ->whereNotIn('id', $debitIds)
+            ->delete();
+
 
         foreach ($request->debits as $value) {
             AccountVoucher::updateOrCreate([
@@ -181,11 +193,15 @@ class DebitVoucherController extends Controller
                 'financial_year_id' => $financial_year->id,
                 'voucher_date' => $request->voucher_date,
                 'account_voucher_type_id' => 1,
+                'cheque_no' => $request->cheque_no,
+                'cheque_date' => $request->cheque_date,
+                'is_honour' => $request->is_honour ?? 0,
                 'narration' => $request->remarks,
                 'account_sub_type_id' => $value['sub_type_id'] ?? null,
                 'account_sub_code_id' => $value['sub_code_id'] ?? null,
                 'ledger_comment' => $value['ledger_comment'] ?? '',
                 'debit'          => $value['amount'] ?? 0.00,
+                'voucher_no' => $debit->voucher_no,
             ]);
         }
 

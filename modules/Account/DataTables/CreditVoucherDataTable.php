@@ -2,13 +2,14 @@
 
 namespace Modules\Account\DataTables;
 
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Modules\Account\Entities\AccountVoucher;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
+use Modules\Account\Entities\AccountVoucher;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class CreditVoucherDataTable extends DataTable
 {
@@ -24,7 +25,32 @@ class CreditVoucherDataTable extends DataTable
 
             ->addColumn('action', function ($query) {
                 $button = '';
+                $button .= '<a href="javascript:void(0);"  onclick="' . "axiosModal('" . route('admin.account.voucher.credit.show', $query->id) . '\')" title="' . localize('Show') . '" class="btn btn-primary btn-sm me-2"><i class="fas fa-eye"></i></a>';
+                if (!$query->is_approved) {
+                    $button .= '<a href="' . route('admin.account.voucher.credit.edit', $query->id) . '" class="btn btn-secondary btn-sm me-2"><i class="fas fa-edit"></i></a>';
+                    $button .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="' . "delete_modal('" . route('admin.account.voucher.credit.destroy', $query->id) .  '\')"  title="' . localize('Delete') . '"><i class="fa fa-trash"></i></a>';
+                } else {
+                    $button .= '<a href="javascript:void(0);" class="btn btn-warning btn-sm" onclick="' . "reverseData('" . $query->id . '\')"  title="' . localize('Reverse') . '"><i class="fas fa-undo"></i></a>';
+                }
                 return $button;
+            })
+            ->editColumn('ledger_comment', function ($query) {
+                return Str::limit($query->ledger_comment, 10);
+            })
+            ->editColumn('account_sub_type_id', function ($query) {
+                return $query->accountSubType?->name ?? '--';
+            })
+            ->editColumn('chart_of_account_id', function ($query) {
+                return $query->chartOfAccount?->name ?? '--';
+            })
+            ->editColumn('reverse_code', function ($query) {
+                return $query->reverseCode?->name;
+            })
+            ->editColumn('debit', function ($query) {
+                return $query->debit ?? 0.00;
+            })
+            ->editColumn('credit', function ($query) {
+                return $query->credit ?? 0.00;
             })
             ->rawColumns(['action'])
             ->setRowId('id')
@@ -36,7 +62,7 @@ class CreditVoucherDataTable extends DataTable
      */
     public function query(AccountVoucher $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->with(['chartOfAccount', 'reverseCode', 'accountSubType'])->where('account_voucher_type_id', 2)->orderBy('voucher_no', 'DESC');
     }
 
     /**
@@ -75,7 +101,7 @@ class CreditVoucherDataTable extends DataTable
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
-            Column::make('date')
+            Column::make('voucher_date')
                 ->title(@localize('Date'))
                 ->addClass('text-center')
                 ->width(100)
@@ -111,7 +137,7 @@ class CreditVoucherDataTable extends DataTable
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
-            Column::make('reversed_code')
+            Column::make('reverse_code')
                 ->title(@localize('Reversed Account'))
                 ->addClass('text-center')
                 ->width(100)
