@@ -3,7 +3,7 @@
         <x-slot name="actions">
             <a href="{{ route(config('theme.rprefix') . '.index') }}" class="btn btn-primary btn-sm">
                 <i class="fa fa-list"></i>&nbsp;
-                @localize('Credit Voucher')
+                @localize('Contra Voucher')
             </a>
         </x-slot>
 
@@ -95,27 +95,16 @@
                             </td>
                             <td>
                                 <input type="number" step="0.01" name="contra[0][debit]" min="1"
-                                    class="form-control text-end amount" onkeyup="calculation()" autocomplete="off" />
+                                    class="form-control text-end debitAmount" onkeyup="calculation()"
+                                    autocomplete="off" />
                             </td>
                             <td>
                                 <input type="number" step="0.01" name="contra[0][credit]" min="1"
-                                    class="form-control text-end amount" onkeyup="calculation()"
+                                    class="form-control text-end creditAmount" onkeyup="calculation()"
                                     autocomplete="off" />
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2" class="text-end">
-                                <label for="reason" class="  col-form-label">@localize('total')</label>
-                            </td>
-
-                            <td class="text-end">
-                                <input type="text" id="grandTotal" class="form-control text-end"
-                                    name="grand_total" readonly="readonly" autocomplete="off">
-                            </td>
-                        </tr>
-                    </tfoot>
                 </table>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary m-2 submit_button"
@@ -142,54 +131,17 @@
                 $(".select2").select2();
             });
 
-            function addRow() {
-                var table = $("#creditAccVoucher");
-                var row = `<tr>`;
-                row += `<td><select name="contra[][coa_id]" class="form-control select2"
-                            onchange="load_subtypeOpen(this)">
-                            <option selected disabled>` + localize('select_amount') + `</option>`;
-                row += options;
-                row += `</select></td>`;
-                row += `<td><select name="contra[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
-                        'select_subtype') +
-                    `</option></select><input type="hidden" name="contra[0][sub_type_id]" value="" /></td>`;
-                row +=
-                    `<td><input type="text" name="contra[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
-                row +=
-                    `<td><input type="number" step="0.01" name="contra[][debit]" 
-                        min="1" class="form-control text-end debit"
-                        onkeyup="calculation()" autocomplete="off"></td>`;
-                row +=
-                    `<td><input type="number" step="0.01" name="contra[][credit]" 
-                        min="1" class="form-control text-end credit"
-                        onkeyup="calculation()" autocomplete="off"></td>`;
-                row += `</tr>`;
-                $('#creditAccVoucher tbody').append(row);
-                arrayAlign('creditAccVoucher');
-                $('.select2').select2();
-            }
-
-            function deleteRow(e) {
-                // Find the closest table element
-                var table = $(e).closest('table');
-                // Check if there's only one row left in the table body
-                if (table.find('tbody tr').length === 1) {
-                    // If there's only one row left, don't delete it
-                    alert('Cannot delete the last row.');
-                    return;
-                }
-                // Find the parent row element (tr) and remove it
-                $(e).closest('tr').remove();
-                arrayAlign(table.attr('id'));
-                calculation();
-            }
-
             function calculation() {
-                var total = 0;
-                $('.amount').each(function() {
-                    total += parseFloat($(this).val()) || 0;
+                var totalDebit = 0;
+                var totalCredit = 0;
+                $('.debitAmount').each(function() {
+                    totalDebit += parseFloat($(this).val()) || 0;
                 });
-                $('#grandTotal').val(total);
+                $('.creditAmount').each(function() {
+                    totalCredit += parseFloat($(this).val()) || 0;
+                });
+                $('#grandTotalDebit').val(totalDebit);
+                $('#grandTotalCredit').val(totalCredit);
             }
 
             function arrayAlign(table) {
