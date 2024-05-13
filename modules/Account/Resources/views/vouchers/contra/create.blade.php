@@ -81,7 +81,7 @@
                     <tbody id="creditVoucher">
                         <tr>
                             <td>
-                                <select name="contra[0][coa_id]" class="form-control select2">
+                                <select name="contras[0][coa_id]" class="form-control select2">
                                     <option selected disabled>@localize('select_amount')</option>
                                     @foreach ($accounts as $account)
                                         <option value="{{ $account->id }}">{{ $account->name }}
@@ -90,16 +90,16 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="contra[0][ledger_comment]" class="form-control text-end"
+                                <input type="text" name="contras[0][ledger_comment]" class="form-control text-end"
                                     autocomplete="off" />
                             </td>
                             <td>
-                                <input type="number" step="0.01" name="contra[0][debit]" min="1"
+                                <input type="number" step="0.01" name="contras[0][debit]" min="1"
                                     class="form-control text-end debitAmount" onkeyup="calculation()"
                                     autocomplete="off" />
                             </td>
                             <td>
-                                <input type="number" step="0.01" name="contra[0][credit]" min="1"
+                                <input type="number" step="0.01" name="contras[0][credit]" min="1"
                                     class="form-control text-end creditAmount" onkeyup="calculation()"
                                     autocomplete="off" />
                             </td>
@@ -121,72 +121,9 @@
     @endpush
     @push('js')
         <script>
-            var accounts = JSON.parse($(`#accounts`).val());
-            var options = '';
-            accounts.forEach(element => {
-                options +=
-                    `<option value="${element.id}" data-subTypeId="${element.account_sub_type_id}">${element.name}</option>`;
-            });
             $(document).ready(function() {
                 $(".select2").select2();
             });
-
-            function calculation() {
-                var totalDebit = 0;
-                var totalCredit = 0;
-                $('.debitAmount').each(function() {
-                    totalDebit += parseFloat($(this).val()) || 0;
-                });
-                $('.creditAmount').each(function() {
-                    totalCredit += parseFloat($(this).val()) || 0;
-                });
-                $('#grandTotalDebit').val(totalDebit);
-                $('#grandTotalCredit').val(totalCredit);
-            }
-
-            function arrayAlign(table) {
-                var tb = document.getElementById(table);
-                var tbody = tb.getElementsByTagName("tbody")[0];
-                var rows = tbody.getElementsByTagName('tr');
-
-                for (var i = 0; i < rows.length; i++) {
-                    var select = rows[i].querySelectorAll('input, select');
-                    select.forEach(function(input) {
-                        var name = input.getAttribute('name');
-                        var newName = name.replace(/\[\d*\]/, '[' + i + ']');
-                        input.setAttribute('name', newName);
-                    });
-                }
-            }
-
-            function load_subtypeOpen(e) {
-                var coa_id = e.value;
-                var subTypeId = e.options[e.selectedIndex].getAttribute('data-subTypeId');
-                var url = $('#subCodeUrl').val();
-                if (subTypeId) {
-                    axios.post(
-                        url, {
-                            subType: subTypeId
-                        }
-                    ).then((response) => {
-                        if (response.data.data.length > 0) {
-                            var subCodes = response.data.data;
-                            var selectSubCode = e.closest('tr').querySelector('select[name*="sub_code_id"]');
-                            var selectSubType = e.closest('tr').querySelector('input[name*="sub_type_id"]');
-                            selectSubType.value = subTypeId;
-                            selectSubCode.innerHTML = '';
-                            subCodes.forEach(element => {
-                                selectSubCode.innerHTML +=
-                                    `<option value="${element.id}">${element.name}</option>`;
-                            });
-                            selectSubCode.disabled = false;
-                            $(".select2").select2();
-                        }
-                    }).catch((error) => {
-                        console.log(error);
-                    });
-                }
-            }
 
             function checkBankNature(e) {
                 var account_head = document.getElementById('account_head');

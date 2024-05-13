@@ -4,7 +4,10 @@ namespace Modules\Account\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Account\Entities\FinancialYear;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\AccountSubCode;
+use Modules\Account\Entities\AccountVoucher;
 use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\DataTables\ContraVoucherDataTable;
 
@@ -72,8 +75,11 @@ class ContraVoucherController extends Controller
         ]);
 
         $accounts = ChartOfAccount::where('head_level', 4)
-            ->where('is_subtype', false)
             ->where('is_active', true)
+            ->where(function ($query) {
+                $query->where('is_bank_nature', true)
+                    ->orWhere('is_cash_nature', true);
+            })
             ->orderBy('name', 'ASC')
             ->get();
 
@@ -87,47 +93,145 @@ class ContraVoucherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'account_head' => 'required',
+            'voucher_date' => 'required',
+        ]);
+
+        $financial_year = FinancialYear::where('status', true)->where('is_closed', false)->first();
+        $latestVoucher  = AccountVoucher::orderBy('created_at', 'DESC')->first();
+        $voucher_no = str_pad(($latestVoucher ? $latestVoucher->id : 0) + 1, 6, "0", STR_PAD_LEFT);
+
+        foreach ($request->contras as $value) {
+            AccountVoucher::create([
+                'chart_of_account_id' => $value['coa_id'],
+                'reverse_code' => $request->account_head,
+                'financial_year_id' => $financial_year->id,
+                'voucher_date' => $request->voucher_date,
+                'account_voucher_type_id' => 3,
+                'cheque_no' => $request->cheque_no,
+                'cheque_date' => $request->cheque_date,
+                'is_honour' => isset($request->is_honour) ? $request->is_honour : 0,
+                'narration' => $request->remarks,
+                'account_sub_type_id' => $value['sub_type_id'] ?? null,
+                'account_sub_code_id' => $value['sub_code_id'] ?? null,
+                'ledger_comment' => $value['ledger_comment'] ?? '',
+                'debit' => $value['debit'] ?? 0.00,
+                'credit' => $value['credit'] ?? 0.00,
+                'voucher_no' =>  $voucher_no,
+            ]);
+        }
+
+        return redirect()->route('admin.account.voucher.contra.index')->with('success', localize('Contra Voucher created successfully.'));
     }
 
     /**
      * Show the specified resource.
-     * @param int $id
+     * @param AccountVoucher $contra
      * @return Renderable
      */
-    public function show($id)
+    public function show(AccountVoucher $contra)
     {
-        return view('account::show');
+        $contra->load(['reverseCode', 'chartOfAccount', 'accountSubCode']);
+        return view('account::vouchers.contra.show', compact('contra'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     * @param int $id
+     * @param AccountVoucher $contra
      * @return Renderable
      */
-    public function edit($id)
+    public function edit(AccountVoucher $contra)
     {
-        return view('account::edit');
+        cs_set('theme', [
+            'title' => 'Contra Voucher',
+            'description' => 'Edit Contra Voucher.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Contra Voucher Lists',
+                    'link' => route('admin.account.voucher.contra.index'),
+                ],
+                [
+                    'name' => 'Edit Contra Voucher',
+                    'link' => false,
+                ],
+            ],
+        ]);
+        $accounts = ChartOfAccount::where('head_level', 4)
+            ->where('is_active', true)
+            ->where(function ($query) {
+                $query->where('is_bank_nature', true)
+                    ->orWhere('is_cash_nature', true);
+            })
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        $accountSubCodes = AccountSubCode::where('status', true)->get();
+
+        return view(
+            'account::vouchers.contra.edit',
+            compact('accounts', 'contra', 'accountSubCodes')
+        );
     }
 
     /**
      * Update the specified resource in storage.
      * @param Request $request
-     * @param int $id
+     * @param AccountVoucher $contra
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, AccountVoucher $contra)
     {
-        //
+        $request->validate([
+            'account_head' => 'required',
+            'voucher_date' => 'required',
+        ]);
+
+        $financial_year = FinancialYear::where('status', true)->where('is_closed', false)->first();
+        // Extract IDs from the contras array
+        $contraIds = collect($request->contras)->pluck('id')->toArray();
+
+        // Delete vouchers where voucher_no is in contra voucher numbers and id is not in contra ids
+        AccountVoucher::where('voucher_no', $contra->voucher_no)
+            ->whereNotIn('id', $contraIds)
+            ->delete();
+
+        foreach ($request->credits as $value) {
+            AccountVoucher::updateOrCreate([
+                'id' => $value['id'],
+            ], [
+                'chart_of_account_id' => $value['coa_id'],
+                'reverse_code' => $request->account_head,
+                'financial_year_id' => $financial_year->id,
+                'voucher_date' => $request->voucher_date,
+                'account_voucher_type_id' => 3,
+                'cheque_no' => $request->cheque_no,
+                'cheque_date' => $request->cheque_date,
+                'is_honour' => $request->is_honour ?? 0,
+                'narration' => $request->remarks,
+                'account_sub_type_id' => $value['sub_type_id'] ?? null,
+                'account_sub_code_id' => $value['sub_code_id'] ?? null,
+                'ledger_comment' => $value['ledger_comment'] ?? '',
+                'debit'          => $value['debit'] ?? 0.00,
+                'credit'          => $value['credit'] ?? 0.00,
+                'voucher_no' => $contra->voucher_no,
+            ]);
+        }
+
+        return redirect()->route('admin.account.voucher.contra.index')->with('success', localize('Contra Voucher updated successfully.'));
     }
 
     /**
      * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
+     * @param AccountVoucher $contra
      */
-    public function destroy($id)
+    public function destroy(AccountVoucher $contra)
     {
-        //
+        $contra->delete();
+        return response()->success('', localize('Contra Voucher deleted successfully.'));
     }
 }

@@ -3,12 +3,12 @@
         <x-slot name="actions">
             <a href="{{ route(config('theme.rprefix') . '.index') }}" class="btn btn-primary btn-sm">
                 <i class="fa fa-list"></i>&nbsp;
-                @localize('Credit Voucher')
+                @localize('Contra Voucher')
             </a>
         </x-slot>
 
         <div>
-            <form action="{{ route('admin.account.voucher.credit.update', $credit->id) }}" method="post">
+            <form action="{{ route('admin.account.voucher.contra.update', $contra->id) }}" method="post">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" id="accounts" value="{{ json_encode($accounts) }}" />
@@ -24,26 +24,26 @@
                                     class="form-select select2">
                                     <option>@localize('select_one')</option>
                                     @foreach ($accounts as $item)
-                                        <option value="{{ $item->id }}" @selected($credit->reverseCode->id == $item->id)>
+                                        <option value="{{ $item->id }}" @selected($contra->reverseCode->id == $item->id)>
                                             {{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div id="bank_nature"
-                            class="{{ $credit->reverseCode?->is_bank_nature == 1 ? null : 'd-none' }}">
+                            class="{{ $contra->reverseCode?->is_bank_nature == 1 ? null : 'd-none' }}">
                             <div class="form-group mb-2 mx-0 row">
                                 <label for="cheque_no" class="col-sm-3 col-form-label">@localize('cheque_no')</label>
                                 <div class="col-lg-9">
                                     <input type="text" name="cheque_no" id="cheque_no" class="form-control"
-                                        value="{{ $credit->cheque_no }}" placeholder="@localize('cheque_no')" />
+                                        value="{{ $contra->cheque_no }}" placeholder="@localize('cheque_no')" />
                                 </div>
                             </div>
                             <div class="form-group mb-2 mx-0 row">
                                 <label for="cheque_date" class="col-sm-3 col-form-label">@localize('cheque_date')</label>
                                 <div class="col-lg-9">
                                     <input type="date" name="cheque_date" id="cheque_date" class="form-control"
-                                        value="{{ \Carbon\Carbon::parse($credit->cheque_date)->format('Y-m-d') }}"
+                                        value="{{ \Carbon\Carbon::parse($contra->cheque_date)->format('Y-m-d') }}"
                                         placeholder="@localize('cheque_date')" />
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                                 <label for="is_honour" class="col-sm-3 col-form-label">@localize('is_honour')</label>
                                 <div class="col-lg-9">
                                     <input type="checkbox" name="is_honour" id="is_honour" class="form-check-input"
-                                        @checked($credit->is_honour == 1) placeholder="@localize('is_honour')" value="1" />
+                                        @checked($contra->is_honour == 1) placeholder="@localize('is_honour')" value="1" />
                                 </div>
                             </div>
                         </div>
@@ -60,13 +60,13 @@
                                     class="text-danger">*</span></label>
                             <div class="col-lg-9">
                                 <input type="date" name="voucher_date" id="voucher_date" class="form-control"
-                                    value="{{ \Carbon\Carbon::parse($credit->voucher_date)->format('Y-m-d') }}" />
+                                    value="{{ \Carbon\Carbon::parse($contra->voucher_date)->format('Y-m-d') }}" />
                             </div>
                         </div>
                         <div class="form-group mb-2 mx-0 row">
                             <label for="Remarks" class="col-sm-3 col-form-label">@localize('remarks')</label>
                             <div class="col-lg-9">
-                                <textarea name="remarks" class="form-control" id="remarks" rows="3" placeholder="@localize('remarks')">{{ $credit->narration }}</textarea>
+                                <textarea name="remarks" class="form-control" id="remarks" rows="3" placeholder="@localize('remarks')">{{ $contra->narration }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -75,52 +75,32 @@
                     <thead>
                         <tr>
                             <th width="25%" class="text-center">@localize('account_name')</th>
-                            <th width="25%" class="text-center">@localize('subtype')</th>
                             <th width="20%" class="text-center">@localize('ledger_comment')</th>
-                            <th width="20%" class="text-center">@localize('amount')</th>
-                            <th width="10%" class="text-center">@localize('action')</th>
+                            <th width="20%" class="text-center">@localize('debit')</th>
+                            <th width="20%" class="text-center">@localize('credit')</th>
                         </tr>
                     </thead>
                     <tbody id="debitVoucher">
-                        @foreach ($credit->all_vouchers_by_no as $item)
+                        @foreach ($contra->all_vouchers_by_no as $item)
                             <tr>
                                 <td>
-                                    <select name="credits[{{ $loop->index }}][coa_id]" class="form-select select2">
+                                    <select name="contras[{{ $loop->index }}][coa_id]" class="form-select select2">
                                         <option>@localize('select_one')</option>
                                         @foreach ($accounts as $account)
                                             <option value="{{ $account->id }}" @selected($item->chart_of_account_id == $account->id)>
                                                 {{ $account->name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" name="credits[{{ $loop->index }}][id]"
+                                    <input type="hidden" name="contras[{{ $loop->index }}][id]"
                                         value="{{ $item->id }}" />
                                 </td>
                                 <td>
-                                    <select name="credits[{{ $loop->index }}][sub_code_id]"
-                                        class="form-select select2" @disabled(!$item->accountSubCode)>
-                                        <option>@localize('select_one')</option>
-                                        @foreach ($accountSubCodes as $subCode)
-                                            @if ($subCode->account_sub_type_id == $item->accountSubType?->id)
-                                                <option value="{{ $subCode->id }}" @selected($item->accountSubCode?->id == $subCode->id)>
-                                                    {{ $subCode->name }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" name="credits[{{ $loop->index }}][sub_type_id]"
-                                        value="{{ $item->account_sub_type_id }}" />
-                                </td>
-                                <td>
-                                    <input type="text" name="credits[{{ $loop->index }}][ledger_comment]"
+                                    <input type="text" name="contras[{{ $loop->index }}][ledger_comment]"
                                         class="form-control text-end" value="{{ $item->ledger_comment }}" />
                                 </td>
                                 <td>
-                                    <input type="number" name="credits[{{ $loop->index }}][amount]"
+                                    <input type="number" name="contras[{{ $loop->index }}][amount]"
                                         class="form-control text-end amount" value="{{ $item->credit }}" />
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm"value="Delete"
-                                        onclick="deleteRow(this)" autocomplete="off"><i
-                                            class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
                         @endforeach
