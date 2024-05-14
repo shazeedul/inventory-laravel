@@ -99,28 +99,16 @@
                                         class="form-control text-end" value="{{ $item->ledger_comment }}" />
                                 </td>
                                 <td>
-                                    <input type="number" name="contras[{{ $loop->index }}][amount]"
-                                        class="form-control text-end amount" value="{{ $item->credit }}" />
+                                    <input type="number" name="contras[{{ $loop->index }}][debit]"
+                                        class="form-control text-end" value="{{ $item->debit }}" />
+                                </td>
+                                <td>
+                                    <input type="number" name="contras[{{ $loop->index }}][credit]"
+                                        class="form-control text-end" value="{{ $item->credit }}" />
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>
-                                <button type="button" id="add_more" class="btn btn-primary" onclick="addRow();"
-                                    autocomplete="off">@localize('add_more')</button>
-                            </td>
-                            <td colspan="2" class="text-end">
-                                <label for="reason" class="  col-form-label">@localize('total')</label>
-                            </td>
-
-                            <td class="text-end">
-                                <input type="text" id="grandTotal" class="form-control text-end"
-                                    name="grand_total" readonly="readonly" autocomplete="off">
-                            </td>
-                        </tr>
-                    </tfoot>
                 </table>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary m-2 submit_button"
@@ -137,67 +125,10 @@
     @endpush
     @push('js')
         <script>
-            var accounts = JSON.parse($(`#accounts`).val());
-            var options = '';
-            accounts.forEach(element => {
-                options +=
-                    `<option value="${element.id}" data-subTypeId="${element.account_sub_type_id}">${element.name}</option>`;
-            });
             $(document).ready(function() {
                 $(".select2").select2();
                 calculation();
             });
-
-            function addRow() {
-                var table = $("#creditAccVoucher");
-                var row = `<tr>`;
-                row += `<td><select name="credits[][coa_id]" class="form-control select2"
-                            onchange="load_subtypeOpen(this)">
-                            <option selected disabled>` + localize('select_amount') + `</option>`;
-                row += options;
-                row += `</select>`;
-                row += `<input type="hidden" name="credits[][id]" value="" />`;
-                row += `</td>`;
-                row += `<td><select name="credits[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
-                        'select_subtype') +
-                    `</option></select><input type="hidden" name="credits[0][sub_type_id]" value="" /></td>`;
-                row +=
-                    `<td><input type="text" name="credits[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
-                row +=
-                    `<td><input type="number" step="0.01" name="credits[][amount]" 
-                        min="1" class="form-control text-end amount"
-                        onkeyup="calculation()" autocomplete="off"></td>`;
-                row +=
-                    `<td> <button class="btn btn-danger btn-sm" type="button" value="Delete"
-                        onclick="deleteRow(this)" autocomplete="off"><i class="fa fa-trash"></i></button></td>`;
-                row += `</tr>`;
-                $('#creditAccVoucher tbody').append(row);
-                arrayAlign('creditAccVoucher');
-                $('.select2').select2();
-            }
-
-            function deleteRow(e) {
-                // Find the closest table element
-                var table = $(e).closest('table');
-                // Check if there's only one row left in the table body
-                if (table.find('tbody tr').length === 1) {
-                    // If there's only one row left, don't delete it
-                    alert('Cannot delete the last row.');
-                    return;
-                }
-                // Find the parent row element (tr) and remove it
-                $(e).closest('tr').remove();
-                arrayAlign(table.attr('id'));
-                calculation();
-            }
-
-            function calculation() {
-                var total = 0;
-                $('.amount').each(function() {
-                    total += parseFloat($(this).val()) || 0;
-                });
-                $('#grandTotal').val(total);
-            }
 
             function arrayAlign(table) {
                 var tb = document.getElementById(table);
@@ -210,35 +141,6 @@
                         var name = input.getAttribute('name');
                         var newName = name.replace(/\[\d*\]/, '[' + i + ']');
                         input.setAttribute('name', newName);
-                    });
-                }
-            }
-
-            function load_subtypeOpen(e) {
-                var coa_id = e.value;
-                var subTypeId = e.options[e.selectedIndex].getAttribute('data-subTypeId');
-                var url = $('#subCodeUrl').val();
-                if (subTypeId) {
-                    axios.post(
-                        url, {
-                            subType: subTypeId
-                        }
-                    ).then((response) => {
-                        if (response.data.data.length > 0) {
-                            var subCodes = response.data.data;
-                            var selectSubCode = e.closest('tr').querySelector('select[name*="sub_code_id"]');
-                            var selectSubType = e.closest('tr').querySelector('input[name*="sub_type_id"]');
-                            selectSubType.value = subTypeId;
-                            selectSubCode.innerHTML = '';
-                            subCodes.forEach(element => {
-                                selectSubCode.innerHTML +=
-                                    `<option value="${element.id}">${element.name}</option>`;
-                            });
-                            selectSubCode.disabled = false;
-                            $(".select2").select2();
-                        }
-                    }).catch((error) => {
-                        console.log(error);
                     });
                 }
             }

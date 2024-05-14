@@ -200,7 +200,7 @@ class ContraVoucherController extends Controller
             ->whereNotIn('id', $contraIds)
             ->delete();
 
-        foreach ($request->credits as $value) {
+        foreach ($request->contras as $value) {
             AccountVoucher::updateOrCreate([
                 'id' => $value['id'],
             ], [
