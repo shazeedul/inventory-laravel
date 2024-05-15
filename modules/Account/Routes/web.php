@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Account\DataTables\DebitVoucherDataTable;
 use Modules\Account\Http\Controllers\DebitVoucherController;
 use Modules\Account\Http\Controllers\ContraVoucherController;
 use Modules\Account\Http\Controllers\CreditVoucherController;
@@ -52,10 +51,6 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::resource('/debit', DebitVoucherController::class);
         Route::resource('/credit', CreditVoucherController::class);
         Route::resource('/contra', ContraVoucherController::class);
-        Route::name('journal.')->group(function () {
-            Route::get('/journal', [JournalVoucherController::class, 'index'])->name('index');
-            Route::get('/journal/create', [JournalVoucherController::class, 'index'])->name('create');
-            Route::get('/journal', [JournalVoucherController::class, 'index'])->name('index');
-        });
+        Route::resource('/journal', JournalVoucherController::class);
     });
 });

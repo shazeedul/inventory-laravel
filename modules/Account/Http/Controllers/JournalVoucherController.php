@@ -2,9 +2,10 @@
 
 namespace Modules\Account\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\DataTables\JournalVoucherDataTable;
 
 class JournalVoucherController extends Controller
@@ -51,7 +52,31 @@ class JournalVoucherController extends Controller
      */
     public function create()
     {
-        return view('account::create');
+        cs_set('theme', [
+            'title' => 'Journal Voucher',
+            'description' => 'Creating Journal Voucher.',
+            'breadcrumb' => [
+                [
+                    'name' => 'Dashboard',
+                    'link' => route('admin.dashboard'),
+                ],
+                [
+                    'name' => 'Journal Voucher Lists',
+                    'link' => route('admin.account.voucher.journal.index'),
+                ],
+                [
+                    'name' => 'Create Journal Voucher',
+                    'link' => false,
+                ],
+            ],
+        ]);
+
+        $accounts = ChartOfAccount::where('head_level', 4)
+            ->where('is_active', true)
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return view('account::vouchers.journal.create', compact('accounts'));
     }
 
     /**
