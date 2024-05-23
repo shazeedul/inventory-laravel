@@ -8,7 +8,7 @@
         </x-slot>
 
         <div>
-            <form action="{{ route('admin.account.voucher.debit.store') }}" method="post">
+            <form action="{{ route('admin.account.voucher.journal.store') }}" id="journalVoucherForm" method="post">
                 @csrf
                 <input type="hidden" id="accounts" value="{{ json_encode($accounts) }}" />
                 <input type="hidden" id="subCodeUrl"
@@ -45,7 +45,7 @@
                     <tbody id="journalVoucher">
                         <tr>
                             <td>
-                                <select name="debits[0][coa_id]" class="form-control select2"
+                                <select name="journals[0][coa_id]" class="form-control select2"
                                     onchange="load_subtypeOpen(this)">
                                     <option selected disabled>@localize('select_amount')</option>
                                     @foreach ($accounts as $account)
@@ -56,22 +56,24 @@
                                 </select>
                             </td>
                             <td>
-                                <select name="debits[0][sub_code_id]" class="form-control select2" disabled>
+                                <select name="journals[0][sub_code_id]" class="form-control select2" disabled>
                                     <option>@localize('select_subtype')</option>
                                 </select>
-                                <input type="hidden" name="debits[0][sub_type_id]" value="" />
+                                <input type="hidden" name="journals[0][sub_type_id]" value="" />
                             </td>
                             <td>
-                                <input type="text" name="debits[0][ledger_comment]" class="form-control text-end"
+                                <input type="text" name="journals[0][ledger_comment]" class="form-control text-end"
                                     autocomplete="off" />
                             </td>
                             <td>
-                                <input type="number" step="0.01" name="debits[0][debit]" min="1"
-                                    class="form-control text-end debit" onkeyup="calculation()" autocomplete="off" />
+                                <input type="number" step="0.01" name="journals[0][debit]" min="0"
+                                    class="form-control text-end debit" onkeyup="calculation(this)"
+                                    autocomplete="off" />
                             </td>
                             <td>
-                                <input type="number" step="0.01" name="debits[0][credit]" min="1"
-                                    class="form-control text-end credit" onkeyup="calculation()" autocomplete="off" />
+                                <input type="number" step="0.01" name="journals[0][credit]" min="0"
+                                    class="form-control text-end credit" onkeyup="calculation(this)"
+                                    autocomplete="off" />
                             </td>
                             <td>
                                 <button class="btn btn-danger btn-sm" type="button" value="Delete"
@@ -80,7 +82,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <select name="debits[1][coa_id]" class="form-control select2"
+                                <select name="journals[1][coa_id]" class="form-control select2"
                                     onchange="load_subtypeOpen(this)">
                                     <option selected disabled>@localize('select_amount')</option>
                                     @foreach ($accounts as $account)
@@ -91,22 +93,23 @@
                                 </select>
                             </td>
                             <td>
-                                <select name="debits[1][sub_code_id]" class="form-control select2" disabled>
+                                <select name="journals[1][sub_code_id]" class="form-control select2" disabled>
                                     <option>@localize('select_subtype')</option>
                                 </select>
-                                <input type="hidden" name="debits[1][sub_type_id]" value="" />
+                                <input type="hidden" name="journals[1][sub_type_id]" value="" />
                             </td>
                             <td>
-                                <input type="text" name="debits1][ledger_comment]" class="form-control text-end"
+                                <input type="text" name="journals[1][ledger_comment]" class="form-control text-end"
                                     autocomplete="off" />
                             </td>
                             <td>
-                                <input type="number" step="0.01" name="debits[1][debit]" min="1"
-                                    class="form-control text-end debit" onkeyup="calculation()" autocomplete="off" />
+                                <input type="number" step="0.01" name="journals[1][debit]" min="0"
+                                    class="form-control text-end debit" onkeyup="calculation(this)"
+                                    autocomplete="off" />
                             </td>
                             <td>
-                                <input type="number" step="0.01" name="debits[1][credit]" min="1"
-                                    class="form-control text-end credit" onkeyup="calculation()"
+                                <input type="number" step="0.01" name="journals[1][credit]" min="0"
+                                    class="form-control text-end credit" onkeyup="calculation(this)"
                                     autocomplete="off" />
                             </td>
                             <td>
@@ -137,8 +140,7 @@
                     </tfoot>
                 </table>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary m-2 submit_button"
-                        id="create_submit">@localize('save')</button>
+                    <button type="button" class="btn btn-primary m-2 submit_button">@localize('save')</button>
                 </div>
             </form>
         </div>
@@ -164,24 +166,46 @@
             function addRow() {
                 var table = $("#journalAccVoucher");
                 var row = `<tr>`;
-                row += `<td><select name="debits[][coa_id]" class="form-control select2"
+                row += `<td><select name="journals[][coa_id]" class="form-control select2"
                             onchange="load_subtypeOpen(this)">
                             <option selected disabled>` + localize('select_amount') + `</option>`;
                 row += options;
                 row += `</select></td>`;
-                row += `<td><select name="debits[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
+                row += `<td><select name="journals[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
                         'select_subtype') +
-                    `</option></select><input type="hidden" name="debits[0][sub_type_id]" value="" /></td>`;
+                    `</option></select><input type="hidden" name="journals[0][sub_type_id]" value="" /></td>`;
                 row +=
-                    `<td><input type="text" name="debits[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
+                    `<td><input type="text" name="journals[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
                 row +=
-                    `<td><input type="number" step="0.01" name="debits[][debit]" 
-                        min="1" class="form-control text-end debit"
-                        onkeyup="calculation()" autocomplete="off"></td>`;
+                    `<td><input type="number" step="0.01" name="journals[][debit]" 
+                        min="0" class="form-control text-end debit"
+                        onkeyup="calculation(this)" autocomplete="off"></td>`;
                 row +=
-                    `<td><input type="number" step="0.01" name="debits[][credit]" 
-                        min="1" class="form-control text-end credit"
-                        onkeyup="calculation()" autocomplete="off"></td>`;
+                    `<td><input type="number" step="0.01" name="journals[][credit]" 
+                        min="0" class="form-control text-end credit"
+                        onkeyup="calculation(this)" autocomplete="off"></td>`;
+                row +=
+                    `<td> <button class="btn btn-danger btn-sm" type="button" value="Delete"
+                        onclick="deleteRow(this)" autocomplete="off"><i class="fa fa-trash"></i></button></td>`;
+                row += `</tr>`;
+                row += `<td><select name="journals[][coa_id]" class="form-control select2"
+                            onchange="load_subtypeOpen(this)">
+                            <option selected disabled>` + localize('select_amount') + `</option>`;
+                row += options;
+                row += `</select></td>`;
+                row += `<td><select name="journals[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
+                        'select_subtype') +
+                    `</option></select><input type="hidden" name="journals[0][sub_type_id]" value="" /></td>`;
+                row +=
+                    `<td><input type="text" name="journals[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
+                row +=
+                    `<td><input type="number" step="0.01" name="journals[][debit]" 
+                        min="0" class="form-control text-end debit"
+                        onkeyup="calculation(this)" autocomplete="off"></td>`;
+                row +=
+                    `<td><input type="number" step="0.01" name="journals[][credit]" 
+                        min="0" class="form-control text-end credit"
+                        onkeyup="calculation(this)" autocomplete="off"></td>`;
                 row +=
                     `<td> <button class="btn btn-danger btn-sm" type="button" value="Delete"
                         onclick="deleteRow(this)" autocomplete="off"><i class="fa fa-trash"></i></button></td>`;
@@ -206,8 +230,19 @@
                 calculation();
             }
 
-            function calculation() {
-                var totalDebit, totalCredit = 0;
+            function calculation(element) {
+                var $element = $(element);
+                var $row = $element.closest('tr');
+                var $debitInput = $row.find('.debit');
+                var $creditInput = $row.find('.credit');
+
+                if ($element.hasClass('debit') && $debitInput.val()) {
+                    $creditInput.val(0);
+                } else if ($element.hasClass('credit') && $creditInput.val()) {
+                    $debitInput.val(0);
+                }
+                var totalDebit = 0,
+                    totalCredit = 0;
                 $('.debit').each(function() {
                     totalDebit += parseFloat($(this).val()) || 0;
                 });
@@ -274,6 +309,61 @@
                     document.getElementById('is_honour').checked = false;
                 }
             }
+
+            $(function() {
+                $('.submit_button').click(function(e) {
+                    e.preventDefault();
+                    // check if first row debit then last will be credit or first row credit then last  will be debit
+                    var firstRowDebit = $('#journalVoucher tr:first-child .debit').val();
+                    var lastRowDebit = $('#journalVoucher tr:last-child .debit').val();
+                    var firstRowCredit = $('#journalVoucher tr:first-child .credit').val();
+                    var lastRowCredit = $('#journalVoucher tr:last-child .credit').val();
+                    if (firstRowDebit > 0 && lastRowDebit > 0) {
+                        alert('First row debit then last row credit');
+                        return false;
+                    } else if (firstRowCredit > 0 && lastRowCredit > 0) {
+                        alert('First row credit then last row debit');
+                        return false;
+                    }
+                    // check credit row count will be not greater then debit row count
+                    var debitRowCount = $('#journalVoucher tr .debit').filter(function() {
+                        return $(this).val() > 0;
+                    }).length;
+                    var creditRowCount = $('#journalVoucher tr .credit').filter(function() {
+                        return $(this).val() > 0;
+                    }).length;
+                    if (debitRowCount < creditRowCount) {
+                        alert('Credit row should be not greater then debit row');
+                        return false;
+                    }
+
+                    // check two credit not set on nearest row
+                    var creditRow = $('#journalVoucher tr .credit').filter(function() {
+                        return parseFloat($(this).val()) > 0;
+                    });
+                    var creditRowLength = creditRow.length;
+                    var creditRowArray = [];
+                    creditRow.each(function() {
+                        creditRowArray.push(parseFloat($(this).val()));
+                    });
+                    for (var i = 0; i < creditRowLength; i++) {
+                        if (creditRowArray[i] > 0 && creditRowArray[i + 1] > 0) {
+                            alert('Two credit not set on nearest row');
+                            return false;
+                        }
+                    }
+
+                    var grandDebitTotal = $('#grandDebitTotal').val() || 0;
+                    var grandCreditTotal = $('#grandCreditTotal').val() || 0;
+                    if (grandDebitTotal != grandCreditTotal) {
+                        alert('Debit and Credit total not matched');
+                        return false;
+                    }
+
+
+                    $('#journalVoucherForm').submit();
+                });
+            });
         </script>
     @endpush
 </x-app-layout>

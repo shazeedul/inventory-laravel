@@ -3,11 +3,10 @@
 namespace Modules\Product\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Modules\Unit\Entities\Unit;
 use Illuminate\Routing\Controller;
+use Modules\Product\Entities\Unit;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\Category;
-use Modules\Supplier\Entities\Supplier;
 use Illuminate\Contracts\Support\Renderable;
 use Modules\Product\DataTables\ProductDataTable;
 

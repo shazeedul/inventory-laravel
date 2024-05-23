@@ -161,6 +161,7 @@ class ContraVoucherController extends Controller
                 ],
             ],
         ]);
+
         $accounts = ChartOfAccount::where('head_level', 4)
             ->where('is_active', true)
             ->where(function ($query) {

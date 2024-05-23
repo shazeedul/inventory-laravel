@@ -65,7 +65,6 @@ class RolePermissionTableSeeder extends Seeder
                 'opening_balance_create',
                 'opening_balance_update',
                 'opening_balance_delete',
-                'voucher_management',
             ],
             'Supplier' => [
                 'supplier_management',
@@ -86,6 +85,13 @@ class RolePermissionTableSeeder extends Seeder
             ],
             'Stock' => [
                 'stock_management',
+            ],
+            'Voucher' => [
+                'voucher_management',
+                'debit_voucher_management',
+                'credit_voucher_management',
+                'contra_voucher_management',
+                'journal_voucher_management',
             ],
         ];
         $roles = [
