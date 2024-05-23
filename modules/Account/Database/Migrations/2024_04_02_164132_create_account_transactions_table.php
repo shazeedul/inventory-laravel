@@ -36,6 +36,7 @@ return new class extends Migration
             $table->unsignedBigInteger('reverse_sub_code_id')->nullable();
             $table->boolean('is_closed_year')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

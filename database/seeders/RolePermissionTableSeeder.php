@@ -93,6 +93,9 @@ class RolePermissionTableSeeder extends Seeder
                 'contra_voucher_management',
                 'journal_voucher_management',
             ],
+            'Transaction' => [
+                'transaction_management',
+            ],
         ];
         $roles = [
             'User' => [],

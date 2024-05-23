@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Account\Entities\AccountSubType;
 
-class AccountSubTypeSeederTableSeeder extends Seeder
+class AccountSubTypeTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

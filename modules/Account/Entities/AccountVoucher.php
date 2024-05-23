@@ -40,11 +40,6 @@ class AccountVoucher extends Model
         'approved_at',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-    }
-
     public function chartOfAccount()
     {
         return $this->belongsTo(ChartOfAccount::class);

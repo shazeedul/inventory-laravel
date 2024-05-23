@@ -10,6 +10,7 @@ use Modules\Account\Http\Controllers\ChartOfAccountController;
 use Modules\Account\Http\Controllers\JournalVoucherController;
 use Modules\Account\Http\Controllers\OpeningBalanceController;
 use Modules\Account\Http\Controllers\AccountPredefineController;
+use Modules\Account\Http\Controllers\AccountTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,4 +54,13 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::resource('/contra', ContraVoucherController::class);
         Route::resource('/journal', JournalVoucherController::class);
     });
+
+    Route::controller(AccountTransactionController::class)
+        ->prefix('/transaction')
+        ->as('transaction.')
+        ->group(function () {
+            Route::get('/',  'index')->name('index');
+            Route::post('/',  'approve')->name('approve');
+            Route::post('/restore/{voucher}',  'restore')->name('restore');
+        });
 });

@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Account\Entities\AccountVoucherType;
 
-class AccountVoucherTypeSeederTableSeeder extends Seeder
+class AccountVoucherTypeTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

@@ -46,6 +46,9 @@
                     <x-admin.nav-link href="{{ route('admin.account.voucher.debit.index') }}">
                         @localize('Vouchers')
                     </x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.account.transaction.index') }}">
+                        @localize('Voucher Approval')
+                    </x-admin.nav-link>
                 </x-admin.multi-nav>
             @endif
             {{-- POS Segment --}}

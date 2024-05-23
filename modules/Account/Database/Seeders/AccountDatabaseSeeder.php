@@ -5,9 +5,9 @@ namespace Modules\Account\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Account\Database\Seeders\AccountTypeTableSeeder;
-use Modules\Account\Database\Seeders\AccountSubTypeSeederTableSeeder;
-use Modules\Account\Database\Seeders\ChartOfAccountSeederTableSeeder;
-use Modules\Account\Database\Seeders\AccountVoucherTypeSeederTableSeeder;
+use Modules\Account\Database\Seeders\AccountSubTypeTableSeeder;
+use Modules\Account\Database\Seeders\ChartOfAccountTableSeeder;
+use Modules\Account\Database\Seeders\AccountVoucherTypeTableSeeder;
 
 class AccountDatabaseSeeder extends Seeder
 {
@@ -21,8 +21,9 @@ class AccountDatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(AccountTypeTableSeeder::class);
-        $this->call(AccountSubTypeSeederTableSeeder::class);
-        $this->call(AccountVoucherTypeSeederTableSeeder::class);
-        $this->call(ChartOfAccountSeederTableSeeder::class);
+        $this->call(AccountSubTypeTableSeeder::class);
+        $this->call(AccountVoucherTypeTableSeeder::class);
+        $this->call(ChartOfAccountTableSeeder::class);
+        $this->call(FinancialYearTableSeeder::class);
     }
 }

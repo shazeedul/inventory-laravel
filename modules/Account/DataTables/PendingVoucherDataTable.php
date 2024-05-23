@@ -2,17 +2,16 @@
 
 namespace Modules\Account\DataTables;
 
-use Illuminate\Support\Str;
-use Yajra\DataTables\Html\Button;
-use Yajra\DataTables\Html\Column;
-use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Modules\Account\Entities\AccountSubCode;
 use Modules\Account\Entities\AccountVoucher;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
 
-class DebitVoucherDataTable extends DataTable
+class PendingVoucherDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -23,39 +22,49 @@ class DebitVoucherDataTable extends DataTable
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-
-            ->addColumn('action', function ($query) {
-                $button = '';
-                $button .= '<a href="javascript:void(0);"  onclick="' . "axiosModal('" . route('admin.account.voucher.debit.show', $query->id) . '\')" title="' . localize('Show') . '" class="btn btn-primary btn-sm me-2"><i class="fas fa-eye"></i></a>';
-                if (!$query->is_approved) {
-                    $button .= '<a href="' . route('admin.account.voucher.debit.edit', $query->id) . '" class="btn btn-secondary btn-sm me-2"><i class="fas fa-edit"></i></a>';
-                    $button .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="' . "delete_modal('" . route('admin.account.voucher.debit.destroy', $query->id) .  '\')"  title="' . localize('Delete') . '"><i class="fa fa-trash"></i></a>';
-                } else {
-                    $button .= '<a href="javascript:void(0);" class="btn btn-warning btn-sm" onclick="' . "restoreVoucher('" . $query->id . '\')"  title="' . localize('Reverse') . '"><i class="fas fa-undo"></i></a>';
-                }
-                return $button;
+            ->addIndexColumn()
+            ->editColumn('checkbox', function ($row) {
+                return '<input type="checkbox" name="voucher_checkbox[]" class="voucher_checkbox" value="' . $row->id . '">';
             })
-            ->editColumn('ledger_comment', function ($query) {
-                return Str::limit($query->ledger_comment, 10);
+            ->editColumn('voucher_no', function ($row) {
+                return $row->voucherType?->name . '-' . $row->voucher_no;
             })
-            ->editColumn('account_sub_type_id', function ($query) {
-                return $query->accountSubType?->name ?? '--';
+            ->filterColumn('voucher_no', function ($row, $keyword) {
+                $row->whereHas('voucherType', function ($row) use ($keyword) {
+                    $row->where('name', 'like', "%{$keyword}%");
+                });
             })
-            ->editColumn('chart_of_account_id', function ($query) {
-                return $query->chartOfAccount?->name ?? '--';
+            ->editColumn('chart_of_account_id', function ($row) {
+                return $row->chartOfAccount?->name;
             })
-            ->editColumn('reverse_code', function ($query) {
-                return $query->reverseCode?->name;
+            ->filterColumn('chart_of_account_id', function ($row, $keyword) {
+                $row->whereHas('chartOfAccount', function ($row) use ($keyword) {
+                    $row->where('name', 'like', "%{$keyword}%");
+                });
             })
-            ->editColumn('debit', function ($query) {
-                return $query->debit ?? 0.00;
+            ->editColumn('reverse_code', function ($row) {
+                return $row->reverseCode?->name;
             })
-            ->editColumn('credit', function ($query) {
-                return $query->credit ?? 0.00;
+            ->filterColumn('reverse_code', function ($row, $keyword) {
+                $row->whereHas('reverseCode', function ($row) use ($keyword) {
+                    $row->where('name', 'like', "%{$keyword}%");
+                });
             })
-            ->rawColumns(['action'])
-            ->setRowId('id')
-            ->addIndexColumn();
+            ->editColumn('account_sub_type_id', function ($row) {
+                return $row->accountSubType?->name;
+            })
+            ->filterColumn('account_sub_type_id', function ($row, $keyword) {
+                $row->whereHas('accountSubType', function ($row) use ($keyword) {
+                    $row->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->editColumn('debit', function ($row) {
+                return $row->debit ?? 0;
+            })
+            ->editColumn('credit', function ($row) {
+                return $row->credit ?? 0;
+            })
+            ->rawColumns(['checkbox']);
     }
 
     /**
@@ -63,7 +72,15 @@ class DebitVoucherDataTable extends DataTable
      */
     public function query(AccountVoucher $model): QueryBuilder
     {
-        return $model->newQuery()->with(['chartOfAccount', 'reverseCode', 'accountSubType'])->where('account_voucher_type_id', 1)->orderBy('voucher_no', 'DESC');
+        return $model->newQuery()
+            ->with([
+                'chartOfAccount',
+                'reverseCode',
+                'accountSubType',
+                'voucherType'
+            ])
+            ->where('is_approved', false)
+            ->orderBy('voucher_date', 'desc');
     }
 
     /**
@@ -72,7 +89,7 @@ class DebitVoucherDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('debit-voucher-table')
+            ->setTableId('pending_voucher-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->responsive(true)
@@ -96,18 +113,24 @@ class DebitVoucherDataTable extends DataTable
                 ->width(30)
                 ->searchable(false)
                 ->orderable(false),
+            Column::computed('checkbox')
+                ->title('<input type="checkbox" id="check_all" onclick="selectAll()"> All')
+                ->orderable(false)
+                ->exportable(false)
+                ->printable(false)
+                ->width(10),
             Column::make('voucher_no')
                 ->title(@localize('Voucher No'))
                 ->addClass('text-center')
                 ->width(100)
                 ->searchable(true)
-                ->orderable(false),
+                ->orderable(true),
             Column::make('voucher_date')
                 ->title(@localize('Date'))
                 ->addClass('text-center')
                 ->width(100)
                 ->searchable(true)
-                ->orderable(false),
+                ->orderable(true),
             Column::make('chart_of_account_id')
                 ->title(@localize('Account Name'))
                 ->addClass('text-center')
@@ -126,6 +149,12 @@ class DebitVoucherDataTable extends DataTable
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
+            Column::make('reverse_code')
+                ->title(@localize('Reversed Account'))
+                ->addClass('text-center')
+                ->width(100)
+                ->searchable(true)
+                ->orderable(false),
             Column::make('debit')
                 ->title(@localize('Debit'))
                 ->addClass('text-center')
@@ -138,20 +167,6 @@ class DebitVoucherDataTable extends DataTable
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
-            Column::make('reverse_code')
-                ->title(@localize('Reversed Account'))
-                ->addClass('text-center')
-                ->width(100)
-                ->searchable(true)
-                ->orderable(false),
-            Column::computed('action')
-                ->title(@localize('Action'))
-                ->addClass('text-center')
-                ->width(100)
-                ->searchable(false)
-                ->orderable(false)
-                ->exportable(false)
-                ->printable(false),
         ];
     }
 
@@ -160,6 +175,6 @@ class DebitVoucherDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'DebitVoucher' . date('YmdHis');
+        return 'PendingVoucher' . date('YmdHis');
     }
 }

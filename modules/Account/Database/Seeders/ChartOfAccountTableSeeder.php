@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Modules\Account\Entities\ChartOfAccount;
 
-class ChartOfAccountSeederTableSeeder extends Seeder
+class ChartOfAccountTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
