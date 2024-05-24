@@ -17,6 +17,9 @@ class ProductDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
+        $this->call(CategoryDatabaseSeeder::class);
+        $this->call(UnitDatabaseSeeder::class);
+
         $products = [
             [
                 'name' => 'Product 1',

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('purchase_no');
             $table->date('date');
             $table->foreignId('supplier_id')->constrained('suppliers');
-            $table->double('total_price', 10, 2, true);
+            $table->double('total_price', 12, 2, true);
             $table->tinyInteger('status')->default('0')->comment('0=Pending, 1=Approved');
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');

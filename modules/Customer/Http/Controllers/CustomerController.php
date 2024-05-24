@@ -4,9 +4,10 @@ namespace Modules\Customer\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Storage;
 use Modules\Customer\Entities\Customer;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Support\Facades\Storage;
+use Modules\Account\Entities\AccountSubCode;
 use Modules\Customer\DataTables\CustomerDataTable;
 
 class CustomerController extends Controller
@@ -94,7 +95,14 @@ class CustomerController extends Controller
             $data['profile_photo_path'] = $request->avatar->store('customer');
         }
 
-        Customer::create($data);
+        $customer = Customer::create($data);
+        AccountSubCode::create([
+            'account_sub_type_id' => 3,
+            'reference_id' => $customer->id,
+            'code' => str_pad($customer->id, 10, '0', STR_PAD_LEFT),
+            'name' => $customer->name,
+            'status' => true,
+        ]);
 
         return response()->success('', 'Customer created successfully.');
     }

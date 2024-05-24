@@ -9,10 +9,10 @@
     "User": true,
     "Customer": true,
     "Supplier": true,
-    "Unit": true,
-    "Product": true,
-    "Category": true,
+    "Unit": false,
     "Purchase": true,
     "Invoice": true,
-    "Stock": true
+    "Stock": true,
+    "Account": true,
+    "Product": true
 }

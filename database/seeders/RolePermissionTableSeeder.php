@@ -54,19 +54,27 @@ class RolePermissionTableSeeder extends Seeder
             'Backup' => [
                 'backup_management',
             ],
+            'Account' => [
+                'account_management',
+                'financial_year_management',
+                'predefine_account',
+                'account_predefine_update',
+                'sub_code_management',
+                'coa_management',
+                'opening_balance_management',
+                'opening_balance_create',
+                'opening_balance_update',
+                'opening_balance_delete',
+            ],
             'Supplier' => [
                 'supplier_management',
             ],
             'Customer' => [
                 'customer_management',
             ],
-            'Unit' => [
-                'unit_management',
-            ],
-            'Category' => [
-                'category_management',
-            ],
             'Product' => [
+                'unit_management',
+                'category_management',
                 'product_management',
             ],
             'Purchase' => [
@@ -77,6 +85,16 @@ class RolePermissionTableSeeder extends Seeder
             ],
             'Stock' => [
                 'stock_management',
+            ],
+            'Voucher' => [
+                'voucher_management',
+                'debit_voucher_management',
+                'credit_voucher_management',
+                'contra_voucher_management',
+                'journal_voucher_management',
+            ],
+            'Transaction' => [
+                'transaction_management',
             ],
         ];
         $roles = [

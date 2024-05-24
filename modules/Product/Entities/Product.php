@@ -3,12 +3,11 @@
 namespace Modules\Product\Entities;
 
 use App\Models\User;
-use Modules\Unit\Entities\Unit;
 use App\Traits\DataTableActionBtn;
+use Modules\Product\Entities\Unit;
 use Illuminate\Support\Facades\Auth;
+use Modules\Product\Entities\Category;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Category\Entities\Category;
-use Modules\Supplier\Entities\Supplier;
 use Modules\Invoice\Entities\InvoiceDetail;
 use Modules\Purchase\Entities\PurchaseDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
