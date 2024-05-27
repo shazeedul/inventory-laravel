@@ -36,6 +36,7 @@ class AccountVoucher extends Model
         'reverse_sub_type_id',
         'reverse_sub_code_id',
         'is_approved',
+        'is_auto',
         'approved_by',
         'approved_at',
     ];

@@ -29,7 +29,7 @@ class CreditVoucherDataTable extends DataTable
                     $button .= '<a href="' . route('admin.account.voucher.credit.edit', $query->id) . '" class="btn btn-secondary btn-sm me-2"><i class="fas fa-edit"></i></a>';
                     $button .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="' . "delete_modal('" . route('admin.account.voucher.credit.destroy', $query->id) .  '\')"  title="' . localize('Delete') . '"><i class="fa fa-trash"></i></a>';
                 } else {
-                    $button .= '<a href="javascript:void(0);" class="btn btn-warning btn-sm" onclick="' . "reverseData('" . $query->id . '\')"  title="' . localize('Reverse') . '"><i class="fas fa-undo"></i></a>';
+                    $button .= '<a href="javascript:void(0);" class="btn btn-warning btn-sm" onclick="' . "restoreVoucher('" . $query->id . '\')"  title="' . localize('Reverse') . '"><i class="fas fa-undo"></i></a>';
                 }
                 return $button;
             })

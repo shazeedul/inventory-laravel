@@ -13,4 +13,46 @@
         </div>
     </x-card>
     <div id="page-axios-data" data-table-id="#contra-voucher-table"></div>
+    @push('js')
+        <script>
+            function restoreVoucher(id) {
+                Swal.fire({
+                    title: 'Confirm Restore',
+                    text: 'Are you sure you want to restore this voucher?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Approve it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.post("{{ route('admin.account.transaction.restore', '+id+') }}".replace('+id+', id))
+                            .then(response => {
+                                if (response.data.success) {
+                                    Swal.fire(
+                                        'Success',
+                                        response.data.message,
+                                        'success'
+                                    );
+                                    $(document).find('#contra-voucher-table').DataTable().ajax.reload();
+                                } else {
+                                    Swal.fire(
+                                        'Error',
+                                        response.data.message,
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire(
+                                    'Error',
+                                    'Something went wrong!',
+                                    'error'
+                                );
+                            });
+                    }
+                });
+            }
+        </script>
+    @endpush
 </x-app-layout>

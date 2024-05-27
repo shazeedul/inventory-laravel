@@ -141,5 +141,24 @@ class AccountTransactionController extends Controller
      */
     public function restore(AccountVoucher $voucher)
     {
+        $vouchers = $voucher->scopeVoucherNo($voucher, $voucher->voucher_no)->get();
+
+        try {
+            DB::beginTransaction();
+            foreach ($vouchers as $value) {
+                $value->update([
+                    'is_approved' => 0,
+                    'approved_by' => null,
+                    'approved_at' => null,
+                ]);
+            }
+
+            AccountTransaction::where('voucher_no', $voucher->voucher_no)->delete();
+            DB::commit();
+            return response()->success([], 'Voucher transaction restored successfully.', 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->error([], 'Voucher transaction restore failed.', 422);
+        }
     }
 }

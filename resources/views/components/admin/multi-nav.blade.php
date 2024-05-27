@@ -1,5 +1,5 @@
 @php
-$id=$attributes['id']?? 'multi-nav-'.rand(1000,9999);
+    $id = $attributes['id'] ?? 'multi-nav-' . rand(1000, 9999);
 @endphp
 
 <li class="nav-item" {{ $attributes->except('id') }}>
@@ -12,4 +12,5 @@ $id=$attributes['id']?? 'multi-nav-'.rand(1000,9999);
         <ul class="nav sub-menu">
             {{ $slot }}
         </ul>
+    </div>
 </li>

@@ -35,6 +35,7 @@ return new class extends Migration
             $table->unsignedBigInteger('reverse_sub_type_id')->nullable();
             $table->unsignedBigInteger('reverse_sub_code_id')->nullable();
             $table->boolean('is_approved')->default(false);
+            $table->boolean('is_auto')->default(false);
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
