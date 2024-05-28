@@ -79,4 +79,29 @@ class AccountReportController extends Controller
 
         return $openingBalance;
     }
+
+    public function getTransactionDetail($request, $getBalance)
+    {
+        $fromDate = Carbon::parse($request->from_date)->startOfDay();
+        $toDate = Carbon::parse($request->to_date)->endOfDay();
+
+        $transactionDetails = AccountTransaction::with(['chartOfAccount', 'reversesCode'])
+            ->where('chart_of_account', $request->chart_of_account)
+            ->whereBetween('voucher_date', [$fromDate, $toDate])
+            ->get();
+
+        foreach ($transactionDetails as $key => $transactionData) {
+            if ($transactionData->chartOfAccount->account_type_id == 1 || $transactionData->chartOfAccount->account_type_id == 4) {
+                $getBalance += number_format($transactionData->debit,  2,  '.', '') - number_format($transactionData->credit,  2,  '.', '');
+                $transactionDetails[$key]['balance'] = $getBalance;
+            }
+
+            if ($transactionData->chartOfAccount->account_type_id == 2 || $transactionData->chartOfAccount->account_type_id == 3 || $transactionData->chartOfAccount->account_type_id == 5) {
+                $getBalance += number_format($transactionData->credit,  2,  '.', '') - number_format($transactionData->debit,  2,  '.', '');
+                $transactionDetails[$key]['balance'] = $getBalance;
+            }
+        }
+
+        return $transactionDetails;
+    }
 }
