@@ -10,6 +10,7 @@ use Modules\Account\Http\Controllers\ChartOfAccountController;
 use Modules\Account\Http\Controllers\JournalVoucherController;
 use Modules\Account\Http\Controllers\OpeningBalanceController;
 use Modules\Account\Http\Controllers\AccountPredefineController;
+use Modules\Account\Http\Controllers\AccountReportController;
 use Modules\Account\Http\Controllers\AccountTransactionController;
 
 /*
@@ -63,4 +64,8 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
             Route::post('/',  'approve')->name('approve');
             Route::post('/restore/{voucher}',  'restore')->name('restore');
         });
+
+    Route::as('report.')->prefix('report')->group(function () {
+        Route::get('/cash-book', [AccountReportController::class, 'cashBook'])->name('cash-book');
+    });
 });

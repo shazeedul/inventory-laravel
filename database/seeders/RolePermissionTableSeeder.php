@@ -66,6 +66,9 @@ class RolePermissionTableSeeder extends Seeder
                 'opening_balance_update',
                 'opening_balance_delete',
             ],
+            'Account Report' => [
+                'read_account_report',
+            ],
             'Supplier' => [
                 'supplier_management',
             ],
