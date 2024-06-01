@@ -61,7 +61,10 @@ class ContraVoucherDataTable extends DataTable
      */
     public function query(AccountVoucher $model): QueryBuilder
     {
-        return $model->newQuery()->with(['chartOfAccount', 'reverseCode', 'accountSubType'])->where('account_voucher_type_id', 3)->orderBy('voucher_no', 'DESC');
+        return $model->newQuery()
+            ->with(['chartOfAccount', 'reverseCode', 'accountSubType'])
+            ->where('account_voucher_type_id', 3)
+            ->orderBy('voucher_no', 'DESC');
     }
 
     /**

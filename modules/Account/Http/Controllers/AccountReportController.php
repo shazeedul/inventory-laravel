@@ -43,6 +43,7 @@ class AccountReportController extends Controller
      */
     public function cashBook(CashBookDataTable $dataTable)
     {
-        return $dataTable->render('account::reports.cash_book');
+        $accounts = ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 1)->get();
+        return $dataTable->render('account::reports.cash_book', compact('accounts'));
     }
 }

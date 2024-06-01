@@ -17,12 +17,19 @@ class CashBookDataTable extends DataTable
 {
     use Report;
 
-    public function dataTable(Request $request): DataTableAbstract
+    public function dataTable($query): DataTableAbstract
     {
-        $chart_of_account_id = ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 1)->first()->id ?? '';
+        $chart_of_account_id = request()->has('char_of_account_id') ? request()->input('char_of_account_id') : ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 1)->first()->id ?? '';
 
-        $fromDate = Carbon::now()->subDay(30)->format('Y-m-d');
-        $toDate = Carbon::now()->format('Y-m-d');
+        if (request()->has('voucher_date')) {
+            $dateRange = explode(" to ", request()->input('voucher_date'));
+            $fromDate = Carbon::createFromFormat('Y-m-d', $dateRange[0])->format('Y-m-d');
+            $toDate = Carbon::createFromFormat('Y-m-d', $dateRange[1])->format('Y-m-d');
+        } else {
+            $fromDate = Carbon::now()->subDay(30)->format('Y-m-d');
+            $toDate = Carbon::now()->format('Y-m-d');
+        }
+
 
         $request = new \Illuminate\Http\Request();
         $request['from_date'] = $fromDate;
