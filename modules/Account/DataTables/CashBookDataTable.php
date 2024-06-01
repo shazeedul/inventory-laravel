@@ -19,9 +19,9 @@ class CashBookDataTable extends DataTable
 
     public function dataTable($query): DataTableAbstract
     {
-        $chart_of_account_id = request()->has('char_of_account_id') ? request()->input('char_of_account_id') : ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 1)->first()->id ?? '';
+        $chart_of_account_id = request()->input('chart_of_account_id') ?? ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 1)->first()->id ?? '';
 
-        if (request()->has('voucher_date')) {
+        if (request()->input('voucher_date') != null) {
             $dateRange = explode(" to ", request()->input('voucher_date'));
             $fromDate = Carbon::createFromFormat('Y-m-d', $dateRange[0])->format('Y-m-d');
             $toDate = Carbon::createFromFormat('Y-m-d', $dateRange[1])->format('Y-m-d');

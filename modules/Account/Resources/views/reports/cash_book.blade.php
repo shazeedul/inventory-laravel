@@ -75,8 +75,8 @@
 
                 $('#voucher-date').flatpickr({
                     mode: "range",
-                    dateFormat: "Y-m-d",
                     maxDate: "today",
+                    dateFormat: "Y-m-d",
                     locale: {
                         firstDayOfWeek: 1,
                         weekdays: {
