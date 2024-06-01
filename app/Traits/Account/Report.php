@@ -82,10 +82,11 @@ trait Report
         $fromDate = Carbon::parse($request->from_date)->startOfDay();
         $toDate = Carbon::parse($request->to_date)->endOfDay();
 
-        $transactionDetails = AccountTransaction::with(['chartOfAccount', 'reversesCode'])
-            ->where('chart_of_account', $request->chart_of_account)
+        $transactionDetails = AccountTransaction::with(['chartOfAccount', 'reverseCode', 'voucherType'])
+            ->where('chart_of_account_id', $request->chart_of_account_id)
             ->whereBetween('voucher_date', [$fromDate, $toDate])
             ->get();
+
 
         foreach ($transactionDetails as $key => $transactionData) {
             if ($transactionData->chartOfAccount->account_type_id == 1 || $transactionData->chartOfAccount->account_type_id == 4) {
