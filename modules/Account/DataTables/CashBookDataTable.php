@@ -19,7 +19,7 @@ class CashBookDataTable extends DataTable
 
     public function dataTable($query): DataTableAbstract
     {
-        $chart_of_account_id = request()->input('chart_of_account_id') ?? ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 1)->first()->id ?? '';
+        $chart_of_account_id = request()->input('chart_of_account_id') != null ? request()->input('chart_of_account_id') : ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 1)->first()->id ?? '';
 
         if (request()->input('voucher_date') != null) {
             $dateRange = explode(" to ", request()->input('voucher_date'));
@@ -29,7 +29,6 @@ class CashBookDataTable extends DataTable
             $fromDate = Carbon::now()->subDay(30)->format('Y-m-d');
             $toDate = Carbon::now()->format('Y-m-d');
         }
-
 
         $request = new \Illuminate\Http\Request();
         $request['from_date'] = $fromDate;

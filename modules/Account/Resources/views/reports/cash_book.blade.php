@@ -100,11 +100,10 @@
                 });
 
                 $('#filter').on('click', function() {
-                    let char_of_account_id = $('#accounts').val();
+                    let chart_of_account_id = $('#accounts').val();
                     let voucher_date = $('#voucher-date').val();
-                    console.log(char_of_account_id, voucher_date);
                     table.on('preXhr.dt', function(e, settings, data) {
-                        data.char_of_account_id = char_of_account_id;
+                        data.chart_of_account_id = chart_of_account_id;
                         data.voucher_date = voucher_date;
                     });
                     table.DataTable().ajax.reload();
@@ -113,8 +112,35 @@
                 $('#reset').on('click', function() {
                     $('#accounts').val('').trigger('change');
                     $('#voucher-date').flatpickr().clear();
+                    $('#voucher-date').flatpickr({
+                        mode: "range",
+                        maxDate: "today",
+                        dateFormat: "Y-m-d",
+                        locale: {
+                            firstDayOfWeek: 1,
+                            weekdays: {
+                                shorthand: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                                longhand: [
+                                    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                                    'Friday',
+                                    'Saturday'
+                                ],
+                            },
+                            months: {
+                                shorthand: [
+                                    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+                                    'Oct',
+                                    'Nov', 'Dec'
+                                ],
+                                longhand: [
+                                    'January', 'February', 'March', 'April', 'May', 'June', 'July',
+                                    'August', 'September', 'October', 'November', 'December'
+                                ],
+                            },
+                        },
+                    });
                     table.on('preXhr.dt', function(e, settings, data) {
-                        data.char_of_account_id = '';
+                        data.chart_of_account_id = '';
                         data.voucher_date = '';
                     });
 
