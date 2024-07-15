@@ -68,6 +68,8 @@ class RolePermissionTableSeeder extends Seeder
             ],
             'Account Report' => [
                 'read_account_report',
+                'cash_book_report',
+                'bank_book_report',
             ],
             'Supplier' => [
                 'supplier_management',
