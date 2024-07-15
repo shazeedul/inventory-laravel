@@ -36,26 +36,36 @@ class AccountPredefineController extends Controller
             'rprefix' => 'admin.account.predefine',
         ]);
     }
+
     /**
      * Display a listing of the resource.
+     *
      * @return Renderable
      */
     public function index()
     {
         $predefines = config('account.default_predefine');
-        $raw_predefines = AccountPredefine::all();
+        $raw_predefines_data = AccountPredefine::all();
+
+        // Transforming raw_predefines_data to be indexed by $key
+        $raw_predefines = [];
+        foreach ($raw_predefines_data as $item) {
+            $raw_predefines[$item->key] = $item;
+        }
+
         $levels = [];
         foreach ($predefines as $p) {
             if ($p['level'] && !isset($levels[$p['level']])) {
                 $levels[$p['level']] = ChartOfAccount::where('head_level', $p['level'])->where('is_active', true)->select(['id', 'name'])->get();
             }
         }
+
         return view('account::predefine.index', compact('predefines', 'raw_predefines', 'levels'));
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param Request $request
+     *
      * @return Renderable
      */
     public function store(Request $request)
@@ -67,7 +77,6 @@ class AccountPredefineController extends Controller
         foreach ($data['predefines'] as $key => $coa_id) {
             AccountPredefine::updateOrCreate([
                 'key' => $key,
-
             ], [
                 'chart_of_account_id' => $coa_id,
             ]);

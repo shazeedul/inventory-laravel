@@ -18,7 +18,7 @@
                         <select name="predefines[{{ $key }}]" id="{{ $key }}"
                             class="form-control select2">
                             @foreach ($levels[$p['level']] ?? [] as $coa)
-                                <option value="{{ $coa->id }}" @selected((isset($raw_predefines->$key) ? $raw_predefines->$key : $p['coa_id']) == $coa->id)>
+                                <option value="{{ $coa->id }}" @selected(isset($raw_predefines[$key]) ? $raw_predefines[$key]->chart_of_account_id == $coa->id : $p['chart_of_account_id'] == $coa->id)>
                                     {{ $coa->name }}
                                 </option>
                             @endforeach
@@ -34,11 +34,19 @@
             </div>
         </form>
     </x-card>
+    @push('lib-styles')
+        <link href="{{ nanopkg_asset('vendor/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
+    @endpush
+    @push('lib-scripts')
+        <script src="{{ nanopkg_asset('vendor/select2/select2.min.js') }}"></script>
+    @endpush
     @push('js')
         <script>
             $(document).ready(function() {
                 // init select2
-                $(".select2").select2();
+                $(".select2").select2({
+                    width: '100%',
+                });
             });
         </script>
     @endpush
