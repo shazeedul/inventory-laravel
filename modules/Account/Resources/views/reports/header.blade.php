@@ -34,5 +34,11 @@
                     href="{{ route('admin.account.report.bank-book') }}">{{ localize('Bank Book') }}</a>
             </li>
         @endcan
+        @can('day_book_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.day-book') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.day-book') }}">{{ localize('Day Book') }}</a>
+            </li>
+        @endcan
     </ul>
 </nav>

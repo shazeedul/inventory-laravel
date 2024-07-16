@@ -11,7 +11,9 @@ use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\Entities\AccountTransaction;
 use Modules\Account\DataTables\BankBookDataTable;
 use Modules\Account\DataTables\CashBookDataTable;
+use Modules\Account\DataTables\DayBookDataTable;
 use Modules\Account\Entities\AccountOpeningBalance;
+use Modules\Account\Entities\AccountVoucherType;
 
 class AccountReportController extends Controller
 {
@@ -55,5 +57,14 @@ class AccountReportController extends Controller
     {
         $accounts = ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_bank_nature', 1)->get();
         return $dataTable->render('account::reports.bank_book', compact('accounts'));
+    }
+
+    /**
+     * Day Book
+     */
+    public function dayBook(DayBookDataTable $dataTable)
+    {
+        $voucherTypes = AccountVoucherType::where('is_active', 1)->get();
+        return $dataTable->render('account::reports.day_book', compact('voucherTypes'));
     }
 }

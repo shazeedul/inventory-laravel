@@ -68,5 +68,6 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
     Route::as('report.')->prefix('report')->group(function () {
         Route::get('/cash-book', [AccountReportController::class, 'cashBook'])->name('cash-book');
         Route::get('/bank-book', [AccountReportController::class, 'bankBook'])->name('bank-book');
+        Route::get('/day-book', [AccountReportController::class, 'dayBook'])->name('day-book');
     });
 });
