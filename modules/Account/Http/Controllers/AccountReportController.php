@@ -23,7 +23,7 @@ class AccountReportController extends Controller
     public function __construct()
     {
         $this->middleware('permission:read_account_report');
-
+        $this->middleware('auth');
         \cs_set('theme', [
             'title' => 'Account Reports',
             'back' => \back_url(),

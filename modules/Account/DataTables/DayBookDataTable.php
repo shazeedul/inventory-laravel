@@ -29,7 +29,29 @@ class DayBookDataTable extends DataTable
 
     public function query(AccountVoucher $model): QueryBuilder
     {
-        return $model->newQuery();
+        $voucherTypeId = request()->input('voucher_type_id');
+        if ($voucherTypeId === null || $voucherTypeId === 'all') {
+            $voucherTypeId = null;
+        }
+
+        if (request()->input('voucher_date') != null) {
+            $dateRange = explode(" to ", request()->input('voucher_date'));
+            $fromDate = Carbon::createFromFormat('Y-m-d', $dateRange[0])->format('Y-m-d');
+            $toDate = Carbon::createFromFormat('Y-m-d', $dateRange[1])->format('Y-m-d');
+        } else {
+            $fromDate = Carbon::now()->subDay(30)->format('Y-m-d');
+            $toDate = Carbon::now()->format('Y-m-d');
+        }
+
+        return $model->newQuery()
+            ->when($voucherTypeId, function ($q) use ($voucherTypeId) {
+                $q->where('account_voucher_type_id', $voucherTypeId);
+            })
+            ->where(function ($q) use ($fromDate, $toDate) {
+                $q->where('voucher_date', '>=', $fromDate)
+                    ->where('voucher_date', '<=', $toDate);
+            })
+            ->where('is_approved', 1);
     }
 
     /**
@@ -82,13 +104,40 @@ class DayBookDataTable extends DataTable
     protected function getColumns(): array
     {
         return [
-            Column::make('key')->title('SL')->orderable(false)->searchable(false),
-            Column::make('voucher_date')->title('Date')->orderable(true)->searchable(true),
-            Column::make('voucher_no')->title('Voucher No')->orderable(false)->searchable(true),
-            Column::make('head_name')->title('Head Name')->orderable(false)->searchable(true),
-            Column::make('ledger_comment')->title('Narration')->orderable(false)->searchable(true),
-            Column::make('debit')->title('Debit')->orderable(false)->searchable(false),
-            Column::make('credit')->title('Credit')->orderable(false)->searchable(false),
+            Column::make('DT_RowIndex')
+                ->title(@localize('SL'))
+                ->addClass('text-center')
+                ->width(30)
+                ->searchable(false)
+                ->orderable(false),
+            Column::make('voucher_date')
+                ->title(@localize('Date'))
+                ->addClass('text-center')
+                ->width(100)
+                ->searchable(true)
+                ->orderable(false),
+            Column::make('voucher_no')
+                ->title(@localize('Voucher No'))
+                ->addClass('text-center')
+                ->width(100)
+                ->searchable(true)
+                ->orderable(false),
+            Column::make('chart_of_account_id')
+                ->title('Head Name')
+                ->orderable(false)
+                ->searchable(true),
+            Column::make('ledger_comment')
+                ->title('Narration')
+                ->orderable(false)
+                ->searchable(true),
+            Column::make('debit')
+                ->title('Debit')
+                ->orderable(false)
+                ->searchable(false),
+            Column::make('credit')
+                ->title('Credit')
+                ->orderable(false)
+                ->searchable(false),
         ];
     }
 
