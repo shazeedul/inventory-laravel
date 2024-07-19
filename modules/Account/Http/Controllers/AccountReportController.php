@@ -12,6 +12,7 @@ use Modules\Account\Entities\AccountTransaction;
 use Modules\Account\DataTables\BankBookDataTable;
 use Modules\Account\DataTables\CashBookDataTable;
 use Modules\Account\DataTables\DayBookDataTable;
+use Modules\Account\DataTables\GeneralLedgerDataTable;
 use Modules\Account\Entities\AccountOpeningBalance;
 use Modules\Account\Entities\AccountVoucherType;
 
@@ -66,5 +67,14 @@ class AccountReportController extends Controller
     {
         $voucherTypes = AccountVoucherType::where('is_active', 1)->get();
         return $dataTable->render('account::reports.day_book', compact('voucherTypes'));
+    }
+
+    /**
+     * General Ledger
+     */
+    public function generalLedger(GeneralLedgerDataTable $dataTable)
+    {
+        $accounts = ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 0)->where('is_bank_nature', 0)->get();
+        return $dataTable->render('account::reports.general_ledger', compact('accounts'));
     }
 }

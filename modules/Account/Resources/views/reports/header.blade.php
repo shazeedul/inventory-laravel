@@ -40,5 +40,11 @@
                     href="{{ route('admin.account.report.day-book') }}">{{ localize('Day Book') }}</a>
             </li>
         @endcan
+        @can('general_ledger_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.general-ledger') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.general-ledger') }}">{{ localize('General Ledger') }}</a>
+            </li>
+        @endcan
     </ul>
 </nav>
