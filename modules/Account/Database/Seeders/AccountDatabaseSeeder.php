@@ -25,5 +25,6 @@ class AccountDatabaseSeeder extends Seeder
         $this->call(AccountVoucherTypeTableSeeder::class);
         $this->call(ChartOfAccountTableSeeder::class);
         $this->call(FinancialYearTableSeeder::class);
+        $this->call(AccountPredefineTableSeeder::class);
     }
 }

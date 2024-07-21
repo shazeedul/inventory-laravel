@@ -103,7 +103,7 @@ class JournalVoucherDataTable extends DataTable
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
-            Column::make('date')
+            Column::make('voucher_date')
                 ->title(@localize('Date'))
                 ->addClass('text-center')
                 ->width(100)
@@ -139,7 +139,7 @@ class JournalVoucherDataTable extends DataTable
                 ->width(100)
                 ->searchable(true)
                 ->orderable(false),
-            Column::make('reversed_code')
+            Column::make('reverse_code')
                 ->title(@localize('Reversed Account'))
                 ->addClass('text-center')
                 ->width(100)

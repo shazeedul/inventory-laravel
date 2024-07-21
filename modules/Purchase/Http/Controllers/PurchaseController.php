@@ -7,14 +7,17 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Product;
 use Illuminate\Support\Facades\Session;
+use Modules\Account\Traits\Transaction;
 use Modules\Purchase\Entities\Purchase;
 use Modules\Supplier\Entities\Supplier;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\AccountPredefine;
 use Modules\Purchase\DataTables\PurchaseDataTable;
 use Modules\Purchase\Http\Requests\PurchaseStoreRequest;
 
 class PurchaseController extends Controller
 {
+    use Transaction;
     /**
      * Constructor
      */
@@ -168,8 +171,6 @@ class PurchaseController extends Controller
             'update' => route(config('theme.rprefix') . '.update', $purchase->id),
         ]);
 
-        // dd($purchase->with('purchaseDetails')->first());
-
         return view('purchase::edit', [
             'purchase' => $purchase->with('purchaseDetails')->first(),
             'suppliers' => Supplier::where('status', 1)->get(),
@@ -205,7 +206,6 @@ class PurchaseController extends Controller
 
             // details update or create
             foreach ($request->product_id as $key => $product_id) {
-
                 $purchase->purchaseDetails()->updateOrCreate(
                     [
                         'id' => $request->purchase_details_id[$key],
@@ -253,19 +253,40 @@ class PurchaseController extends Controller
         $request->validate([
             'status' => 'required|boolean',
         ]);
+        $predefineAccount = AccountPredefine::all();
 
-        $purchase->update([
-            'status' => $request->status,
-        ]);
-
-        // update details table product iterate quantity increase
-        foreach ($purchase->purchaseDetails as $purchaseDetail) {
-            $product = Product::find($purchaseDetail->product_id);
-            $product->update([
-                'quantity' => $product->quantity + $purchaseDetail->quantity,
+        DB::beginTransaction();
+        try {
+            $purchase->update([
+                'status' => $request->status,
             ]);
-        }
 
-        return response()->success('', 'Purchase status update successfully.');
+            // update details table product iterate quantity increase
+            foreach ($purchase->purchaseDetails as $purchaseDetail) {
+                $product = Product::find($purchaseDetail->product_id);
+                $product->update([
+                    'quantity' => $product->quantity + $purchaseDetail->quantity,
+                ]);
+                $this->voucherWithApprove(
+                    $predefineAccount->where('key', 'cash_code')->first()->chart_of_account_id,
+                    $predefineAccount->where('key', 'purchase_code')->first()->chart_of_account_id,
+                    $purchaseDetail->price,
+                    4,
+                    true,
+                    'Purchase',
+                    $purchase->supplier_id,
+                    'Purchase No: ' . $purchase->purchase_no,
+                    $purchase->date,
+                    'Purchase No: ' . $purchase->purchase_no,
+                    true
+                );
+            }
+
+            DB::commit();
+            return response()->success('', 'Purchase status update successfully.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->error('', 'Something wrong.');
+        }
     }
 }

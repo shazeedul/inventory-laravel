@@ -8,7 +8,7 @@
         </x-slot>
 
         <div>
-            <form action="{{ route('admin.account.voucher.debit.update', $debit->id) }}" method="post">
+            <form action="{{ route('admin.account.voucher.journal.update', $journal->id) }}" method="post">
                 @csrf
                 @method('PATCH')
                 <input type="hidden" id="accounts" value="{{ json_encode($accounts) }}" />
@@ -24,25 +24,26 @@
                                     class="form-select select2">
                                     <option>@localize('select_one')</option>
                                     @foreach ($accounts as $item)
-                                        <option value="{{ $item->id }}" @selected($debit->reverseCode->id == $item->id)>
+                                        <option value="{{ $item->id }}" @selected($journal->reverseCode->id == $item->id)>
                                             {{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div id="bank_nature" class="{{ $debit->reverseCode?->is_bank_nature == 1 ? null : 'd-none' }}">
+                        <div id="bank_nature"
+                            class="{{ $journal->reverseCode?->is_bank_nature == 1 ? null : 'd-none' }}">
                             <div class="form-group mb-2 mx-0 row">
                                 <label for="cheque_no" class="col-sm-3 col-form-label">@localize('cheque_no')</label>
                                 <div class="col-lg-9">
                                     <input type="text" name="cheque_no" id="cheque_no" class="form-control"
-                                        value="{{ $debit->cheque_no }}" placeholder="@localize('cheque_no')" />
+                                        value="{{ $journal->cheque_no }}" placeholder="@localize('cheque_no')" />
                                 </div>
                             </div>
                             <div class="form-group mb-2 mx-0 row">
                                 <label for="cheque_date" class="col-sm-3 col-form-label">@localize('cheque_date')</label>
                                 <div class="col-lg-9">
                                     <input type="date" name="cheque_date" id="cheque_date" class="form-control"
-                                        value="{{ \Carbon\Carbon::parse($debit->cheque_date)->format('Y-m-d') }}"
+                                        value="{{ \Carbon\Carbon::parse($journal->cheque_date)->format('Y-m-d') }}"
                                         placeholder="@localize('cheque_date')" />
                                 </div>
                             </div>
@@ -50,7 +51,7 @@
                                 <label for="is_honour" class="col-sm-3 col-form-label">@localize('is_honour')</label>
                                 <div class="col-lg-9">
                                     <input type="checkbox" name="is_honour" id="is_honour" class="form-check-input"
-                                        @checked($debit->is_honour == 1) placeholder="@localize('is_honour')" value="1" />
+                                        @checked($journal->is_honour == 1) placeholder="@localize('is_honour')" value="1" />
                                 </div>
                             </div>
                         </div>
@@ -59,18 +60,18 @@
                                     class="text-danger">*</span></label>
                             <div class="col-lg-9">
                                 <input type="date" name="voucher_date" id="voucher_date" class="form-control"
-                                    value="{{ \Carbon\Carbon::parse($debit->voucher_date)->format('Y-m-d') }}" />
+                                    value="{{ \Carbon\Carbon::parse($journal->voucher_date)->format('Y-m-d') }}" />
                             </div>
                         </div>
                         <div class="form-group mb-2 mx-0 row">
                             <label for="Remarks" class="col-sm-3 col-form-label">@localize('remarks')</label>
                             <div class="col-lg-9">
-                                <textarea name="remarks" class="form-control" id="remarks" rows="3" placeholder="@localize('remarks')">{{ $debit->narration }}</textarea>
+                                <textarea name="remarks" class="form-control" id="remarks" rows="3" placeholder="@localize('remarks')">{{ $journal->narration }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered table-hover" id="debitAccVoucher">
+                <table class="table table-bordered table-hover" id="journalAccVoucher">
                     <thead>
                         <tr>
                             <th width="25%" class="text-center">@localize('account_name')</th>
@@ -81,21 +82,21 @@
                         </tr>
                     </thead>
                     <tbody id="debitVoucher">
-                        @foreach ($debit->all_vouchers_by_no as $item)
+                        @foreach ($journal->all_vouchers_by_no as $item)
                             <tr>
                                 <td>
-                                    <select name="debits[{{ $loop->index }}][coa_id]" class="form-select select2">
+                                    <select name="journals[{{ $loop->index }}][coa_id]" class="form-select select2">
                                         <option>@localize('select_one')</option>
                                         @foreach ($accounts as $account)
                                             <option value="{{ $account->id }}" @selected($item->chart_of_account_id == $account->id)>
                                                 {{ $account->name }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" name="debits[{{ $loop->index }}][id]"
+                                    <input type="hidden" name="journals[{{ $loop->index }}][id]"
                                         value="{{ $item->id }}" />
                                 </td>
                                 <td>
-                                    <select name="debits[{{ $loop->index }}][sub_code_id]" class="form-select select2"
+                                    <select name="journals[{{ $loop->index }}][sub_code_id]" class="form-select select2"
                                         @disabled(!$item->accountSubCode)>
                                         <option>@localize('select_one')</option>
                                         @foreach ($accountSubCodes as $subCode)
@@ -105,15 +106,15 @@
                                             @endif
                                         @endforeach
                                     </select>
-                                    <input type="hidden" name="debits[{{ $loop->index }}][sub_type_id]"
+                                    <input type="hidden" name="journals[{{ $loop->index }}][sub_type_id]"
                                         value="{{ $item->account_sub_type_id }}" />
                                 </td>
                                 <td>
-                                    <input type="text" name="debits[{{ $loop->index }}][ledger_comment]"
+                                    <input type="text" name="journals[{{ $loop->index }}][ledger_comment]"
                                         class="form-control text-end" value="{{ $item->ledger_comment }}" />
                                 </td>
                                 <td>
-                                    <input type="number" name="debits[{{ $loop->index }}][amount]"
+                                    <input type="number" name="journals[{{ $loop->index }}][amount]"
                                         class="form-control text-end amount" value="{{ $item->debit }}" />
                                 </td>
                                 <td>
@@ -170,20 +171,20 @@
             function addRow() {
                 var table = $("#debitAccVoucher");
                 var row = `<tr>`;
-                row += `<td><select name="debits[][coa_id]" class="form-control select2"
+                row += `<td><select name="journals[][coa_id]" class="form-control select2"
                             onchange="load_subtypeOpen(this)">
                             <option selected disabled>` + localize('select_amount') + `</option>`;
                 row += options;
                 row += `</select>`;
-                row += `<input type="hidden" name="debits[][id]" value="" />`;
+                row += `<input type="hidden" name="journals[][id]" value="" />`;
                 row += `</td>`;
-                row += `<td><select name="debits[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
+                row += `<td><select name="journals[][sub_code_id]" class="form-control select2" disabled><option>` + localize(
                         'select_subtype') +
-                    `</option></select><input type="hidden" name="debits[0][sub_type_id]" value="" /></td>`;
+                    `</option></select><input type="hidden" name="journals[0][sub_type_id]" value="" /></td>`;
                 row +=
-                    `<td><input type="text" name="debits[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
+                    `<td><input type="text" name="journals[][ledger_comment]" class="form-control text-end" autocomplete="off"></td>`;
                 row +=
-                    `<td><input type="number" step="0.01" name="debits[][amount]" 
+                    `<td><input type="number" step="0.01" name="journals[][amount]" 
                         min="1" class="form-control text-end amount"
                         onkeyup="calculation()" autocomplete="off"></td>`;
                 row +=

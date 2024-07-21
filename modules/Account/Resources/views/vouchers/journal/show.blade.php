@@ -1,7 +1,7 @@
 <!-- Modal -->
 <div class="" style="padding: 50px 0">
     <div class="row gutters-sm m-3">
-        <div class="col-md-12" id="print-table-{{ $debit->id }}">
+        <div class="col-md-12" id="print-table-{{ $journal->id }}">
             <div class="row">
                 <div class="col-12 col-6">
                     <div class="fs-10 text-start pb-3">
@@ -23,9 +23,9 @@
                 <div class="col-right-3"></div>
                 <div class="col-full-12 text-end">
                     <label class="font-weight-600 mb-0">@localize('voucher_no')</label> :
-                    {{ $debit->voucher_no }}<br>
+                    {{ $journal->voucher_no }}<br>
                     <label class="font-weight-600 mb-0">@localize('voucher_date')</label> :
-                    {{ $debit->voucher_date }}
+                    {{ $journal->voucher_date }}
                 </div>
             </div>
 
@@ -38,7 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($debit->all_vouchers_by_no as $voucher)
+                    @foreach ($journal->all_vouchers_by_no as $voucher)
                         <tr>
                             <td>
                                 <strong>{{ $voucher->chartOfAccount->name ?? ' ' }}
@@ -68,21 +68,21 @@
                     @endforeach
                     <tr>
                         <td>
-                            <strong>{{ $debit->reverse_code ? $debit->reverseCode?->name : ' ' }}</strong>
+                            <strong>{{ $journal->reverse_code ? $journal->reverseCode?->name : ' ' }}</strong>
                             <br>
-                            @if ($debit->reverseCode?->is_bank_nature)
-                                @if ($debit->cheque_no)
-                                    <span>@localize('check_no'): {{ $debit->cheque_no }}, </span>
+                            @if ($journal->reverseCode?->is_bank_nature)
+                                @if ($journal->cheque_no)
+                                    <span>@localize('check_no'): {{ $journal->cheque_no }}, </span>
                                 @endif
-                                @if ($debit->cheque_date)
-                                    <span>@localize('check_date'): {{ $debit->cheque_date }}</span>
+                                @if ($journal->cheque_date)
+                                    <span>@localize('check_date'): {{ $journal->cheque_date }}</span>
                                 @endif
                             @endif
                         </td>
 
                         <td class="text-end">0</td>
                         <td class="text-end">
-                            {{ $debit->all_vouchers_by_no->sum('debit') }}
+                            {{ $journal->all_vouchers_by_no->sum('debit') }}
                         </td>
                     </tr>
 
@@ -91,20 +91,20 @@
                     <tr>
                         <th class="text-end">@localize('total')</th>
                         <th class="text-end">
-                            {{ $debit->all_vouchers_by_no->sum('debit') }}
+                            {{ $journal->all_vouchers_by_no->sum('debit') }}
                         </th>
                         <th class="text-end">
-                            {{ $debit->all_vouchers_by_no->sum('debit') }}
+                            {{ $journal->all_vouchers_by_no->sum('debit') }}
                         </th>
                     </tr>
                     <tr>
                         <th class="" colspan="3">@localize('in_words'):
-                            {{-- {{ numberToWords($debit->all_vouchers_by_no->sum('debit')) }} --}}
+                            {{-- {{ numberToWords($journal->all_vouchers_by_no->sum('debit')) }} --}}
                         </th>
                     </tr>
                     <tr>
                         <th class="" colspan="3">@localize('remarks'):
-                            {{ $debit->narration ?? ' ' }}</th>
+                            {{ $journal->narration ?? ' ' }}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -128,6 +128,6 @@
 
 <div class="modal-footer d-print-none">
     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">@localize('close')</button>
-    {{-- <button type="button" onclick="printVoucher('print-table-{{ $debit->id }}')"
+    {{-- <button type="button" onclick="printVoucher('print-table-{{ $journal->id }}')"
         class="btn btn-primary">@localize('print')</button> --}}
 </div>
