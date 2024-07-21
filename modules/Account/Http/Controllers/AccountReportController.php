@@ -7,14 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Account\Entities\FinancialYear;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\AccountSubType;
 use Modules\Account\Entities\ChartOfAccount;
+use Modules\Account\DataTables\DayBookDataTable;
 use Modules\Account\Entities\AccountTransaction;
+use Modules\Account\Entities\AccountVoucherType;
 use Modules\Account\DataTables\BankBookDataTable;
 use Modules\Account\DataTables\CashBookDataTable;
-use Modules\Account\DataTables\DayBookDataTable;
-use Modules\Account\DataTables\GeneralLedgerDataTable;
+use Modules\Account\DataTables\SubLedgerDataTable;
 use Modules\Account\Entities\AccountOpeningBalance;
-use Modules\Account\Entities\AccountVoucherType;
+use Modules\Account\DataTables\ControlLedgerDataTable;
+use Modules\Account\DataTables\GeneralLedgerDataTable;
 
 class AccountReportController extends Controller
 {
@@ -76,5 +79,24 @@ class AccountReportController extends Controller
     {
         $accounts = ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 0)->where('is_bank_nature', 0)->get();
         return $dataTable->render('account::reports.general_ledger', compact('accounts'));
+    }
+
+    /**
+     * Sub Ledger
+     */
+    public function subLedger(SubLedgerDataTable $dataTable)
+    {
+        $subTypes = AccountSubType::where('status', 1)->get();
+        $accounts = ChartOfAccount::where('head_level', 4)->where('is_active', 1)->where('is_cash_nature', 0)->where('is_bank_nature', 0)->get();
+        return $dataTable->render('account::reports.sub_ledger', compact('accounts'));
+    }
+
+    /**
+     * Control Ledger
+     */
+    public function controlLedger(ControlLedgerDataTable $dataTable)
+    {
+        $accounts = ChartOfAccount::where('is_active', 1)->where('head_level', 3)->get();
+        return $dataTable->render('account::reports.control_ledger', compact('accounts'));
     }
 }

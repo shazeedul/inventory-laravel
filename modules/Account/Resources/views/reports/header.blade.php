@@ -46,5 +46,17 @@
                     href="{{ route('admin.account.report.general-ledger') }}">{{ localize('General Ledger') }}</a>
             </li>
         @endcan
+        @can('sub_ledger_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.sub-ledger') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.sub-ledger') }}">{{ localize('Sub Ledger') }}</a>
+            </li>
+        @endcan
+        @can('control_ledger_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.control-ledger') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.control-ledger') }}">{{ localize('Control Ledger') }}</a>
+            </li>
+        @endcan
     </ul>
 </nav>

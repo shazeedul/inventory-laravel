@@ -70,5 +70,7 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::get('/bank-book', [AccountReportController::class, 'bankBook'])->name('bank-book');
         Route::get('/day-book', [AccountReportController::class, 'dayBook'])->name('day-book');
         Route::get('/general-ledger', [AccountReportController::class, 'generalLedger'])->name('general-ledger');
+        Route::get('/sub-ledger', [AccountReportController::class, 'subLedger'])->name('sub-ledger');
+        Route::get('/control-ledger', [AccountReportController::class, 'controlLedger'])->name('control-ledger');
     });
 });

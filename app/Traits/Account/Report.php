@@ -13,9 +13,10 @@ trait Report
     /**
      * Get Opening Balance
      * @param $request
+     * @param $accountSubCode
      * @return float $openingBalance
      */
-    public function getOpeningBalance($request)
+    public function getOpeningBalance($request, $accountSubCode = null)
     {
         $getYearDetail = FinancialYear::whereDate('start_date', '<=', $request->from_date)
             ->whereDate('end_date', '>=', $request->from_date)
@@ -35,6 +36,9 @@ trait Report
 
         $getOpeningBalance = AccountOpeningBalance::where('financial_year_id', $previousFinanceYear->id)
             ->where('chart_of_account_id',  $request->chart_of_account_id)
+            ->when($accountSubCode, function ($q) use ($accountSubCode) {
+                $q->where('account_sub_code_id', $accountSubCode);
+            })
             ->get();
 
         $balanceResult = [];
@@ -76,6 +80,7 @@ trait Report
      * Get Transaction list
      * @param $request
      * @param float $getBalance
+     * @return $transactionDetails
      */
     public function getTransactionDetail($request, $getBalance)
     {
@@ -101,5 +106,60 @@ trait Report
         }
 
         return $transactionDetails;
+    }
+
+    /**
+     * Get Closing Balance
+     * @param $request
+     * @param $accountSubCode
+     * @return float $closingBalance
+     */
+    public function getClosingBalance($request, $accountSubCode = null)
+    {
+        $closingBalance = 0;
+        $openingBalance = $this->getOpeningBalance($request, $accountSubCode);
+        $debitBalance = $this->getDebitBalance($request, $accountSubCode);
+        $creditBalance = $this->getCreditBalance($request, $accountSubCode);
+
+        $coaDetail = ChartOfAccount::findOrFail($request->chart_of_account_id);
+        if (in_array($coaDetail->account_type_id, [1, 4])) {
+            $closingBalance = (float) $openingBalance + (float) $debitBalance - (float) $creditBalance;
+        } else {
+            $closingBalance = (float) $openingBalance + (float) $creditBalance - (float) $debitBalance;
+        }
+
+        return $closingBalance;
+    }
+
+    /**
+     * Get Debit Balance
+     * @param $request
+     * @param $accountSubCode
+     * @return float $debitBalance
+     */
+    public function getDebitBalance($request, $accountSubCode = null)
+    {
+        return AccountTransaction::where('chart_of_account_id', $request->chart_of_account_id)
+            ->whereBetween('voucher_date', [$request->from_date, $request->to_date])
+            ->when($accountSubCode, function ($q) use ($accountSubCode) {
+                $q->where('account_sub_code_id', $accountSubCode);
+            })
+            ->sum('debit');
+    }
+
+    /**
+     * Get Credit Balance
+     * @param $request
+     * @param $accountSubCode
+     * @return float $creditBalance
+     */
+    public function getCreditBalance($request, $accountSubCode = null)
+    {
+        return AccountTransaction::where('chart_of_account_id', $request->chart_of_account_id)
+            ->whereBetween('voucher_date', [$request->from_date, $request->to_date])
+            ->when($accountSubCode, function ($q) use ($accountSubCode) {
+                $q->where('account_sub_code_id', $accountSubCode);
+            })
+            ->sum('credit');
     }
 }
