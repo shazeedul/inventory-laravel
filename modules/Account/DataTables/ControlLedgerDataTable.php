@@ -3,9 +3,9 @@
 namespace Modules\Account\DataTables;
 
 use Carbon\Carbon;
-use App\Traits\Account\Report;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Modules\Account\Traits\Report;
 use Yajra\DataTables\Html\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;

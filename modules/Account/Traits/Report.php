@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits\Account;
+namespace Modules\Account\Traits;
 
 use Carbon\Carbon;
 use Modules\Account\Entities\FinancialYear;

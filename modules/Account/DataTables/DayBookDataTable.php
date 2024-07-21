@@ -3,19 +3,19 @@
 namespace Modules\Account\DataTables;
 
 use Carbon\Carbon;
-use App\Traits\Account\Report;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Modules\Account\Traits\Report;
 use Yajra\DataTables\Html\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
+use Modules\Account\Entities\AccountVoucher;
 use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\Entities\AccountVoucherType;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Modules\Account\Entities\AccountVoucher;
 
 class DayBookDataTable extends DataTable
 {
