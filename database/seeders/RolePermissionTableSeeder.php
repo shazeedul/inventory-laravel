@@ -74,6 +74,7 @@ class RolePermissionTableSeeder extends Seeder
                 'general_ledger_report',
                 'sub_ledger_report',
                 'control_ledger_report',
+                'note_ledger_report',
             ],
             'Supplier' => [
                 'supplier_management',

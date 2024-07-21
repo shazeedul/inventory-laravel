@@ -58,5 +58,11 @@
                     href="{{ route('admin.account.report.control-ledger') }}">{{ localize('Control Ledger') }}</a>
             </li>
         @endcan
+        @can('note_ledger_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.note-ledger') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.note-ledger') }}">{{ localize('Note Ledger') }}</a>
+            </li>
+        @endcan
     </ul>
 </nav>

@@ -72,5 +72,6 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::get('/general-ledger', [AccountReportController::class, 'generalLedger'])->name('general-ledger');
         Route::get('/sub-ledger', [AccountReportController::class, 'subLedger'])->name('sub-ledger');
         Route::get('/control-ledger', [AccountReportController::class, 'controlLedger'])->name('control-ledger');
+        Route::get('/note-ledger', [AccountReportController::class, 'noteLedger'])->name('note-ledger');
     });
 });

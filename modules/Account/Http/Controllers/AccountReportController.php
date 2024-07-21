@@ -15,6 +15,7 @@ use Modules\Account\Entities\AccountVoucherType;
 use Modules\Account\DataTables\BankBookDataTable;
 use Modules\Account\DataTables\CashBookDataTable;
 use Modules\Account\DataTables\SubLedgerDataTable;
+use Modules\Account\DataTables\NoteLedgerDataTable;
 use Modules\Account\Entities\AccountOpeningBalance;
 use Modules\Account\DataTables\ControlLedgerDataTable;
 use Modules\Account\DataTables\GeneralLedgerDataTable;
@@ -98,5 +99,14 @@ class AccountReportController extends Controller
     {
         $accounts = ChartOfAccount::where('is_active', 1)->where('head_level', 3)->get();
         return $dataTable->render('account::reports.control_ledger', compact('accounts'));
+    }
+
+    /**
+     * Note Ledger
+     */
+    public function noteLedger(NoteLedgerDataTable $dataTable)
+    {
+        $accounts = ChartOfAccount::where('is_active', 1)->where('head_level', 3)->whereNotNull('note_no')->get();
+        return $dataTable->render('account::reports.note_ledger', compact('accounts'));
     }
 }
