@@ -64,5 +64,29 @@
                     href="{{ route('admin.account.report.note-ledger') }}">{{ localize('Note Ledger') }}</a>
             </li>
         @endcan
+        @can('receive_payment_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.receive-payment') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.receive-payment') }}">{{ localize('Receive And Payment') }}</a>
+            </li>
+        @endcan
+        @can('trail_balance_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.trail-balance') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.trail-balance') }}">{{ localize('Trail Balance') }}</a>
+            </li>
+        @endcan
+        @can('profit_loss_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.profit-loss') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.profit-loss') }}">{{ localize('Profit Loss') }}</a>
+            </li>
+        @endcan
+        @can('balance_sheet_report')
+            <li class="nav-item">
+                <a class="nav-link py-1 pl-0 {{ request()->routeIs('admin.account.report.balance-sheet') ? 'active' : '' }}"
+                    href="{{ route('admin.account.report.balance-sheet') }}">{{ localize('Balance Sheet') }}</a>
+            </li>
+        @endcan
     </ul>
 </nav>

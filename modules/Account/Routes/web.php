@@ -73,5 +73,9 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::get('/sub-ledger', [AccountReportController::class, 'subLedger'])->name('sub-ledger');
         Route::get('/control-ledger', [AccountReportController::class, 'controlLedger'])->name('control-ledger');
         Route::get('/note-ledger', [AccountReportController::class, 'noteLedger'])->name('note-ledger');
+        Route::get('/receive-payment', [AccountReportController::class, 'receivePayment'])->name('receive-payment');
+        Route::get('/trail-balance', [AccountReportController::class, 'trailBalance'])->name('trail-balance');
+        Route::get('/profit-loss', [AccountReportController::class, 'profitLoss'])->name('profit-loss');
+        Route::get('/balance-sheet', [AccountReportController::class, 'balanceSheet'])->name('balance-sheet');
     });
 });
