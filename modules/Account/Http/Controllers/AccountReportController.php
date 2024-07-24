@@ -109,4 +109,36 @@ class AccountReportController extends Controller
         $accounts = ChartOfAccount::where('is_active', 1)->where('head_level', 3)->whereNotNull('note_no')->get();
         return $dataTable->render('account::reports.note_ledger', compact('accounts'));
     }
+
+    /**
+     * Receive And Payment
+     */
+    public function receivePayment()
+    {
+        return view('account::reports.receive_payment');
+    }
+
+    /**
+     * Trail Balance
+     */
+    public function trailBalance()
+    {
+        return view('account::reports.trail_balance');
+    }
+
+    /**
+     * Profit Loss
+     */
+    public function profitLoss()
+    {
+        return view('account::reports.profit_loss');
+    }
+
+    /**
+     * Balance Sheet
+     */
+    public function balanceSheet()
+    {
+        return view('account::reports.balance_sheet');
+    }
 }
