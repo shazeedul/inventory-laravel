@@ -19,7 +19,7 @@ class ControlLedgerDataTable extends DataTable
 
     public function dataTable($query): DataTableAbstract
     {
-        $forthLevel = request()->input('chart_of_account_id') != null ? ChartOfAccount::where('parent_id', request()->input('chart_of_account_id'))->get() : null;
+        $forthLevel = request()->input('chart_of_account_id') != null ? ChartOfAccount::where('parent_id', request()->input('chart_of_account_id'))->get() : collect();
 
         if (request()->input('voucher_date') != null) {
             $dateRange = explode(" to ", request()->input('voucher_date'));
