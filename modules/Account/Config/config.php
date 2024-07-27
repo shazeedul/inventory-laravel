@@ -7,6 +7,14 @@ return [
             'chart_of_account_id' => 49,
             'level' => 4,
         ],
+        'bank_code' => [
+            'chart_of_account_id' => 18,
+            'level' => 3,
+        ],
+        'advance' => [
+            'chart_of_account_id' => 16,
+            'level' => 3,
+        ],
         'purchase_code' => [
             'chart_of_account_id' => 80,
             'level' => 4,

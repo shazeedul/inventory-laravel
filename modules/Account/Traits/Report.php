@@ -7,6 +7,7 @@ use Modules\Account\Entities\FinancialYear;
 use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\Entities\AccountTransaction;
 use Modules\Account\Entities\AccountOpeningBalance;
+use Modules\Account\Entities\AccountVoucher;
 
 trait Report
 {
@@ -161,5 +162,61 @@ trait Report
                 $q->where('account_sub_code_id', $accountSubCode);
             })
             ->sum('credit');
+    }
+
+    public function test($fromDate, $toDate, $voucherType)
+    {
+        $coaWithGroupBy = AccountVoucher::select('chart_of_account_id')
+            ->where('account_voucher_type_id', $voucherType)
+            ->where('is_approved', 1)
+            ->whereBetween('voucher_date', [$fromDate, $toDate])
+            ->selectRaw('chart_of_account_id, SUM(CASE WHEN account_voucher_type_id = 2 THEN credit ELSE debit END) as total_amount')
+            ->groupBy('chart_of_account_id')
+            ->get()
+            ->keyBy('chart_of_account_id');
+
+        $coaDetails = ChartOfAccount::where('is_active', 1)
+            ->get()
+            ->keyBy('id');
+
+        // Get fourth-level COA IDs and their parent IDs
+        $fourthLevelCoaIds = $coaWithGroupBy->keys();
+        $fourthLevelCoaDetails = $coaDetails->filter(fn ($value, $key) => $fourthLevelCoaIds->contains($key));
+        $thirdLevelCoaIds = $fourthLevelCoaDetails->pluck('parent_id')->unique();
+
+        // Retrieve third-level COA details and child COA details
+        $thirdLevelCoaDetails = $coaDetails->filter(fn ($value, $key) => $thirdLevelCoaIds->contains($key));
+        $childOfThirdLevel = ChartOfAccount::whereIn('parent_id', $thirdLevelCoaIds)->get()->keyBy('id');
+
+        // Prepare results
+        $finalCollection = collect();
+
+        foreach ($childOfThirdLevel as $child) {
+            if ($coaWithGroupBy->has($child->id)) {
+                // Fourth-level COA
+                $finalCollection->push([
+                    'id' => $child->id,
+                    'name' => $child->name,
+                    'parent_id' => $child->parent_id,
+                    'total_amount' => $coaWithGroupBy[$child->id]->total_amount,
+                ]);
+            } elseif ($thirdLevelCoaDetails->has($child->parent_id)) {
+                // Third-level COA: Aggregate child amounts
+                $totalAmount = $childOfThirdLevel->where('parent_id', $child->id)
+                    ->sum(fn ($child) => $coaWithGroupBy->get($child->id, (object)['total_amount' => 0])->total_amount);
+
+                $finalCollection->push([
+                    'id' => $child->id,
+                    'name' => $child->name,
+                    'parent_id' => $child->parent_id,
+                    'total_amount' => $totalAmount,
+                ]);
+            }
+        }
+
+        return [
+            'thirdLabelFullCoaDetail' => $thirdLevelCoaDetails->values(),
+            'childOfFourthLabelFinal' => $finalCollection,
+        ];
     }
 }
