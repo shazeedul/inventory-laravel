@@ -243,6 +243,139 @@ class AccountReportController extends Controller
     }
 
     /**
+     * Trail Balance Result
+     */
+    public function trailBalanceResult(Request $request)
+    {
+        if ($request->voucher_date != null) {
+            $dateRange = explode(" to ", request()->input('voucher_date'));
+            $fromDate = Carbon::createFromFormat('Y-m-d', $dateRange[0])->format('Y-m-d');
+            $toDate = Carbon::createFromFormat('Y-m-d', $dateRange[1])->format('Y-m-d');
+        } else {
+            $fromDate = Carbon::now()->subDay(30)->format('Y-m-d');
+            $toDate = Carbon::now()->format('Y-m-d');
+        }
+
+        $type = $request->type;
+
+        if ($request->voucher_date == null || $type == null) {
+            return abort(500);
+        }
+
+        $chartOfAccounts = ChartOfAccount::with([
+            'secondChild' => function ($secondQ) {
+                $secondQ->with([
+                    'thirdChild' => function ($thirdQ) {
+                        $thirdQ->with(['fourthChild']);
+                    }
+                ]);
+            }
+        ])->where('is_active', 1)->parentHead()->get();
+
+        // Initialize variables for the trail balance
+        $tableFooter = [
+            'totalOpeningDebitBalance' => 0,
+            'totalOpeningCreditBalance' => 0,
+            'totalClosingDebitBalance' => 0,
+            'totalClosingCreditBalance' => 0,
+            'totalTransactionDebitBalance' => 0,
+            'totalTransactionCreditBalance' => 0,
+        ];
+        $trailBalance = [];
+        $newKey = 0;
+
+        $getOpeningBalance = function ($request) {
+            return $this->getOpeningBalance($request);
+        };
+        $getClosingBalance = function ($request) {
+            return $this->getClosingBalance($request);
+        };
+        $getDebitBalance = function ($request) {
+            return $this->getDebitBalance($request);
+        };
+        $getCreditBalance = function ($request) {
+            return $this->getCreditBalance($request);
+        };
+
+        // Function to process each account and its children
+        function processAccount($account, &$trailBalance, $fromDate, $toDate, &$newKey, $getOpeningBalance, $getClosingBalance, $getDebitBalance, $getCreditBalance)
+        {
+            $newKey++;
+            $balance = [
+                'id' => $account->id,
+                'code' => $account->code,
+                'name' => $account->name,
+                'account_type_id' => $account->account_type_id,
+                'parent_id' => $account->parent_id,
+                'head_level' => $account->head_level,
+            ];
+            // Convert array to new request object
+            $param = new \Illuminate\Http\Request([
+                'from_date' => $fromDate,
+                'to_date' => $toDate,
+                'chart_of_account_id' => $account->id,
+            ]);
+
+            if (in_array($account->account_type_id, [1, 4])) {
+                $balance['opening_balance_debit'] = $getOpeningBalance($param);
+                $balance['opening_balance_credit'] = 0;
+                $balance['closing_balance_debit'] = $getClosingBalance($param);
+                $balance['closing_balance_credit'] = 0;
+            } elseif (in_array($account->account_type_id, [2, 3, 5])) {
+                $balance['opening_balance_debit'] = 0;
+                $balance['opening_balance_credit'] = $getOpeningBalance($param);
+                $balance['closing_balance_debit'] = 0;
+                $balance['closing_balance_credit'] = $getClosingBalance($param);
+            }
+
+            $balance['tran_balance_debit'] = $getDebitBalance($param);
+            $balance['tran_balance_credit'] = $getCreditBalance($param);
+
+            $trailBalance[$newKey] = $balance;
+
+            // Process secondChild
+            if ($account->secondChild->count() > 0) {
+                foreach ($account->secondChild as $secondChild) {
+                    processAccount($secondChild, $trailBalance, $fromDate, $toDate, $newKey, $getOpeningBalance, $getClosingBalance, $getDebitBalance, $getCreditBalance);
+
+                    // Process thirdChild
+                    if ($secondChild->thirdChild->count() > 0) {
+                        foreach ($secondChild->thirdChild as $thirdChild) {
+                            processAccount($thirdChild, $trailBalance, $fromDate, $toDate, $newKey, $getOpeningBalance, $getClosingBalance, $getDebitBalance, $getCreditBalance);
+
+                            // Process fourthChild
+                            if ($thirdChild->fourthChild->count() > 0) {
+                                foreach ($thirdChild->fourthChild as $fourthChild) {
+                                    processAccount($fourthChild, $trailBalance, $fromDate, $toDate, $newKey, $getOpeningBalance, $getClosingBalance, $getDebitBalance, $getCreditBalance);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Iterate through chart of accounts and process each
+        foreach ($chartOfAccounts as $account) {
+            processAccount($account, $trailBalance, $fromDate, $toDate, $newKey, $getOpeningBalance, $getClosingBalance, $getDebitBalance, $getCreditBalance);
+        }
+
+        // Sum up values for each category
+        $tableFooter['totalOpeningDebitBalance'] = array_sum(array_column($trailBalance, 'opening_balance_debit'));
+        $tableFooter['totalOpeningCreditBalance'] = array_sum(array_column($trailBalance, 'opening_balance_credit'));
+        $tableFooter['totalClosingDebitBalance'] = array_sum(array_column($trailBalance, 'closing_balance_debit'));
+        $tableFooter['totalClosingCreditBalance'] = array_sum(array_column($trailBalance, 'closing_balance_credit'));
+        $tableFooter['totalTransactionDebitBalance'] = array_sum(array_column($trailBalance, 'tran_balance_debit'));
+        $tableFooter['totalTransactionCreditBalance'] = array_sum(array_column($trailBalance, 'tran_balance_credit'));
+
+        return view('account::reports.result.trail_balance', compact([
+            'trailBalance',
+            'tableFooter',
+            'type',
+        ]));
+    }
+
+    /**
      * Profit Loss
      */
     public function profitLoss()

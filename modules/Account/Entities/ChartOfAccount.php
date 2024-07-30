@@ -148,4 +148,12 @@ class ChartOfAccount extends Model
             "depreciation_code",
         ]);
     }
+
+    /**
+     * Scoop for parent head
+     */
+    public function scopeParentHead($query)
+    {
+        return $query->where('head_level', 1)->where('parent_id', 0);
+    }
 }

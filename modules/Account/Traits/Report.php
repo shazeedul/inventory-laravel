@@ -140,7 +140,7 @@ trait Report
      */
     public function getDebitBalance($request, $accountSubCode = null)
     {
-        return AccountTransaction::where('chart_of_account_id', $request->chart_of_account_id)
+        return (float) AccountTransaction::where('chart_of_account_id', $request->chart_of_account_id)
             ->whereBetween('voucher_date', [$request->from_date, $request->to_date])
             ->when($accountSubCode, function ($q) use ($accountSubCode) {
                 $q->where('account_sub_code_id', $accountSubCode);
@@ -156,7 +156,7 @@ trait Report
      */
     public function getCreditBalance($request, $accountSubCode = null)
     {
-        return AccountTransaction::where('chart_of_account_id', $request->chart_of_account_id)
+        return (float) AccountTransaction::where('chart_of_account_id', $request->chart_of_account_id)
             ->whereBetween('voucher_date', [$request->from_date, $request->to_date])
             ->when($accountSubCode, function ($q) use ($accountSubCode) {
                 $q->where('account_sub_code_id', $accountSubCode);

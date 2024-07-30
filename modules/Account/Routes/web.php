@@ -76,6 +76,7 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::get('/receive-payment', [AccountReportController::class, 'receivePayment'])->name('receive-payment');
         Route::post('/receive-payment', [AccountReportController::class, 'receivePaymentResult']);
         Route::get('/trail-balance', [AccountReportController::class, 'trailBalance'])->name('trail-balance');
+        Route::post('/trail-balance', [AccountReportController::class, 'trailBalanceResult']);
         Route::get('/profit-loss', [AccountReportController::class, 'profitLoss'])->name('profit-loss');
         Route::get('/balance-sheet', [AccountReportController::class, 'balanceSheet'])->name('balance-sheet');
     });
