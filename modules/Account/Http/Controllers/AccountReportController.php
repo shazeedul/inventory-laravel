@@ -384,6 +384,115 @@ class AccountReportController extends Controller
     }
 
     /**
+     * Profit Loss Result
+     */
+    public function profitLossResult(Request $request)
+    {
+        if ($request->voucher_date != null) {
+            $dateRange = explode(" to ", request()->input('voucher_date'));
+            $fromDate = Carbon::createFromFormat('Y-m-d', $dateRange[0])->format('Y-m-d');
+            $toDate = Carbon::createFromFormat('Y-m-d', $dateRange[1])->format('Y-m-d');
+        } else {
+            $fromDate = Carbon::now()->subDay(30)->format('Y-m-d');
+            $toDate = Carbon::now()->format('Y-m-d');
+        }
+
+        $type = $request->type;
+
+        if ($request->voucher_date == null || $type == null) {
+            return abort(500);
+        }
+
+        // Convert array to new request object
+        $param = new \Illuminate\Http\Request([
+            'from_date' => $fromDate,
+            'to_date' => $toDate,
+        ]);
+
+
+        // Incomes
+        $incomes = ChartOfAccount::with(['thirdChild' => function ($q) {
+            $q->with(['fourthChild' => function ($q) {
+                $q->where('account_type_id', 3);
+            }])->where('account_type_id', 3);
+        }])
+            ->where('is_active', 1)
+            ->where('parent_id', 3)
+            ->get();
+
+        $incomeBalance = 0;
+
+        foreach ($incomes as $income) {
+            $level2IncomeBalance = 0;
+            foreach ($income->thirdChild as $income3) {
+                $levelThreeBalance = 0;
+                foreach ($income3->fourthChild as $income4) {
+                    $param['chart_of_account_id'] = $income4->id;
+                    if ($type == 'as_on') {
+                        $balance = $this->getClosingBalance($param);
+                    } else {
+                        $balance = $this->getPeriodicClosingBalance($param);
+                    }
+                    $income4->setAttribute('balance', $balance);
+                    $levelThreeBalance += $balance;
+                }
+                $income3->setAttribute('balance', $levelThreeBalance);
+                $level2IncomeBalance += $levelThreeBalance;
+            }
+            $income->setAttribute('balance', $level2IncomeBalance);
+            $incomeBalance += $level2IncomeBalance;
+        }
+
+        // Expenses
+        $expenses = ChartOfAccount::with(['thirdChild' => function ($q) {
+            $q->with(['fourthChild' => function ($q) {
+                $q->where('account_type_id', 4);
+            }])->where('account_type_id', 4);
+        }])
+            ->where('is_active', 1)
+            ->where('parent_id', 4)
+            ->get();
+
+        $expenseBalance = 0;
+
+        foreach ($expenses as $expense) {
+            $level2ExpenseBalance = 0;
+            foreach ($expense->thirdChild as $expense3) {
+                $levelThreeBalance = 0;
+                foreach ($expense3->fourthChild as $expense4) {
+                    $param['chart_of_account_id'] = $expense4->id;
+                    if ($type == 'as_on') {
+                        $balance = $this->getClosingBalance($param);
+                    } else {
+                        $balance = $this->getPeriodicClosingBalance($param);
+                    }
+                    $expense4->setAttribute('balance', $balance);
+                    $levelThreeBalance += $balance;
+                }
+                $expense3->setAttribute('balance', $levelThreeBalance);
+                $level2ExpenseBalance += $levelThreeBalance;
+            }
+            $expense->setAttribute('balance', $level2ExpenseBalance);
+            $expenseBalance += $level2ExpenseBalance;
+        }
+
+        $netProfit = $incomeBalance - $expenseBalance;
+        $netLoss = $expenseBalance - $incomeBalance;
+
+        return view('account::reports.result.profit_loss', compact([
+            'incomes',
+            'incomeBalance',
+            'expenses',
+            'expenseBalance',
+            'fromDate',
+            'toDate',
+            'type',
+            'netProfit',
+            'netLoss',
+        ]));
+    }
+
+    /**
      * Balance Sheet
      */
     public function balanceSheet()

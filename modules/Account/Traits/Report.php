@@ -219,4 +219,26 @@ trait Report
             'childOfFourthLabelFinal' => $finalCollection,
         ];
     }
+
+    /**
+     * Get Periodic Closing Balance
+     * @param $request
+     * @param $accountSubCode
+     * @return float $closingBalance
+     */
+    public function getPeriodicClosingBalance($request, $accountSubCode = null)
+    {
+        $closingBalance = 0;
+        $debitBalance = $this->getDebitBalance($request, $accountSubCode);
+        $creditBalance = $this->getCreditBalance($request, $accountSubCode);
+
+        $coaDetail = ChartOfAccount::findOrFail($request->chart_of_account_id);
+        if (in_array($coaDetail->account_type_id, [1, 4])) {
+            $closingBalance = (float) $debitBalance - (float) $creditBalance;
+        } else {
+            $closingBalance = (float) $creditBalance - (float) $debitBalance;
+        }
+
+        return $closingBalance;
+    }
 }
