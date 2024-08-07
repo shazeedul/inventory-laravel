@@ -499,4 +499,12 @@ class AccountReportController extends Controller
     {
         return view('account::reports.balance_sheet');
     }
+
+    /**
+     * Balance Sheet Result
+     */
+    public function balanceSheetResult(Request $request)
+    {
+        return view('account::reports.balance_sheet');
+    }
 }

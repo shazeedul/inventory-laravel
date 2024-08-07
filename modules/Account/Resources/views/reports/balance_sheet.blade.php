@@ -23,28 +23,36 @@
                     <div class="row col-12">
                         <div class="accordion accordion-flush" id="accordionFlushExample">
                             <div class="accordion-item">
-                                <div id="flush-collapseOne" class="accordion-collapse collapse bg-white mb-2"
+                                <div id="flush-collapseOne" class="accordion-collapse show collapse bg-white mb-2"
                                     aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                                     <div class="row">
-                                        <div class="col-md-3 mb-2">
-                                            <select id="accounts" class="form-select">
-                                                <option value="" selected>
-                                                    {{ localize('Ledger Name') }}</option>
-                                                {{-- @foreach ($accounts as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                @endforeach --}}
-                                            </select>
-                                        </div>
                                         <div class="col-md-3 mb-2">
                                             <input type="text" class="form-control voucher-date-range"
                                                 id="voucher-date" autocomplete="off"
                                                 placeholder="{{ localize('Voucher Date') }}">
                                         </div>
+                                        <div class="col-md-3 mb-1">
+                                            <label for="type">{{ localize('Type') }}
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="d-flex flex-wrap">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="type"
+                                                        id="t_shape" value="t_shape" />
+                                                    <label class="form-check-label"
+                                                        for="t_shape">{{ localize('T Shape') }}</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="type"
+                                                        id="l_shape" value="l_shape" />
+                                                    <label class="form-check-label"
+                                                        for="l_shape">{{ localize('L Shape') }}</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-md-2 mb-2 align-self-end">
                                             <button type="button" id="filter"
                                                 class="btn btn-primary me-1">{{ localize('find') }}</button>
-                                            <button type="button" id="reset"
-                                                class="btn btn-danger">{{ localize('reset') }}</button>
                                         </div>
                                     </div>
                                 </div>
