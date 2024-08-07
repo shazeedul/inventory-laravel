@@ -63,9 +63,9 @@
             <tfoot>
                 @if ($netProfit >= 0)
                     <tr>
+                        <th></th>
                         <th class="text-end">@localize('Net Profit')</th>
                         <th class="text-end"> {{ $netProfit }}</th>
-                        <th></th>
                     </tr>
                 @endif
                 <tr>
