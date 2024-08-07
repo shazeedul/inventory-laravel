@@ -104,40 +104,23 @@
                     },
                 });
 
-                $('#filter').on('click', function() {
-                    let chart_of_account_id = $('#accounts').val();
+                $('#filter').on('click', function(event) {
+                    event.preventDefault();
+                    if ($('#voucher-date').val() === '' || !$('input[name=type]:checked').val()) {
+                        toastr.error('Please select voucher date and ledger type');
+                        return false;
+                    }
                     let voucher_date = $('#voucher-date').val();
-                });
+                    let type = $('input[name=type]:checked').val();
 
-                $('#reset').on('click', function() {
-                    $('#accounts').val('').trigger('change');
-                    $('#voucher-date').flatpickr().clear();
-                    $('#voucher-date').flatpickr({
-                        mode: "range",
-                        maxDate: "today",
-                        dateFormat: "Y-m-d",
-                        locale: {
-                            firstDayOfWeek: 1,
-                            weekdays: {
-                                shorthand: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                                longhand: [
-                                    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-                                    'Friday',
-                                    'Saturday'
-                                ],
-                            },
-                            months: {
-                                shorthand: [
-                                    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-                                    'Oct',
-                                    'Nov', 'Dec'
-                                ],
-                                longhand: [
-                                    'January', 'February', 'March', 'April', 'May', 'June', 'July',
-                                    'August', 'September', 'October', 'November', 'December'
-                                ],
-                            },
-                        },
+                    axios.post('/admin/account/report/balance-sheet', {
+                        voucher_date: voucher_date,
+                        type: type
+                    }).then((response) => {
+                        console.log('response', response.data);
+                        $('#result').html(response.data);
+                    }).catch((error) => {
+                        toastr.error('Something went wrong');
                     });
                 });
             });

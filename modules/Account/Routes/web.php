@@ -80,5 +80,6 @@ Route::prefix('admin/account')->as('admin.account.')->group(function () {
         Route::get('/profit-loss', [AccountReportController::class, 'profitLoss'])->name('profit-loss');
         Route::post('/profit-loss', [AccountReportController::class, 'profitLossResult']);
         Route::get('/balance-sheet', [AccountReportController::class, 'balanceSheet'])->name('balance-sheet');
+        Route::post('/balance-sheet', [AccountReportController::class, 'balanceSheetResult']);
     });
 });

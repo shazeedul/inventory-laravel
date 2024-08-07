@@ -241,4 +241,36 @@ trait Report
 
         return $closingBalance;
     }
+
+    /**
+     * Get Opening Balance By Year
+     * @param $financial_year_id
+     * @param $chart_of_account_id
+     * @return float $openingBalance
+     */
+    public function getOpeningBalanceByYear($financial_year_id, $chart_of_account_id)
+    {
+        $getOpeningBalance = AccountOpeningBalance::where('financial_year_id', $financial_year_id)
+            ->where('chart_of_account_id',  $chart_of_account_id)
+            ->get();
+
+        $balanceResult = [];
+
+        $coaDetail = ChartOfAccount::findOrFail($chart_of_account_id);
+
+        if ($coaDetail->account_type_id == 1 || $coaDetail->account_type_id == 4) {
+            foreach ($getOpeningBalance as $value) {
+                $balanceResult[] = number_format($value->debit,  2, '.',  '') - number_format($value->credit,  2, '.',  '');
+            }
+        }
+        if ($coaDetail->account_type_id == 2 || $coaDetail->account_type_id == 3 || $coaDetail->account_type_id == 5) {
+            foreach ($getOpeningBalance as $value) {
+                $balanceResult[] = number_format($value->credit,  2, '.',  '') - number_format($value->debit,  2, '.',  '');
+            }
+        }
+
+        $openingBalance = array_sum($balanceResult);
+
+        return $openingBalance;
+    }
 }

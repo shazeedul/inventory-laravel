@@ -505,6 +505,144 @@ class AccountReportController extends Controller
      */
     public function balanceSheetResult(Request $request)
     {
+        if ($request->voucher_date != null) {
+            $dateRange = explode(" to ", request()->input('voucher_date'));
+            $fromDate = Carbon::createFromFormat('Y-m-d', $dateRange[0])->format('Y-m-d');
+            $toDate = Carbon::createFromFormat('Y-m-d', $dateRange[1])->format('Y-m-d');
+        } else {
+            $fromDate = Carbon::now()->subDay(30)->format('Y-m-d');
+            $toDate = Carbon::now()->format('Y-m-d');
+        }
+
+        $type = $request->type;
+
+        if ($request->voucher_date == null || $type == null) {
+            return abort(500);
+        }
+
+        // Convert array to new request object
+        $param = new \Illuminate\Http\Request([
+            'from_date' => $fromDate,
+            'to_date' => $toDate,
+        ]);
+
+        // Current Year
+        $currentYear = FinancialYear::where('status', 1)->where('is_closed', 0)->first();
+        // Last Three Years
+        $lastThreeYears = FinancialYear::where('status', 1)->where('is_closed', 1)->orderBy('id', 'desc')->limit(3)->get();
+
+        // Assets
+        $assets = ChartOfAccount::with(['thirdChild' => function ($q) {
+            $q->with(['fourthChild' => function ($q) {
+                $q->where('account_type_id', 1);
+            }])->where('account_type_id', 1);
+        }])
+            ->where('is_active', 1)
+            ->where('parent_id', 1)
+            ->get();
+
+        $assetBalance = 0;
+
+        foreach ($assets as $asset) {
+            $level2AssetBalance = 0;
+            foreach ($asset->thirdChild as $asset3) {
+                $levelThreeBalance = 0;
+                foreach ($asset3->fourthChild as $asset4) {
+                    $param['chart_of_account_id'] = $asset4->id;
+                    $balance = $this->getClosingBalance($param);
+                    $asset4->setAttribute('balance', $balance);
+                    $levelThreeBalance += $balance;
+
+                    // Last Three Years
+                    $lastThreeYearsBalance = [];
+                    foreach ($lastThreeYears as $year) {
+                        $yearBalance = $this->getOpeningBalanceByYear($year->id, $asset4->id);
+                        $lastThreeYearsBalance[$year->name] = $yearBalance;
+                        $asset4->setAttribute('year_balance', $yearBalance);
+                    }
+                }
+                $asset3->setAttribute('balance', $levelThreeBalance);
+                $level2AssetBalance += $levelThreeBalance;
+            }
+            $asset->setAttribute('balance', $level2AssetBalance);
+            $assetBalance += $level2AssetBalance;
+        }
+
+        // Liabilities
+        $liabilities = ChartOfAccount::with(['thirdChild' => function ($q) {
+            $q->with(['fourthChild' => function ($q) {
+                $q->where('account_type_id', 2);
+            }])->where('account_type_id', 2);
+        }])
+            ->where('is_active', 1)
+            ->where('parent_id', 2)
+            ->get();
+
+        $liabilityBalance = 0;
+
+        foreach ($liabilities as $liability) {
+            $level2LiabilityBalance = 0;
+            foreach ($liability->thirdChild as $liability3) {
+                $levelThreeBalance = 0;
+                foreach ($liability3->fourthChild as $liability4) {
+                    $param['chart_of_account_id'] = $liability4->id;
+                    $balance = $this->getClosingBalance($param);
+                    $liability4->setAttribute('balance', $balance);
+                    $levelThreeBalance += $balance;
+
+                    // Last Three Years
+                    $lastThreeYearsBalance = [];
+                    foreach ($lastThreeYears as $year) {
+                        $yearBalance = $this->getOpeningBalanceByYear($year->id, $liability4->id);
+                        $lastThreeYearsBalance[$year->name] = $yearBalance;
+                        $liability4->setAttribute('year_balance', $yearBalance);
+                    }
+                }
+                $liability3->setAttribute('balance', $levelThreeBalance);
+                $level2LiabilityBalance += $levelThreeBalance;
+            }
+            $liability->setAttribute('balance', $level2LiabilityBalance);
+            $liabilityBalance += $level2LiabilityBalance;
+        }
+
+        // Share Equity
+        // $shareEquities = ChartOfAccount::with(['thirdChild' => function ($q) {
+        //     $q->with(['fourthChild' => function ($q) {
+        //         $q->where('account_type_id', 5);
+        //     }])->where('account_type_id', 5);
+        // }])
+        //     ->where('is_active', 1)
+        //     ->where('parent_id', 5)
+        //     ->get();
+
+        // $shareEquityBalance = 0;
+
+        // foreach ($shareEquities as $shareEquity) {
+        //     $level2ShareEquityBalance = 0;
+        //     foreach ($shareEquity->thirdChild as $shareEquity3) {
+        //         $levelThreeBalance = 0;
+        //         foreach ($shareEquity3->fourthChild as $shareEquity4) {
+        //             $param['chart_of_account_id'] = $shareEquity4->id;
+        //             $balance = $this->getClosingBalance($param);
+        //             $shareEquity4->setAttribute('balance', $balance);
+        //             $levelThreeBalance += $balance;
+
+        //             // Last Three Years
+        //             $lastThreeYearsBalance = [];
+        //             foreach ($lastThreeYears as $year) {
+        //                 $yearBalance = $this->getOpeningBalanceByYear($year->id, $shareEquity4->id);
+        //                 $lastThreeYearsBalance[$year->name] = $yearBalance;
+        //                 $shareEquity4->setAttribute('year_balance', $yearBalance);
+        //             }
+        //         }
+        //         $shareEquity3->setAttribute('balance', $levelThreeBalance);
+        //         $level2ShareEquityBalance += $levelThreeBalance;
+        //     }
+        //     $shareEquity->setAttribute('balance', $level2ShareEquityBalance);
+        //     $shareEquityBalance += $level2ShareEquityBalance;
+        // }
+
+        dd(123);
         return view('account::reports.balance_sheet');
     }
 }
