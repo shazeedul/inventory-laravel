@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8c0340da019a5d5ab8effd72248bc44",
+    "content-hash": "088491bde6823d10eb06fe4681c088a4",
     "packages": [
         {
             "name": "artesaos/seotools",
@@ -3876,65 +3876,6 @@
                 "source": "https://github.com/renatomarinho/laravel-page-speed/tree/2.1.0"
             },
             "time": "2022-03-14T18:28:48+00:00"
-        },
-        {
-            "name": "shazeedul/recaptcha-v3",
-            "version": "dev-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/shazeedul/recaptcha-v3.git",
-                "reference": "5ae2e6a1ace061f230f0789b45b178f1e34f1fa4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/shazeedul/recaptcha-v3/zipball/5ae2e6a1ace061f230f0789b45b178f1e34f1fa4",
-                "reference": "5ae2e6a1ace061f230f0789b45b178f1e34f1fa4",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "^9.0 || ^11.0 || ^10.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "laravel/pint": "^1.17",
-                "orchestra/testbench": "^9.2",
-                "pestphp/pest": "^2.35"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "ReCaptchaV3\\Providers\\ReCaptchaV3ServiceProvider"
-                    ],
-                    "aliases": {
-                        "ReCaptchaV3": "ReCaptchaV3\\Facades\\ReCaptchaV3"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "LoomRecaptchaV3\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Syed Shazeedul Islam",
-                    "email": "syedshazeedul@gmail.com",
-                    "homepage": "https://github.com/shazeedul",
-                    "role": "Developer"
-                }
-            ],
-            "description": "PHP package for reCAPTCHA v3 in Laravel",
-            "support": {
-                "issues": "https://github.com/shazeedul/recaptcha-v3/issues",
-                "source": "https://github.com/shazeedul/recaptcha-v3/tree/dev"
-            },
-            "time": "2024-08-08T17:46:12+00:00"
         },
         {
             "name": "spatie/db-dumper",
@@ -10119,9 +10060,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "shazeedul/recaptcha-v3": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
