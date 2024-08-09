@@ -642,7 +642,17 @@ class AccountReportController extends Controller
             $shareEquityBalance += $level2ShareEquityBalance;
         }
 
-        dd($assetBalance, $liabilityBalance, $shareEquityBalance, $assets, $liabilities, $shareEquities);
-        return view('account::reports.balance_sheet');
+        return view('account::reports.result.t_balance_sheet', compact(
+            'assets',
+            'assetBalance',
+            'liabilities',
+            'liabilityBalance',
+            'shareEquities',
+            'shareEquityBalance',
+            'lastThreeYears',
+            'fromDate',
+            'toDate',
+            'type'
+        ));
     }
 }
