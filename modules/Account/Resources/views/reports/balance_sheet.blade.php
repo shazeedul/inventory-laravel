@@ -63,6 +63,12 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card" id="result">
+            </div>
+        </div>
+    </div>
     @push('lib-styles')
         <link href="{{ nanopkg_asset('vendor/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ admin_asset('vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" />
