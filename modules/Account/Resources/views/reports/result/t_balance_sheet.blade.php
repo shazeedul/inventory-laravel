@@ -62,6 +62,9 @@
                         <tr>
                             <td><strong>@localize('Total Liabilities')</strong></td>
                             <td><strong>{{ $liabilityBalance }}</strong></td>
+                            @foreach ($lastThreeYears as $year)
+                                <td><strong>{{ dd($liabilities) }}</strong></td>
+                            @endforeach
                         </tr>
                     </tfoot>
                 </table>

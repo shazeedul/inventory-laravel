@@ -529,7 +529,7 @@ class AccountReportController extends Controller
         // Current Year
         $currentYear = FinancialYear::where('status', 1)->where('is_closed', 0)->first();
         // Last Three Years
-        $lastThreeYears = FinancialYear::where('status', 1)->where('is_closed', 1)->orderBy('id', 'desc')->limit(3)->get();
+        $lastThreeYears = FinancialYear::where('status', 0)->where('is_closed', 1)->orderBy('id', 'desc')->limit(3)->get();
 
         // Assets
         $assets = ChartOfAccount::with(['thirdChild' => function ($q) {
@@ -617,14 +617,15 @@ class AccountReportController extends Controller
 
                     // Last Three Years
                     foreach ($lastThreeYears as $year) {
+                        $yearKey = $year->name;
                         $yearBalance = $this->getOpeningBalanceByYear($year->id, $liability4->id);
-                        $liability4->setAttribute("year_balance_{$year->name}", $yearBalance);
+                        $liability4->setAttribute("year_balance_{$yearKey}", $yearBalance);
 
                         // Accumulate the year balance for third level
-                        if (!isset($level3LiabilityYearBalances[$year->name])) {
-                            $level3LiabilityYearBalances[$year->name] = 0;
+                        if (!isset($level3LiabilityYearBalances[$yearKey])) {
+                            $level3LiabilityYearBalances[$yearKey] = 0;
                         }
-                        $level3LiabilityYearBalances[$year->name] += $yearBalance;
+                        $level3LiabilityYearBalances[$yearKey] += $yearBalance;
                     }
                 }
 
@@ -633,13 +634,14 @@ class AccountReportController extends Controller
 
                 // Set the accumulated year balances for third level
                 foreach ($lastThreeYears as $year) {
-                    $liability3->setAttribute("year_balance_{$year->name}", $level3LiabilityYearBalances[$year->name]);
+                    $yearKey = $year->name;
+                    $liability3->setAttribute("year_balance_{$yearKey}", $level3LiabilityYearBalances[$yearKey] ?? 0);
 
                     // Accumulate the year balance for second level
-                    if (!isset($level2LiabilityYearBalances[$year->name])) {
-                        $level2LiabilityYearBalances[$year->name] = 0;
+                    if (!isset($level2LiabilityYearBalances[$yearKey])) {
+                        $level2LiabilityYearBalances[$yearKey] = 0;
                     }
-                    $level2LiabilityYearBalances[$year->name] += $level3LiabilityYearBalances[$year->name];
+                    $level2LiabilityYearBalances[$yearKey] += $level3LiabilityYearBalances[$yearKey] ?? 0;
                 }
             }
 
@@ -648,7 +650,8 @@ class AccountReportController extends Controller
 
             // Set the accumulated year balances for second level
             foreach ($lastThreeYears as $year) {
-                $liability->setAttribute("year_balance_{$year->name}", $level2LiabilityYearBalances[$year->name]);
+                $yearKey = $year->name;
+                $liability->setAttribute("year_balance_{$yearKey}", $level2LiabilityYearBalances[$yearKey] ?? 0);
             }
         }
 
