@@ -123,7 +123,6 @@
                         voucher_date: voucher_date,
                         type: type
                     }).then((response) => {
-                        console.log('response', response.data);
                         $('#result').html(response.data);
                     }).catch((error) => {
                         toastr.error('Something went wrong');

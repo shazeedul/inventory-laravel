@@ -546,9 +546,11 @@ class AccountReportController extends Controller
         foreach ($assets as $asset) {
             $level2AssetBalance = 0;
             $level2AssetYearBalances = [];
+
             foreach ($asset->thirdChild as $asset3) {
                 $level3AssetBalance = 0;
                 $level3AssetYearBalances = [];
+
                 foreach ($asset3->fourthChild as $asset4) {
                     $param['chart_of_account_id'] = $asset4->id;
                     $balance = $this->getClosingBalance($param);
@@ -557,27 +559,29 @@ class AccountReportController extends Controller
 
                     // Last Three Years
                     foreach ($lastThreeYears as $year) {
+                        $yearKey = $year->name;
                         $yearBalance = $this->getOpeningBalanceByYear($year->id, $asset4->id);
-                        $asset4->setAttribute('year_balance{$year->name}', $yearBalance);
+                        $asset4->setAttribute("year_balance_{$yearKey}", $yearBalance);
 
                         // Accumulate the year balance for fourth level
-                        if (!isset($level3AssetYearBalances[$year->name])) {
-                            $level3AssetYearBalances[$year->name] = 0;
+                        if (!isset($level3AssetYearBalances[$yearKey])) {
+                            $level3AssetYearBalances[$yearKey] = 0;
                         }
-                        $level3AssetYearBalances[$year->name] += $yearBalance;
+                        $level3AssetYearBalances[$yearKey] += $yearBalance;
                     }
                 }
                 $asset3->setAttribute('balance', $level3AssetBalance);
                 $level2AssetBalance += $level3AssetBalance;
                 // Set the accumulated year balances for third level
                 foreach ($lastThreeYears as $year) {
-                    $asset3->setAttribute("year_balance_{$year->name}", $level3AssetYearBalances[$year->name]);
+                    $yearKey = $year->name;
+                    $asset3->setAttribute("year_balance_{$yearKey}", $level3AssetYearBalances[$yearKey]);
 
                     // Accumulate the year balance for second level
-                    if (!isset($level2AssetYearBalances[$year->name])) {
-                        $level2AssetYearBalances[$year->name] = 0;
+                    if (!isset($level2AssetYearBalances[$yearKey])) {
+                        $level2AssetYearBalances[$yearKey] = 0;
                     }
-                    $level2AssetYearBalances[$year->name] += $level3AssetYearBalances[$year->name];
+                    $level2AssetYearBalances[$yearKey] += $level3AssetYearBalances[$yearKey];
                 }
             }
             $asset->setAttribute('balance', $level2AssetBalance);
@@ -585,7 +589,8 @@ class AccountReportController extends Controller
 
             // Set the accumulated year balances for second level
             foreach ($lastThreeYears as $year) {
-                $asset->setAttribute("year_balance_{$year->name}", $level2AssetYearBalances[$year->name]);
+                $yearKey = $year->name;
+                $asset->setAttribute("year_balance_{$yearKey}", $level2AssetYearBalances[$yearKey]);
             }
         }
 
@@ -681,19 +686,20 @@ class AccountReportController extends Controller
 
                     // Last Three Years
                     foreach ($lastThreeYears as $year) {
+                        $yearKey     = $year->name;
                         $yearBalance = $this->getOpeningBalanceByYear($year->id, $shareEquity4->id);
-                        $shareEquity4->setAttribute('year_balance', $yearBalance);
-                        $level3ShareEquityYearBalances[$year->name] = $yearBalance;
+                        $shareEquity4->setAttribute("year_balance_{$yearKey}", $yearBalance);
+                        $level3ShareEquityYearBalances[$yearKey] = $yearBalance;
                     }
                 }
                 $shareEquity3->setAttribute('balance', $level3ShareEquityBalance);
                 $level2ShareEquityBalance += $level3ShareEquityBalance;
-                $$shareEquity3->setAttribute('year_balance{$year->name}', $level3ShareEquityBalance);
+                $$shareEquity3->setAttribute("year_balance{$yearKey}", $level3ShareEquityBalance);
             }
             $shareEquity->setAttribute('balance', $level2ShareEquityBalance);
             $shareEquityBalance += $level2ShareEquityBalance;
             foreach ($lastThreeYears as $year) {
-                $shareEquity->setAttribute('year_balance{$year->name}', $level2ShareEquityBalance);
+                $shareEquity->setAttribute("year_balance{$yearKey}", $level2ShareEquityBalance);
             }
         }
 
