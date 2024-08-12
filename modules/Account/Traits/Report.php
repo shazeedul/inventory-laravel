@@ -3,11 +3,12 @@
 namespace Modules\Account\Traits;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Modules\Account\Entities\FinancialYear;
+use Modules\Account\Entities\AccountVoucher;
 use Modules\Account\Entities\ChartOfAccount;
 use Modules\Account\Entities\AccountTransaction;
 use Modules\Account\Entities\AccountOpeningBalance;
-use Modules\Account\Entities\AccountVoucher;
 
 trait Report
 {
@@ -19,19 +20,34 @@ trait Report
      */
     public function getOpeningBalance($request, $accountSubCode = null)
     {
-        $getYearDetail = FinancialYear::whereDate('start_date', '<=', $request->from_date)
+        // Retrieve cached data if it exists
+        $cacheFinancialYear = Cache::get('financial_years');
+
+        // Filter to get the current financial year
+        $getYearDetail = $cacheFinancialYear ?
+            $cacheFinancialYear->filter(function ($item) use ($request) {
+                return $item->start_date <= $request->from_date && $item->end_date >= $request->from_date;
+            })->first() :
+            FinancialYear::whereDate('start_date', '<=', $request->from_date)
             ->whereDate('end_date', '>=', $request->from_date)
             ->first();
 
-        if ($getYearDetail == null) {
+        // If no financial year detail is found, return 0
+        if ($getYearDetail === null) {
             return 0;
         }
 
-        $previousFinanceYear = FinancialYear::whereDate('end_date', '<=', $getYearDetail->start_date)
+        // Filter to get the previous financial year
+        $previousFinanceYear = $cacheFinancialYear ?
+            $cacheFinancialYear->filter(function ($item) use ($getYearDetail) {
+                return $item->end_date <= $getYearDetail->start_date;
+            })->sortByDesc('end_date')->first() :
+            FinancialYear::whereDate('end_date', '<=', $getYearDetail->start_date)
             ->orderByDesc('end_date')
             ->first();
 
-        if ($previousFinanceYear == null) {
+        // If no previous financial year is found, return 0
+        if ($previousFinanceYear === null) {
             return 0;
         }
 
@@ -44,7 +60,8 @@ trait Report
 
         $balanceResult = [];
 
-        $coaDetail = ChartOfAccount::findOrFail($request->chart_of_account_id);
+        $coaDetail = Cache::has('chart_of_accounts') ? Cache::get('chart_of_accounts')->firstWhere('id', $request->chart_of_account_id)
+            : ChartOfAccount::findOrFail($request->chart_of_account_id);
 
         if ($coaDetail->account_type_id == 1 || $coaDetail->account_type_id == 4) {
             foreach ($getOpeningBalance as $value) {
@@ -122,7 +139,8 @@ trait Report
         $debitBalance = $this->getDebitBalance($request, $accountSubCode);
         $creditBalance = $this->getCreditBalance($request, $accountSubCode);
 
-        $coaDetail = ChartOfAccount::findOrFail($request->chart_of_account_id);
+        $coaDetail = Cache::has('chart_of_accounts') ? Cache::get('chart_of_accounts')->firstWhere('id', $request->chart_of_account_id)
+            : ChartOfAccount::findOrFail($request->chart_of_account_id);
         if (in_array($coaDetail->account_type_id, [1, 4])) {
             $closingBalance = (float) $openingBalance + (float) $debitBalance - (float) $creditBalance;
         } else {
@@ -181,11 +199,11 @@ trait Report
 
         // Get fourth-level COA IDs and their parent IDs
         $fourthLevelCoaIds = $coaWithGroupBy->keys();
-        $fourthLevelCoaDetails = $coaDetails->filter(fn ($value, $key) => $fourthLevelCoaIds->contains($key));
+        $fourthLevelCoaDetails = $coaDetails->filter(fn($value, $key) => $fourthLevelCoaIds->contains($key));
         $thirdLevelCoaIds = $fourthLevelCoaDetails->pluck('parent_id')->unique();
 
         // Retrieve third-level COA details and child COA details
-        $thirdLevelCoaDetails = $coaDetails->filter(fn ($value, $key) => $thirdLevelCoaIds->contains($key));
+        $thirdLevelCoaDetails = $coaDetails->filter(fn($value, $key) => $thirdLevelCoaIds->contains($key));
         $childOfThirdLevel = ChartOfAccount::whereIn('parent_id', $thirdLevelCoaIds)->get()->keyBy('id');
 
         // Prepare results
@@ -203,7 +221,7 @@ trait Report
             } elseif ($thirdLevelCoaDetails->has($child->parent_id)) {
                 // Third-level COA: Aggregate child amounts
                 $totalAmount = $childOfThirdLevel->where('parent_id', $child->id)
-                    ->sum(fn ($child) => $coaWithGroupBy->get($child->id, (object)['total_amount' => 0])->total_amount);
+                    ->sum(fn($child) => $coaWithGroupBy->get($child->id, (object)['total_amount' => 0])->total_amount);
 
                 $finalCollection->push([
                     'id' => $child->id,
@@ -232,7 +250,8 @@ trait Report
         $debitBalance = $this->getDebitBalance($request, $accountSubCode);
         $creditBalance = $this->getCreditBalance($request, $accountSubCode);
 
-        $coaDetail = ChartOfAccount::findOrFail($request->chart_of_account_id);
+        $coaDetail = Cache::has('chart_of_accounts') ? Cache::get('chart_of_accounts')->firstWhere('id', $request->chart_of_account_id)
+            : ChartOfAccount::findOrFail($request->chart_of_account_id);
         if (in_array($coaDetail->account_type_id, [1, 4])) {
             $closingBalance = (float) $debitBalance - (float) $creditBalance;
         } else {
@@ -256,7 +275,8 @@ trait Report
 
         $balanceResult = [];
 
-        $coaDetail = ChartOfAccount::findOrFail($chart_of_account_id);
+        $coaDetail = Cache::has('chart_of_accounts') ? Cache::get('chart_of_accounts')->firstWhere('id', $chart_of_account_id)
+            : ChartOfAccount::findOrFail($chart_of_account_id);
 
         if ($coaDetail->account_type_id == 1 || $coaDetail->account_type_id == 4) {
             foreach ($getOpeningBalance as $value) {

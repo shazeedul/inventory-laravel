@@ -4,6 +4,7 @@ namespace Modules\Account\Entities;
 
 use Carbon\Carbon;
 use App\Traits\DataTableActionBtn;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -34,10 +35,23 @@ class FinancialYear extends Model
 
         static::created(function ($model) {
             $model->created_by = auth()->user()->id;
+            // forget cache by key financial_years
+            Cache::forget('financial_years');
+            // put cache all data
+            Cache::put('financial_years',  FinancialYear::all());
         });
-
         static::updated(function ($model) {
             $model->updated_by = auth()->user()->id;
+            // forget cache by key financial_years
+            Cache::forget('financial_years');
+            // put cache all data
+            Cache::put('financial_years',  FinancialYear::all());
+        });
+        static::deleted(function ($model) {
+            // forget cache by key financial_years
+            Cache::forget('financial_years');
+            // put cache all data
+            Cache::put('financial_years',  FinancialYear::all());
         });
     }
 

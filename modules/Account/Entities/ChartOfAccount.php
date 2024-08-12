@@ -2,13 +2,14 @@
 
 namespace Modules\Account\Entities;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Modules\Account\Entities\AccountSubType;
-use Modules\Account\Entities\AccountTransaction;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Account\Entities\AccountType;
+use Modules\Account\Entities\AccountSubType;
 use Modules\Account\Entities\AccountVoucher;
+use Modules\Account\Entities\AccountTransaction;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ChartOfAccount extends Model
 {
@@ -44,9 +45,23 @@ class ChartOfAccount extends Model
             static::created(function ($model) {
                 $model->created_by = Auth::id();
                 $model->code = self::generateAccCode($model->head_level, $model->parent_id);
+                // forget cache by key chart_of_accounts
+                Cache::forget('chart_of_accounts');
+                // put cache all data
+                Cache::put('chart_of_accounts',  ChartOfAccount::all());
             });
             static::updated(function ($model) {
                 $model->updated_by = Auth::id();
+                // forget cache by key chart_of_accounts
+                Cache::forget('chart_of_accounts');
+                // put cache all data
+                Cache::put('chart_of_accounts',  ChartOfAccount::all());
+            });
+            static::deleted(function ($model) {
+                // forget cache by key chart_of_accounts
+                Cache::forget('chart_of_accounts');
+                // put cache all data
+                Cache::put('chart_of_accounts',  ChartOfAccount::all());
             });
         }
     }

@@ -703,18 +703,36 @@ class AccountReportController extends Controller
             }
         }
 
-        return view('account::reports.result.t_balance_sheet', compact(
-            'assets',
-            'assetBalance',
-            'liabilities',
-            'liabilityBalance',
-            'shareEquities',
-            'shareEquityBalance',
-            'currentYear',
-            'lastThreeYears',
-            'fromDate',
-            'toDate',
-            'type'
-        ));
+        if ($type == 't_shape') {
+            return view('account::reports.result.t_balance_sheet', compact(
+                'assets',
+                'assetBalance',
+                'liabilities',
+                'liabilityBalance',
+                'shareEquities',
+                'shareEquityBalance',
+                'currentYear',
+                'lastThreeYears',
+                'fromDate',
+                'toDate',
+                'type'
+            ));
+        } else if ($type == 'l_shape') {
+            return view('account::reports.result.l_balance_sheet', compact(
+                'assets',
+                'assetBalance',
+                'liabilities',
+                'liabilityBalance',
+                'shareEquities',
+                'shareEquityBalance',
+                'currentYear',
+                'lastThreeYears',
+                'fromDate',
+                'toDate',
+                'type'
+            ));
+        } else {
+            return view('account::reports.no_data');
+        }
     }
 }
