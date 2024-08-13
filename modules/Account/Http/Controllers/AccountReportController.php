@@ -5,10 +5,13 @@ namespace Modules\Account\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Account\Traits\Report;
+use Illuminate\Support\Facades\Cache;
 use Modules\Account\Entities\FinancialYear;
 use Illuminate\Contracts\Support\Renderable;
 use Modules\Account\Entities\AccountSubType;
 use Modules\Account\Entities\ChartOfAccount;
+use Modules\Account\Entities\AccountPredefine;
 use Modules\Account\DataTables\DayBookDataTable;
 use Modules\Account\Entities\AccountTransaction;
 use Modules\Account\Entities\AccountVoucherType;
@@ -19,8 +22,6 @@ use Modules\Account\DataTables\NoteLedgerDataTable;
 use Modules\Account\Entities\AccountOpeningBalance;
 use Modules\Account\DataTables\ControlLedgerDataTable;
 use Modules\Account\DataTables\GeneralLedgerDataTable;
-use Modules\Account\Entities\AccountPredefine;
-use Modules\Account\Traits\Report;
 
 class AccountReportController extends Controller
 {
@@ -262,15 +263,22 @@ class AccountReportController extends Controller
             return abort(500);
         }
 
-        $chartOfAccounts = ChartOfAccount::with([
-            'secondChild' => function ($secondQ) {
-                $secondQ->with([
-                    'thirdChild' => function ($thirdQ) {
-                        $thirdQ->with(['fourthChild']);
-                    }
-                ]);
-            }
-        ])->where('is_active', 1)->parentHead()->get();
+        $chartOfAccountsCache = Cache::get('chart_of_accounts_tree');
+        if ($chartOfAccountsCache) {
+            $chartOfAccounts = $chartOfAccountsCache;
+        } else {
+            $chartOfAccounts = ChartOfAccount::with([
+                'secondChild' => function ($secondQ) {
+                    $secondQ->with([
+                        'thirdChild' => function ($thirdQ) {
+                            $thirdQ->with(['fourthChild']);
+                        }
+                    ]);
+                }
+            ])->where('is_active', 1)->parentHead()->get();
+            Cache::put('chart_of_accounts_tree', $chartOfAccounts);
+        }
+
 
         // Initialize variables for the trail balance
         $tableFooter = [

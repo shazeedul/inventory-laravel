@@ -24,13 +24,16 @@ trait Report
         $cacheFinancialYear = Cache::get('financial_years');
 
         // Filter to get the current financial year
-        $getYearDetail = $cacheFinancialYear ?
-            $cacheFinancialYear->filter(function ($item) use ($request) {
+        if ($cacheFinancialYear) {
+            $getYearDetail = $cacheFinancialYear->filter(function ($item) use ($request) {
                 return $item->start_date <= $request->from_date && $item->end_date >= $request->from_date;
-            })->first() :
-            FinancialYear::whereDate('start_date', '<=', $request->from_date)
-            ->whereDate('end_date', '>=', $request->from_date)
-            ->first();
+            })->first();
+        } else {
+            $getYearDetail = FinancialYear::whereDate('start_date', '<=', $request->from_date)
+                ->whereDate('end_date', '>=', $request->from_date)
+                ->first();
+            Cache::put('financial_years', FinancialYear::all());
+        }
 
         // If no financial year detail is found, return 0
         if ($getYearDetail === null) {
@@ -38,13 +41,16 @@ trait Report
         }
 
         // Filter to get the previous financial year
-        $previousFinanceYear = $cacheFinancialYear ?
-            $cacheFinancialYear->filter(function ($item) use ($getYearDetail) {
+        if ($cacheFinancialYear) {
+            $previousFinanceYear = $cacheFinancialYear->filter(function ($item) use ($getYearDetail) {
                 return $item->end_date <= $getYearDetail->start_date;
-            })->sortByDesc('end_date')->first() :
-            FinancialYear::whereDate('end_date', '<=', $getYearDetail->start_date)
-            ->orderByDesc('end_date')
-            ->first();
+            })->sortByDesc('end_date')->first();
+        } else {
+            $previousFinanceYear = FinancialYear::whereDate('end_date', '<=', $getYearDetail->start_date)
+                ->orderByDesc('end_date')
+                ->first();
+            Cache::put('financial_years', FinancialYear::all());
+        }
 
         // If no previous financial year is found, return 0
         if ($previousFinanceYear === null) {
@@ -60,8 +66,13 @@ trait Report
 
         $balanceResult = [];
 
-        $coaDetail = Cache::has('chart_of_accounts') ? Cache::get('chart_of_accounts')->firstWhere('id', $request->chart_of_account_id)
-            : ChartOfAccount::findOrFail($request->chart_of_account_id);
+        $chartOfAccountCache = Cache::get('chart_of_accounts');
+        if ($chartOfAccountCache) {
+            $coaDetail = $chartOfAccountCache->firstWhere('id', $request->chart_of_account_id);
+        } else {
+            $coaDetail = ChartOfAccount::findOrFail($request->chart_of_account_id);
+            Cache::put('chart_of_accounts', ChartOfAccount::all());
+        }
 
         if ($coaDetail->account_type_id == 1 || $coaDetail->account_type_id == 4) {
             foreach ($getOpeningBalance as $value) {
