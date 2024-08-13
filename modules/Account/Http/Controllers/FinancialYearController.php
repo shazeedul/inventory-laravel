@@ -2,11 +2,14 @@
 
 namespace Modules\Account\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Account\DataTables\FinancialYearDataTable;
+use Illuminate\Support\Facades\DB;
 use Modules\Account\Entities\FinancialYear;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\Account\Entities\AccountTransaction;
+use Modules\Account\Entities\AccountOpeningBalance;
+use Modules\Account\DataTables\FinancialYearDataTable;
 
 class FinancialYearController extends Controller
 {
@@ -156,10 +159,45 @@ class FinancialYearController extends Controller
      */
     public function closeStore(Request $request)
     {
-        $financialYear = FinancialYear::findOrFail($request->year);
-        $financialYear->status = false;
-        $financialYear->is_closed = true;
-        $financialYear->save();
-        return response()->success('', 'Financial Year closed successfully.', 200);
+        try {
+            DB::beginTransaction();
+
+            $financialYear = FinancialYear::findOrFail($request->year);
+            // $financialYear start_date <> end_date transaction goes to OpeningBalance
+            $transactions             = AccountTransaction::whereBetween('voucher_date', [$financialYear->start_date, $financialYear->end_date])
+                ->where('is_closed_year', 0)->get();
+            $openingBalance           = $transactions->map(
+                function ($transaction) {
+                    return [
+                        'chart_of_account_id' => $transaction->chart_of_account_id,
+                        'financial_year_id' => $transaction->financial_year_id,
+                        'account_sub_type_id' => $transaction->account_sub_type_id,
+                        'account_sub_code_id' => $transaction->account_sub_code_id,
+                        'debit' => $transaction->debit,
+                        'credit' => $transaction->credit,
+                        'opening_date' => $transaction->voucher_date,
+                        'created_by' => $transaction->created_by,
+                        'updated_by' => $transaction->updated_by,
+                        'created_at' => $transaction->created_at,
+                        'updated_at' => $transaction->updated_at,
+                    ];
+                }
+            );
+            AccountOpeningBalance::insert($openingBalance->toArray());
+
+            // Update all transactions to set is_closed_year to true
+            AccountTransaction::whereBetween('voucher_date', [$financialYear->start_date, $financialYear->end_date])
+                ->where('is_closed_year', 0)
+                ->update(['is_closed_year' => true]);
+            $financialYear->status = false;
+            $financialYear->is_closed = true;
+            $financialYear->save();
+            DB::commit();
+            return response()->success('', 'Financial Year closed successfully.', 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+            return response()->error('', 'Failed to close Financial Year.', 500);
+        }
     }
 }
