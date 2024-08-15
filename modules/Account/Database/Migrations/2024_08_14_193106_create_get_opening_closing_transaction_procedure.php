@@ -13,14 +13,13 @@ return new class extends Migration
     public function up()
     {
         DB::unprepared("
-        DELIMITER $$
             CREATE PROCEDURE GetOpeningClosingTransaction(
                 IN chart_of_account_id INT,
                 IN start_date DATE,
                 IN end_date DATE,
-                OUT OpeningBalance DOUBLE DEFAULT 0,
-                OUT ClosingBalance DOUBLE DEFAULT 0,
-                OUT TransactionBalance DOUBLE DEFAULT 0
+                OUT OpeningBalance DOUBLE,
+                OUT ClosingBalance DOUBLE,
+                OUT TransactionBalance DOUBLE
             )
             BEGIN
                 DECLARE opening_date DATE;
@@ -94,9 +93,9 @@ return new class extends Migration
                 SELECT GetAccountNature(chart_of_account_id) INTO get_account_nature;
                 
                 -- Initialize opening balance
-                IF get_account_nature = `DR` THEN
+                IF get_account_nature = 'DR' THEN
                     SET opening_balance = IFNULL(opening_debit, 0.00);
-                ELSEIF get_account_nature = `CR` THEN
+                ELSEIF get_account_nature = 'CR' THEN
                     SET opening_balance = IFNULL(opening_credit, 0.00);
                 END IF;
 
@@ -104,7 +103,7 @@ return new class extends Migration
 
                 -- Open the cursor and iterate through transactions
                 OPEN transaction_cursor;
-                transaction_loop:LOOP
+                transaction_loop: LOOP
                     FETCH transaction_cursor INTO voucher_id, voucher_no, transaction_date, voucher_remarks, transaction_debit, transaction_credit;
                     
                     IF done THEN
@@ -112,9 +111,9 @@ return new class extends Migration
                     END IF;
 
                     -- Adjust the opening balance based on transaction nature
-                    IF get_account_nature = `DR` THEN
+                    IF get_account_nature = 'DR' THEN
                         SET opening_balance = opening_balance + IFNULL(transaction_debit, 0.00) - IFNULL(transaction_credit, 0.00);
-                    ELSEIF get_account_nature = `CR` THEN
+                    ELSEIF get_account_nature = 'CR' THEN
                         SET opening_balance = opening_balance - IFNULL(transaction_debit, 0.00) + IFNULL(transaction_credit, 0.00);
                     END IF;
                 END LOOP;
@@ -122,8 +121,7 @@ return new class extends Migration
 
                 SET ClosingBalance = opening_balance;
                 SET TransactionBalance = ClosingBalance - OpeningBalance;
-            END $$
-            DELIMITER;
+            END;
         ");
     }
 
