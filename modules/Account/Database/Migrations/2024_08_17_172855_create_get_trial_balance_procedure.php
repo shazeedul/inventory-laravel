@@ -13,7 +13,7 @@ return new class extends Migration
     public function up()
     {
         DB::unprepared("
-           CREATE PROCEDURE GetTrialBalance(
+            CREATE PROCEDURE GetTrialBalance(
                 IN start_date DATE,
                 IN end_date DATE
             )
